@@ -8,7 +8,7 @@
 - ntpdのログ機構では、どうやらそこまで細かいログを取ることが出来ない。
 - そこでちょっとソースを見てみる。
 - 覚え書きなので**きっと**勘違いや誤りがあるに違いないです。先にごめんなさいしておきます。
-- [ntpd packet logのための覚え書き(1)](https://ameblo.jp/ypsilondelta/entry-12632534671.html)ではmain()から順にパケットを受信する流れを追った。
+- [ntpd packet logのための覚え書き(1)](https://github.com/motok/NotsKotsMemo/blob/main/ntpd-receive.md)ではmain()から順にパケットを受信する流れを追った。
   - [ntpd/ntp_proto.c](https://github.com/ntp-project/ntp/blob/9c75327c3796ff59ac648478cd4da8b205bceb77/ntpd/ntp_proto.c)で定義された[receive()](https://github.com/ntp-project/ntp/blob/9c75327c3796ff59ac648478cd4da8b205bceb77/ntpd/ntp_proto.c#L475)の[この辺り](https://github.com/ntp-project/ntp/blob/9c75327c3796ff59ac648478cd4da8b205bceb77/ntpd/ntp_proto.c#L532)で`pkt`に受信したパケットのメモリアドレスを保持して、`hisversion`, `hisleap`, `hismode`, `hisstratum`を読み出しており、
   - その後、`hismode`等を見ながらmode 7の処理を[ntpd/ntp_request.c](https://github.com/benegon/ntp/blob/e73fe484fe59fb52c489d7b1b41ee998be942f5e/ntpd/ntp_request.c)の[process_private()](https://github.com/benegon/ntp/blob/e73fe484fe59fb52c489d7b1b41ee998be942f5e/ntpd/ntp_request.c#L403)に渡し、mode 6の処理を[ntpd/ntp_control.c](https://github.com/benegon/ntp/blob/e73fe484fe59fb52c489d7b1b41ee998be942f5e/ntpd/ntp_control.c)の[process_control()](https://github.com/benegon/ntp/blob/e73fe484fe59fb52c489d7b1b41ee998be942f5e/ntpd/ntp_control.c#L670)に渡している。
   - mode 6, mode7以外のmodeはそのまま処理を続けて、結局[process_packet()](https://github.com/ntp-project/ntp/blob/9c75327c3796ff59ac648478cd4da8b205bceb77/ntpd/ntp_proto.c#L1795)を呼び出しているようだ。
