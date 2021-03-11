@@ -6,7 +6,10 @@
 
 - AWS EC2にFreeBSD 12-RELEASEなノードを建てた時の備忘録。
 - 多分自分の役にしか立たない。申し訳ない。
-- 以前に[アメブロで書いたやつ](https://ameblo.jp/ypsilondelta/entry-12626790577.html)を更新。
+
+## 編集履歴
+
+- 2021/Mar/12頃、以前に[アメブロで書いたやつ](https://ameblo.jp/ypsilondelta/entry-12626790577.html)を更新。
 
 ## インスタンス作成
 
@@ -236,7 +239,7 @@
 - service ipfw startの後もコマンドラインの操作ができていれば大丈夫なはずだが、ipfwの設定を間違ってないことを確認するため、ここで初回reboot。
 - もしSSHアクセスができなくなったら、別のVMを建ててこのVMのディスクイメージを/mntあたりにマウントして設定ミスを修正する手段はあるけど、多分、VMを捨てて作り直す方が早い。
 
-# resolv.conf設定確認
+## resolv.conf設定確認
 
 - 名前解決のためのresolv.confもCollins先生が設定済。
 
@@ -257,7 +260,7 @@
   search_domains="example.com example.jp"
   ```
 
-# ntpd設定確認
+## ntpd設定確認
 
 - Collins先生のマシンイメージからインストールしているので、AWS EC2でのntpサーバ169.254.169.123に同期する設定がすでに入っていて、ntpdも動作している。
 
@@ -268,7 +271,7 @@
   *169.254.169.123 169.254.169.122  3 u   33   64  377    0.179   +0.029   0.066
   ```
 
-# /etc/aliases
+## /etc/aliases
 
 - /etc/aliasesでroot宛のメールを適当な受信者へaliasしておく。
 
@@ -280,7 +283,7 @@
 
 - 非特権ユーザ(さっきec2-userから名前を変更したやつ)の~/.forwardも手当しておく。
 
-# /etc/periodic.conf.local
+## /etc/periodic.conf.local
 
 - /etc/periodic.conf.localでシステム管理用の定期起動モノの調整。
 
@@ -302,7 +305,7 @@
   security_show_badconfig="YES"
   ```
 
-# /etc/ttys
+## /etc/ttys
 
 - AWS EC2ではコンソールへの接続は提供されていないが、シングルユーザモードに落とされてもrootパスワードを聞くようにする。
 
@@ -355,7 +358,7 @@
 
 - 再起動または`kill -HUP 1`で有効になる。
 
-# pkgコマンド
+## pkgコマンド
 
 - よく使うプログラムをインストールするのにpkgコマンドを使う。
 
@@ -381,7 +384,7 @@
   # pkg info [<package name>]             インストール済パッケージの情報を得る。
   ```
 
-# shells/bashインストール
+## shells/bashインストール
 
 - (2020/Sep/29追記) bash入れるの忘れてました。
 
@@ -460,7 +463,7 @@
 
   - pwでやる場合は、full pathをタイポしても拒否してくれないので、rootアカウントをログイン状態に保持したままで、sshログインできることを確認すべき。
 
-# security/sudoまたはsecurity/doas
+## security/sudoまたはsecurity/doas
 
 - security/sudoでも良いが、security/doasの方がスパルタン。なんせOpenBSD由来。
 
@@ -542,7 +545,7 @@
   - root権限を持つ必要のある人はwheelグループに入れることにして、`permit :wheel`の行で設定。
   - alice, bob, cindyの行は設定の書き方の例だと思うが、万一この名前のユーザがいたらどうするんだろね。というわけでコメントアウト。
 
-# misc/lv
+## misc/lv
 
 - moreだとjkで上下するとかできない(よね？)のでついついmisc/lv入れちゃう。日本語も通るし。
 
@@ -567,7 +570,7 @@
   [1/1] Extracting lv-4.51.20200728: 100%
   ```
 
-# japanese/nkf
+## japanese/nkf
 
 - 日本語文字コードや改行文字の変換など。
 
@@ -592,7 +595,7 @@
   [1/1] Extracting ja-nkf-2.1.4,1: 100%
   ```
 
-# ftp/lftp
+## ftp/lftp
 
 - 近頃とんと使わなくなったけれど、anonymous FTPの時に入力少なくて楽なftp/lftp
 
@@ -630,7 +633,7 @@
   [4/4] Extracting lftp-4.9.2: 100%
   ```
 
-# editors/vim-console
+## editors/vim-console
 
 - /bin/viでもいいんだけどやっぱり便利なvimがいいねということで入れておく。
 
@@ -675,7 +678,7 @@
 
   
 
-# git
+## git
 
 - あと、まあ、いらない人はいらないと思うけど、gitコマンド。
 
@@ -744,7 +747,7 @@
 
 - (2020/Sep/29追記)gitパッケージがX11関係のライブラリを大量にインストールすると思い込んでましたが違いました。でもまあperl5やpython37にgnupg、あと何故かsubversionも突っ込むので考えどころではあります。
 
-# /etc/profile + ~/.bashrc + ~/.bash_profile
+## /etc/profile + ~/.bashrc + ~/.bash_profile
 
 - 基本的な環境変数やaliasを/usr/local/etc/profileに入れておく。
 
@@ -793,15 +796,13 @@
 
 - 他のシェルとの兼ね合いとかあったらどうするんだろうね。
 
-# まとめ
+## まとめ
 
 - 殴り書きだが一応FreeBSDのノードを建てたらこの辺まではやっておくという備忘録を作った。
 - 書けば書くほどあれはどうするこれはどうすると疑問が膨らむ。
 - パーティション構成とかファイルシステムのRead Onlyマウント、/boot/loader.confや/etc/sysctl.confの整理もこれからの課題。
 
-# おまけ
-
-### ちょっとだけ/etc/sysctl.conf.localで調整。
+## ちょっとだけ/etc/sysctl.conf.localで調整。
 
 - これは何？とか訊いてはいけませんです。
 
@@ -872,7 +873,7 @@
   vfs.zfs.min_auto_ashift=12
   ```
 
-  ### /boot/loader.conf.localもほんの少しだけ。
+## /boot/loader.conf.localもほんの少しだけ。
 
   ```shell
   # /boot/loader.conf.local
