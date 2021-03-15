@@ -2,6 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
+- 2021/Mar/15 [PostgreSQLインストールと初期設定の覚え書き](./PostgreSQL-initconf.md)
 - [FreeBSD12 on AWS EC2](./FreeBSD12-on-AWS-EC2.md)
 - [ntpd packet logのための覚え書き(1)](./ntpd-receive.md)
 - [ntpd packet logのための覚え書き(2)](./ntpd-private.md)
