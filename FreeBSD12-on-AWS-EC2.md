@@ -442,7 +442,7 @@
   See /usr/local/share/doc/bash-completion/README.md for more information.
   ```
 
-- rootのログインシェルはデフォルトの/bin/shのままにしておくが、一般ユーザの方はbashに変える。
+- rootのログインシェルはデフォルトの/bin/cshのままにしておくが、一般ユーザの方はbashに変える。
 
 - 当該一般ユーザのコマンドラインから
 
