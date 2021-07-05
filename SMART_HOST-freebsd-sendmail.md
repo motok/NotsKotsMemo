@@ -1,5 +1,103 @@
 # FreeBSD12R 同梱のsendmailでSMART_HOSTする
 
+[[_TOC_]]
+
+## これは何？
+
+- AWS EC2やGCP GCEでFreeBSD12.2Rなノードを建てた。
+- AWS EC2やGCP GCEでは[OP25B](https://www.nic.ad.jp/ja/basics/terms/OP25B.html)が有効になっている。smtps(465/tcp)やsubmission(587/tcp)へのアクセスは可能。(2021/Jul現在)
+- FreeBSDのデフォルトのsendmailでは、外部のsmtp(25/tcp)へ接続しようとするので当然に外へのメールを送出できない。
+- そこでFreeBSD同梱のsendmailで[SMART_HOST](https://en.wikipedia.org/wiki/Smart_host)を指定して、外部向けのメールをすべてSMART_HOST(のsubmissionポート)へ送るようにしたい。submissionなのでSMTP AUTHを通過する必要がある点に留意する。
+
+## 概要
+
+- まず、FreeBSD同梱のsendmailがsubmissionポートやSMTP AUTHに対応している必要がある。
+  [FreeBSD Handbook: 29.9 SMTP AUTH](https://docs.freebsd.org/en/books/handbook/mail/#SMTP-Auth)によれば、ports/security/cyrus-saslをインストールした上でsendmailの再コンパイルが必要であった。
+- さらに、/etc/mail/以下のsendmail設定で、SMART_HOSTを指定し、それがsubmissionポートを使うようにMAILERを追加し、SMTP AUTHで用いるID/passwdを指定する必要があった。
+- このID/passwdは、SMART_HOST側にも設定が必要である。(面倒な場合は送り側からsmtpsでSMART_HOSTへ接続し、接続元IPアドレスをpostfixでいうmynetworksに入れておくようなことで実現可能かもしれない)
+
+## sendmailをSMTP AUTH対応にする
+
+- [FreeBSD Handbook: 29.9 SMTP AUTH](https://docs.freebsd.org/en/books/handbook/mail/#SMTP-Auth)参照。
+- ports/security/cyrus-sasl2をインストールする。
+- 自分(送り側のsendmail)がSMTP AUTHする側(サーバ側)になるわけではないので、pwcheck_methodの設定やports/security/cyrus-sasl2-saslauthdのインストールは不要。実際に設定・インストールをしなかった。
+- /etc/make.confへの設定追加では、LDFLAGSも必要であった。
+  ```
+  SENDMAIL_CFLAGS=-I/usr/local/include/sasl -DSASL
+  SENDMAIL_LDFLAGS=-L/usr/local/lib -lsasl2 -DSASL
+  SENDMALE_LDADD=/usr/local/lib/libsasl2.so
+  ```
+- sendmailと関連ライブラリの(再)コンパイル
+  ```
+  # cd /usr/src/lib/libsmutil
+  # make cleandir && make obj && make
+  # cd /usr/src/lib/libsm
+  # make cleandir && make obj && make
+  # cd /usr/src/usr.sbin/sendmail
+  # make cleandir && make obj && make && make install
+  ```
+
+## 送り側で/etc/mail/以下でのsendmail設定
+### authinfo
+- まず、submissionポートで使うSMTP AUTHのid/passwdなどのデータベースを作る。
+  ```
+  # touch /etc/mail/authinfo
+  # chmod 600 /etc/mail/authinfo
+  # vi /etc/mail/authinfo
+  AuthInfo:smart.host.fqdn "U:<username>" "P:<passwd>" "M:LOGIN"
+  ```
+- AuthInfo直後はSMART_HOSTのFQDN
+- U:の項はユーザ名
+- P:の項はパスワード
+- M:の項は認証方法。他にPLAINとかCRAM-MD5などの場合もあるのでSMART_HOST側で受け入れ可能なものを書く。
+- authinfoファイルはmakemapでハッシュ化したauthinfo.dbに変換するが、MakefileのSENDMAIL_MAP_SRCの項に追記すればmake一発である(のでそうした)。
+
+### submission用のto587.m4
+- 外部のsubmissionポートへメールを送るための(sendmail的)mailerを定義する。
+- /usr/share/sendmail/cf/mailer/to587.m4として定義ファイルを作成。
+  ```
+  Mto587, P=[IPC], F=mDFMuXa8, S=EnvFromSMTP/HdrFromSMTP, R=MasqSMTP, E=\r\n, L=2040, T=DNS/RFC822/SMTP, A=TCP $h 587
+  ```
+- これで、後述のsendmail.cfなどからto587.m4を読み込んで利用することができる。  
+
+### mcファイル
+- 次に、mcファイルの設定変更を行う。
+- FreeBSD同梱のsendmailの場合、/etc/mailでmakeすると`<自ノードのFQDN>.mc`と`<自ノードのFQDN>.submit.mc`が生成される。この`<自ノードのFQDN>*.mc`を編集して設定変更し、make installするとsendmail.cfとsubmit.cfとしてインストールされるので、make restartでsendmailプロセスを再起動すると設定変更が反映されることになる。
+- `<自ノードのFQDN>.mc`には元々SMART_HOSTや関連設定をdnlでコメントアウトしてあるので、その続きに追記する。
+  ```
+  TRUST_AUTH_MECH(`GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+  define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+  define(`SMART_HOST', `to587:smart.host.fqdn')dnl
+  FEATURE(`authinfo', `hash /etc/mail/authinfo')dnl
+  MAILER(`to587')dnl
+  ```
+- `<自ノードのFQDN>.submit.mc`でも同じ要領で追記するが、FEATUREとMAILERの順序問題があってmake時にエラーになるのでFEATUREを先に定義しておく。
+  ```
+  dnl If you use IPv6 only, change [127.0.0.1] to [IPv6:0:0:0:0:0:0:0:1]
+  TRUST_AUTH_MECH(`GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+  define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+  define(`SMART_HOST', `to587:smart.host.fqdn')dnl
+  FEATURE(`authinfo', `hash /etc/mail/authinfo')dnl
+  dnl
+  FEATURE(`msp', `[127.0.0.1]')dnl
+  dnl
+  MAILER(`to587')dnl
+  ```
+- これで`make`すればふたつのmcファイルからそれぞれcfファイルが生成され、`make install`するとcfファイルをsendmail.cfとsubmit.cfとしてインストールする。
+- さらに`make restart`すれば新しい設定でsendmailプロセスが動き出す。
+
+## SMART_HOST側
+
+- SMART_HOST側では、submissionポートでSMTP AUTHを受け付けること、また、上で設定したid/passwd他の内容でもってsubmissionポートのSMTP AUTHを通過できることが求められる。
+- 単純にUNIXユーザを作るか、まだはDovecotのvirtual.passwdのような機能でvirtualユーザを作成しておけば良い。Dovecotの場合は/usr/local/etc/dovecot/virtual.passwdに以下のように書けば仮想のユーザを作成できる。(dovecotに仮想ユーザを使わせる設定は別途必要)
+  ```
+  virtual.user@virtual.domain:{CRYPT}$(はなもげら文字列)
+  ```
+- {CRYPT}及び右側のはなもげらは、`doveadm pw`で生成する。
+
+# ここから下は後で消す。
+
+
 ## どうしてそんな？
 
 - GCP GCEでFreeBSD12Rなノードを建てた。
