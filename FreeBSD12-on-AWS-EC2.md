@@ -935,3 +935,8 @@
   nullfs_load="YES"
   ```
 
+## 追記
+### /tmp下の掃除
+- `/etc/periodic.conf.local`に`daily_clean_tmps_enable="YES"`があると/tmp下の古くなった*ファイル*は消してくれるが、*ディレクトリ*は消えない模様。
+- `periodic`側でディレクトリも消す設定はなさそう。
+- `/etc/rc.conf.local`に`clear_tmp_enable="YES"`があると*起動時*に/tmpを綺麗にしてくれるとのことなので試す。
