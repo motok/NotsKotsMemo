@@ -139,10 +139,10 @@
   まずはsendmail廃止とpostfixインストール。
 
 - sendmailを止める。
-   ```
-   # cd /etc/mail
-   # make stop
-   ```
+  ```
+  # cd /etc/mail
+  # make stop
+  ```
    再起動時にsendmailが立ち上がらないように/etc/rc.conf(.local)に
    以下を書く
    ```
