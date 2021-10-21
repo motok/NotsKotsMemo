@@ -56,7 +56,7 @@
   <nonceっぽい文字列２>._domainkey.example.jp CNAME <nonceっぽい文字列２>.dkim.amazonses.com
   [Email Receiving Record]
   example.jp MX 10 inbound-smtp.cc-direction-1.amazonaws.com
-```
+  ```
     - Domain Identitesは今verifyさせようとしているドメイン名。
     - Domain Verification Recordは、AWSが`_amazonses.example.jp`を
       `TXT`で引いて、本当に僕がこのドメイン名を制御しているかを確認す
@@ -143,11 +143,11 @@
   # cd /etc/mail
   # make stop
   ```
-   再起動時にsendmailが立ち上がらないように/etc/rc.conf(.local)に
-   以下を書く
-   ```
-   sendmail_enable="NONE"
-   ```
+  再起動時にsendmailが立ち上がらないように/etc/rc.conf(.local)に
+  以下を書く
+  ```
+  sendmail_enable="NONE"
+  ```
 - pkgでmail/postfix-saslをインストールする。
    ```
    # pkg install postfix-sasl
