@@ -2,6 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
+- 2021/Oct/21 [FreeBSD12.2p7 AWS SESをSMART_HOSTとして利用](./SMART_HOST-freebsd-postfix.md)
 - 2021/Jul/02 [FreeBSD12R 同梱のsendmailでSMART_HOSTする](./SMART_HOST-freebsd-sendmail.md)
 - 2021/Mar/15 [PostgreSQLインストールと初期設定の覚え書き](./PostgreSQL-initconf.md)
 - [FreeBSD12 on AWS EC2](./FreeBSD12-on-AWS-EC2.md)
