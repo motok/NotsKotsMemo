@@ -2,6 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
+- 2023-05-22 [中華PCにFreeBSD13.2を入れた(だけの)dmesg](./N5105-8GB-128GB-4xi226V.md)
 - 2022/Jan/14 [portsでデフォルトのconfigを変更したい](./port_and_make.conf.md)
 - 2021/Oct/21 [FreeBSD12.2p7 AWS SESをSMART_HOSTとして利用](./SMART_HOST-freebsd-postfix.md)
 - 2021/Jul/02 [FreeBSD12R 同梱のsendmailでSMART_HOSTする](./SMART_HOST-freebsd-sendmail.md)
