@@ -1,0 +1,149 @@
+graph interfaces {
+    node [shape="tab"]
+
+    internet [shape="oval" label="Internet"]
+    subgraph cluster_hgw {
+        label="Home Gateway"
+        {
+            rank="same"
+            hgw_routing4 [shape="oval" label="IPv4\nrouting"]
+            hgw_routing6 [shape="oval" label="IPv6\nrouting"]
+        }
+        hgw_routing4 -- hgw_dhcp4s [style="invis"]
+        {
+            rank="same"
+            hgw_dhcp4s [label="dhcp4s"]
+            hgw_rtadvd [label="rtadvd"]
+            hgw_dhcp6s [label="dhcp6s"]
+        }
+    }
+    lan4 [shape="oval" label="192.168.1/24"]
+    lan6 [shape="oval" label="24xx:xx:xx:xx/64"]
+    subgraph cluster_mkk {
+        label="mkk"
+        {
+            rank="same"
+            mkk_pf [label="pf NAT"]
+            mkk_dhcp4c [label="dhcp4c"]
+            mkk_rtsold [label="rtsold"]
+            mkk_dhcp6c [label="dhcp6c"]
+        }
+        mkk_routing4 [shape="oval" label="IPv4\nrouting"]
+        mkk_routing6 [shape="oval" label="IPv6\nrouting"]
+        mkk_routing4 -- mkk_dhcp4s [style="invis"]
+        mkk_pppoes [label="PPPoE\nserver\nmpd5"]
+	mkk_dslites [label="DS-Lite\ngif tunnel\n(4 over 6)"]
+        {
+            rank="same"
+            mkk_routing6 -- mkk_rtadvd [style="invis"]
+            mkk_dhcp4s [label="dhcp4s"]
+            mkk_rtadvd [label="rtadvd"]
+            mkk_dhcp6s [label="dhcp6s"]
+            mkk_resolver [label="DNS\nresolver"]
+        }
+    }
+    {
+        rank="same"
+        onu4 [shape="oval" label="10.3.3/24"]
+        onu6 [shape="oval" label="2001:db8:cafe:0::/64"]
+        pppoe4  [shape="oval" label="192.168.111/30"]
+        dslite4 [shape="oval" label="192.168.99/30"]
+    }
+    subgraph cluster_router { label="router"
+        {
+            rank="same"
+            rt_ipfw [label="ipfw\nFW"]
+            rt_rtsold [label="rtsold"]
+            rt_dhcp6c [label="dhcp6c"]
+        }
+        rt_routing6 [shape="oval" label="IPv6\nrouting"]
+        rt_bridge4 [shape="oval" label="IPv4\nbridge"]
+        rt_pppoec [label="PPPoE\nclient\nmpd5"]
+        rt_dslitec [label="DS-Lite\ngif tunnel\n(4 over 6)"]
+        rt_routing4 -- rt_dhcp4s [style="invis"]
+        {
+            rank="same"
+            rt_routing4 [shape="oval" label="IPv4\nrouting"]
+            rt_dhcp4s [label="dhcp4s"]
+            rt_rtadvd [label="rtadvd"]
+            rt_resolver [label="DNS\nresolver"]
+        }
+    }
+    {
+        rank="same"
+        pc4 [shape="oval" label="192.168.222/24"]
+        pc6 [shape="oval" label="2001:db8:beef:b::/64"]
+        nvr4 [shape="oval" label="10.3.3/24"]
+        nvr6 [shape="oval" label="2001:db8:beef:c::/64"]
+    }
+    subgraph cluster_pc { label="pc"
+        pc_dhcp4c [label="dhcp4c"]
+        pc_rtsold [label="rtsold"]
+    }
+    subgraph cluster_nvr { label="nvr"
+        nvr_dhcp4c [label="dhcp4c"]
+        nvr_rtsold [label="rtsold"]
+    }
+
+    {
+        edge [style="dashed"]
+        internet -- hgw_routing4
+        hgw_routing4 -- lan4 [label="1"]
+        hgw_dhcp4s -- lan4
+
+        lan4 -- mkk_pf [label="72"]
+        lan4 -- mkk_dhcp4c
+        mkk_pf -- mkk_routing4
+        mkk_routing4 -- mkk_pppoes
+        mkk_pppoes -- pppoe4 [label="1"]
+        mkk_routing4 -- mkk_dslites
+        mkk_dslites -- dslite4 [label="1"]
+        mkk_routing4 -- onu4 [label="1"]
+        mkk_dhcp4s -- onu4
+        mkk_resolver -- onu4
+
+        onu4 -- rt_ipfw 
+        rt_ipfw -- rt_bridge4
+        rt_routing4 -- pc4 [label="1"]
+        rt_bridge4 -- nvr4
+        pppoe4 -- rt_pppoec [label="2"]
+        rt_pppoec -- rt_routing4
+        dslite4 -- rt_dslitec [label="2"]
+        rt_dslitec -- rt_routing4
+        rt_dhcp4s -- pc4
+        rt_resolver -- pc4
+        pc4 -- pc_dhcp4c [label="10"]
+        nvr4 -- nvr_dhcp4c [label="10"]
+    }
+
+    { # IPv6
+        edge [style="dotted"]
+        internet -- hgw_routing6
+        hgw_routing6 -- lan6 [label="fe80::225:36ff:fe43:83a5"]
+        hgw_rtadvd -- lan6
+        hgw_dhcp6s -- lan6
+        lan6 -- mkk_rtsold
+        lan6 -- mkk_dhcp6c
+        lan6 -- mkk_pf [label=":2a0:98ff:fe27:fdff"]
+        mkk_pf -- mkk_routing6
+        mkk_pppoes -- mkk_routing6
+        mkk_dslites -- mkk_routing6
+        mkk_routing6 -- onu6 [label=":2a0:98ff:fe29:5561"]
+        mkk_rtadvd -- onu6
+        mkk_dhcp6s -- onu6
+        mkk_resolver -- onu6
+        onu6 -- rt_ipfw [label=":2a0:98ff:fe7a:53ab"]
+        onu6 -- rt_rtsold
+        onu6 -- rt_dhcp6c
+        rt_routing6 -- rt_pppoec
+        rt_routing6 -- rt_dslitec
+        rt_ipfw -- rt_routing6
+        rt_routing6 -- pc6 [label=":2a0:98ff:fe36:d646"]
+        rt_routing6 -- nvr6 [label=":2a0:98ff:fe4e:a4f2"]
+        rt_rtadvd -- pc6
+        rt_rtadvd -- nvr6
+        rt_resolver -- nvr6
+        pc6 -- pc_rtsold [label=":2a0:98ff:fe0a:ae8d"]
+        nvr6 -- nvr_rtsold [label=":2a0:98ff:fe1b:1822"]
+    }
+}

@@ -93,9 +93,25 @@
 - pcとnvrでは、rtsoldを起動してrouterからIPv6アドレスをもらう。
 - RAのOフラグが立っているので、dhcpクライアントを起動して追加情報をもらう。
 
-### (2a) PPPoEによるIPv4接続
-- 
+### (2)IPv4アドレスの割り当て
+- IPv6での接続性を確保した後は、IPv4での接続を確立することになる。
+- これには、(a)PPPoEによる方法と(b)IPv4 over IPv6による方法がある。
+- どちらの場合でも、routerからmkkに対してIPv4の経路を確保して、ここにpcやnvrを接続することになる。
+- PPPoEを使うのは元々の東西NTT地域会社の仕様だが、混み合って遅いということでIPv4 over IPv6のサービスが使えるようになった。
+- IPv4 over IPv6の接続にはISP(というかイネーブラ)によって
+[MAP-E(v6プラス)](https://www.jpix.ad.jp/service/?p=3444)
+と
+[DS-Lite(transix)](https://www.mfeed.ad.jp/transix/dslite/dslite.html)
+のいずれかを採用しているが、ここではうちのISPが採用しているDS-Liteの例を扱う。
 
+### (2a)PPPoEによるIPv4接続
+### (2b)IPv4 over IPv6 (gif)によるIPv4接続
+### (3)ひかり電話の接続
+
+### ネットワーク構成
+
+  <img alt="ネットワーク構成" src="./FletsLikeNW/nw.svg" width="600">
+  <img alt="ネットワーク構成" src="./FletsLikeNW/interfaces.svg" width="600">
 
 
 

@@ -1,0 +1,61 @@
+graph interfaces {
+    node [shape="box"]
+
+    internet [shape="oval" label="Internet"]
+    hgw [label="PR-500KI"]
+    subgraph cluster_goldenhind { label="goldenhind (bhyve host)"
+        gh_bridge2 [shape="record" label="{<igc2>igc2|<tap0>tap0}|bridge2"]
+        subgraph cluster_mkk { label="mkk (bhyve guest)"
+            mkk_vtnet0 [label="vtnet0"]
+            mkk_vtnet1 [label="vtnet1"]
+            mkk_ng0 [label="ng0"]
+            mkk_gif0 [label="gif0"]
+            mkk_routing [shape="oval" label="routing"]
+        }
+        gh_bridge10 [shape="record" label="{<tap1>tap1|<tap10>tap10}|bridge10"]
+        subgraph cluster_router { label="router (bhyve guest)"
+            rt_vtnet1 [label="vtnet1"]
+            rt_ng0 [label="ng0"]
+            rt_gif0 [label="gif0"]
+            rt_bridge0 [shape="record" label="{<vtnet0>vtnet0|<epair0a>epair0a}|bridge0"]
+            rt_bridge2 [shape="record" label="{<epair0b>epair0b|<vtnet2>vtnet2}|bridge2"]
+            rt_routing [shape="oval" label="routing"]
+        }
+        gh_bridge20 [shape="record" label="{<tap11>tap11|<tap20>tap20}|bridge20"]
+        subgraph cluster_pc { label="pc (bhyve guest)"
+            pc_vtnet0 [label="vtnet0"]
+        }
+        gh_bridge30 [shape="record" label="{<tap12>tap12|<tap30>tap30}|bridge30"]
+        subgraph cluster_nvr { label="nvr (bhyve guest)"
+            nvr_vtnet0 [label="vtnet0"]
+        }
+    }
+
+    internet -- hgw
+    hgw -- gh_bridge2:igc2
+    gh_bridge2:tap0 -- mkk_vtnet0
+
+    mkk_vtnet0 -- mkk_routing [label="NAT"]
+    mkk_routing -- mkk_vtnet1
+    mkk_routing -- mkk_ng0
+    mkk_routing -- mkk_gif0
+
+    mkk_vtnet1 -- gh_bridge10:tap1
+    gh_bridge10:tap10 -- rt_bridge0:vtnet0
+    mkk_ng0 -- rt_ng0 [label="PPPoE"]
+    mkk_gif0 -- rt_gif0 [label="DS-Lite"]
+
+    rt_bridge0:vtnet0 -- rt_routing
+    rt_ng0 -- rt_routing
+    rt_gif0 -- rt_routing
+    rt_routing -- rt_vtnet1
+    rt_routing -- rt_bridge2:vtnet2
+
+    rt_vtnet1 -- gh_bridge20:tap11
+
+    gh_bridge20:tap20 -- pc_vtnet0
+    rt_bridge0:epair0a -- rt_bridge2:epair0b [label="IPv4+ARP only"]
+    rt_bridge2:vtnet2 -- gh_bridge30:tap12
+    gh_bridge30:tap30 -- nvr_vtnet0
+
+}
