@@ -62,7 +62,7 @@
 - mkk以下のフレッツもどきネットワークでは、おおよそ次の図のようにアドレスを
 配り通信できるようにしていく。
 
-  ![シーケンス概略](./FletsLikeNW/seq.svg){width=360}
+  <img alt="シーケンス概略" src="./FletsLikeNW/seq.svg" width="360">
 
 ### IPv6アドレスの割り当て
 - まず、mkkの下流側インタフェースで、rtadvdによるRouter Advertisement
