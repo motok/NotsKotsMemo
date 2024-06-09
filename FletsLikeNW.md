@@ -111,7 +111,7 @@
 ### ネットワーク構成
 
   <img alt="ネットワーク構成" src="./FletsLikeNW/nw.svg" width="600">
-  <img alt="ネットワーク構成" src="./FletsLikeNW/interfaces.svg" width="600">
+  <img alt="ネットワーク構成" src="./FletsLikeNW/interfaces.svg" width="360">
 
 
 
