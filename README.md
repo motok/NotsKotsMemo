@@ -2,7 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
-- 2024-06-09 [Flet's もどき](./FletsLikeNW.md)
+- 2024-06-09 [Flet's もどき](./FletsLikeNW/FletsLikeNW.md)
 - 2023-08-28 [ミニPCにFreeBSD13.2を入れてSophos Firewall HomeとpfSenseをbhyve上に置く](./SophosFWHomeInBhyve.md)
 - 2023-05-22 [中華PCにFreeBSD13.2を入れた(だけの)dmesg](./N5105-8GB-128GB-4xi226V.md)
 - 2022/Jan/14 [portsでデフォルトのconfigを変更したい](./port_and_make.conf.md)
