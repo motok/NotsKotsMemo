@@ -64,7 +64,10 @@
 
   <img alt="シーケンス概略" src="./FletsLikeNW/seq.svg" width="600">
 
-### IPv6アドレスの割り当て
+### (1) IPv6アドレスの割り当て
+- フレッツもどきネットワークでIPv6による接続ができるようにする流れは、
+大略次の通り。
+#### mkk
 - まず、mkkの下流側インタフェースで、rtadvdによるRouter Advertisement
   (RA)を行う。このRAでは、OフラグとMフラグが立っていて、それぞれ、追加
   情報とPrefix Delegation (PD)情報をDHCPv6で取得することを促す。ここで
@@ -75,6 +78,7 @@
 - DHCPv6で情報を取りに来いと下流に指示したので、mkkの下流側インタフェー
   スでdhcp6sでDHCPv6サーバを立てておく。追加情報・PD情報を提供すること
   はもちろんである。
+#### router
 - routerではrtsoldによってrouter solicitationを送出してRAの送出を促し、
   自ノードの上流側のインタフェースにIPv6アドレスを設定する。
 - この時、M/Oフラグに対応するためにrtsoldのM/Oオプションでスクリプトを
@@ -85,6 +89,11 @@
   で行う。また、routerからpcやnvr向けにDNSリゾルバを起動する。
   さらに、PD情報に対応して、自ノードの下流側インタフェースにIPv6
   アドレスを設定したり、下流向けのrtadvd, dhcp6sの設定を行って起動する。
+#### pc, nvr
+- pcとnvrでは、rtsoldを起動してrouterからIPv6アドレスをもらう。
+- RAのOフラグが立っているので、dhcpクライアントを起動して追加情報をもらう。
+
+### (2a) PPPoEによるIPv4接続
 - 
 
 
