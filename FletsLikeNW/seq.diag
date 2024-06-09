@@ -1,0 +1,27 @@
+seqdiag {
+    activation = none;
+
+    mkk -> router [label="(1)SLAAC with MO flag", rightnote="rtsold起動からSLAACへ\n自IPv6設定・default route設定\nMOフラグに従ってdhcp6c起動"];
+    mkk -> router [label="(2)DHCPv6\n(DNSリゾルバ・SNTPサーバ情報)\n(PD情報)", rightnote="DNSリゾルバ・NTPサーバの設定・起動\n下流側インタフェースにIPv6アドレス設定\n下流向けrtadvd,dhcp6s設定・起動"];
+    router -> pc [label="(3)SLAAC\n(DNSリゾルバ・SNTPサーバ情報)", rightnote="rtsold起動からSLAACへ\n自IPv6設定・default route設定\nDNSリゾルバ・NTPサーバをrouterへ向ける"];
+    router -> nvr [label="(4)SLAAC\n(DNSリゾルバ・SNTPサーバ情報)", rightnote="rtsold起動からSLAACへ\n自IPv6設定・default route設定\nDNSリゾルバ・NTPサーバをrouterへ向ける"];
+
+    === これでIPv6通信可能 ===
+
+    mkk <- router [label="(11)PPPoE\n(認証情報)", rightnote="PPPoEを起動してIPv4/PPPoEトンネル設営\ndefault routeはトンネルの先"];
+    router -> pc [label="(12)DHCPv4\n(IPv4アドレス・default route・DNSリゾルバ等)", rightnote="IPv4アドレス・default route・DNSリゾルバ等設定"];
+
+    === これでPPPoEによるIPv4通信可能 ===
+
+    mkk <- router [label="(21)DS-Lite (gif:IPv4 over IPv6)", rightnote="gifインタフェースを作成(外側の通信先はgw.transix.jp、内側のIPv4アドレスは何でも良いらしい)\ndefault routeはトンネルの先"];
+    router -> pc [label="(22)DHCPv4\n(IPv4アドレス・default route・DNSリゾルバ等)", rightnote="IPv4アドレス・default route・DNSリゾルバ等設定"];
+
+    === これでDS-LiteによるIPv4通信可能 ===
+
+    router -> router [note="(31)routerでmkk/nvr間のIPv4(とARP)をブリッジ"]
+    mkk -> nvr [label="(32)DHCPv4\n(IPv4アドレス・default route・DNSリゾルバ等)", rightnote="IPv4アドレス・default route・DNSリゾルバ等設定"]
+
+    === これでmkk-nvr間のIPv4通信可能 ===
+
+
+}

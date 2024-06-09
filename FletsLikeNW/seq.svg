@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg viewBox="0 0 1015 1342" xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs id="defs_block">
+    <filter height="1.504" id="filter_blur" inkspace:collect="always" width="1.1575" x="-0.07875" y="-0.252">
+      <feGaussianBlur id="feGaussianBlur3780" inkspace:collect="always" stdDeviation="4.2" />
+    </filter>
+  </defs>
+  <title>blockdiag</title>
+  <desc>seqdiag {
+    activation = none;
+
+    mkk -&gt; router [label="(1)SLAAC with MO flag", rightnote="rtsold起動からSLAACへ\n自IPv6設定・default route設定\nMOフラグに従ってdhcp6c起動"];
+    mkk -&gt; router [label="(2)DHCPv6\n(DNSリゾルバ・SNTPサーバ情報)\n(PD情報)", rightnote="DNSリゾルバ・NTPサーバの設定・起動\n下流側インタフェースにIPv6アドレス設定\n下流向けrtadvd,dhcp6s設定・起動"];
+    router -&gt; pc [label="(3)SLAAC\n(DNSリゾルバ・SNTPサーバ情報)", rightnote="rtsold起動からSLAACへ\n自IPv6設定・default route設定\nDNSリゾルバ・NTPサーバをrouterへ向ける"];
+    router -&gt; nvr [label="(4)SLAAC\n(DNSリゾルバ・SNTPサーバ情報)", rightnote="rtsold起動からSLAACへ\n自IPv6設定・default route設定\nDNSリゾルバ・NTPサーバをrouterへ向ける"];
+
+    === これでIPv6通信可能 ===
+
+    mkk &lt;- router [label="(11)PPPoE\n(認証情報)", rightnote="PPPoEを起動してIPv4/PPPoEトンネル設営\ndefault routeはトンネルの先"];
+    router -&gt; pc [label="(12)DHCPv4\n(IPv4アドレス・default route・DNSリゾルバ等)", rightnote="IPv4アドレス・default route・DNSリゾルバ等設定"];
+
+    === これでPPPoEによるIPv4通信可能 ===
+
+    mkk &lt;- router [label="(21)DS-Lite (gif:IPv4 over IPv6)", rightnote="gifインタフェースを作成(外側の通信先はgw.transix.jp、内側のIPv4アドレスは何でも良いらしい)\ndefault routeはトンネルの先"];
+    router -&gt; pc [label="(22)DHCPv4\n(IPv4アドレス・default route・DNSリゾルバ等)", rightnote="IPv4アドレス・default route・DNSリゾルバ等設定"];
+
+    === これでDS-LiteによるIPv4通信可能 ===
+
+    router -&gt; router [note="(31)routerでmkk/nvr間のIPv4(とARP)をブリッジ"]
+    mkk -&gt; nvr [label="(32)DHCPv4\n(IPv4アドレス・default route・DNSリゾルバ等)", rightnote="IPv4アドレス・default route・DNSリゾルバ等設定"]
+
+    === これでmkk-nvr間のIPv4通信可能 ===
+
+
+}
+</desc>
+  <polygon fill="rgb(0,0,0)" points="339,126 512,126 520,134 520,171 339,171 339,126" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="339,247 564,247 572,255 572,292 339,292 339,247" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="531,342 766,342 774,350 774,385 531,385 531,342" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="723,413 958,413 966,421 966,456 723,456 723,413" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="339,591 571,591 579,599 579,621 339,621 339,591" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="531,692 802,692 810,700 810,708 531,708 531,692" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="339,845 835,845 843,853 843,876 339,876 339,845" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="531,946 802,946 810,954 810,962 531,962 531,946" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="435,1076 696,1076 704,1084 704,1092 435,1092 435,1076" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <polygon fill="rgb(0,0,0)" points="723,1186 994,1186 1002,1194 1002,1202 723,1202 723,1186" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" />
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="67" y="46" />
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="259" y="46" />
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="451" y="46" />
+  <rect fill="rgb(0,0,0)" height="40" stroke="rgb(0,0,0)" style="filter:url(#filter_blur);opacity:0.7;fill-opacity:1" width="128" x="643" y="46" />
+  <path d="M 128 80 L 128 1330" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="8 4" />
+  <path d="M 320 80 L 320 1330" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="8 4" />
+  <path d="M 512 80 L 512 1330" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="8 4" />
+  <path d="M 704 80 L 704 1330" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="8 4" />
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="64" y="40" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="21" x="128.5" y="65">mkk</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="256" y="40" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="32" x="320.0" y="65">router</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="448" y="40" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="13" x="512.5" y="67">pc</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(0,0,0)" width="128" x="640" y="40" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="16" x="704.0" y="65">nvr</text>
+  <path d="M 136 142 L 312 142" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="304,138 312,142 304,146" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="336,120 509,120 517,128 517,165 336,165 336,120" stroke="rgb(0,0,0)" />
+  <path d="M 509 120 L 509 128" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 509 128 L 517 128" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="119" x="403.5" y="134">rtsold起動からSLAACへ</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="155" x="421.5" y="148">自IPv6設定・default route設定</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="157" x="422.5" y="163">MOフラグに従ってdhcp6c起動</text>
+  <path d="M 136 263 L 312 263" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="304,259 312,263 304,267" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="336,241 561,241 569,249 569,286 336,286 336,241" stroke="rgb(0,0,0)" />
+  <path d="M 561 241 L 561 249" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 561 249 L 569 249" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="199" x="443.5" y="255">DNSリゾルバ・NTPサーバの設定・起動</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="209" x="448.5" y="269">下流側インタフェースにIPv6アドレス設定</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="173" x="430.5" y="284">下流向けrtadvd,dhcp6s設定・起動</text>
+  <path d="M 328 357 L 504 357" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="496,353 504,357 496,361" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="528,336 763,336 771,344 771,379 528,379 528,336" stroke="rgb(0,0,0)" />
+  <path d="M 763 336 L 763 344" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 763 344 L 771 344" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="119" x="595.5" y="350">rtsold起動からSLAACへ</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="155" x="613.5" y="364">自IPv6設定・default route設定</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="219" x="645.5" y="377">DNSリゾルバ・NTPサーバをrouterへ向ける</text>
+  <path d="M 328 428 L 696 428" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="688,424 696,428 688,432" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="720,407 955,407 963,415 963,450 720,450 720,407" stroke="rgb(0,0,0)" />
+  <path d="M 955 407 L 955 415" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 955 415 L 963 415" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="119" x="787.5" y="421">rtsold起動からSLAACへ</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="155" x="805.5" y="435">自IPv6設定・default route設定</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="219" x="837.5" y="448">DNSリゾルバ・NTPサーバをrouterへ向ける</text>
+  <path d="M 136 600 L 312 600" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="144,596 136,600 144,604" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="336,585 568,585 576,593 576,615 336,615 336,585" stroke="rgb(0,0,0)" />
+  <path d="M 568 585 L 568 593" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 568 593 L 576 593" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="216" x="452.0" y="599">PPPoEを起動してIPv4/PPPoEトンネル設営</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="143" x="415.5" y="613">default routeはトンネルの先</text>
+  <path d="M 328 694 L 504 694" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="496,690 504,694 496,698" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="528,686 799,686 807,694 807,702 528,702 528,686" stroke="rgb(0,0,0)" />
+  <path d="M 799 686 L 799 694" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 799 694 L 807 694" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="255" x="663.5" y="700">IPv4アドレス・default route・DNSリゾルバ等設定</text>
+  <path d="M 136 854 L 312 854" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="144,850 136,854 144,858" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="336,839 832,839 840,847 840,870 336,870 336,839" stroke="rgb(0,0,0)" />
+  <path d="M 832 839 L 832 847" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 832 847 L 840 847" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="480" x="584.0" y="854">gifインタフェースを作成(外側の通信先はgw.transix.jp、内側のIPv4アドレスは何でも良いらしい)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="143" x="415.5" y="868">default routeはトンネルの先</text>
+  <path d="M 328 948 L 504 948" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="496,944 504,948 496,952" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="528,940 799,940 807,948 807,956 528,956 528,940" stroke="rgb(0,0,0)" />
+  <path d="M 799 940 L 799 948" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 799 948 L 807 948" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="255" x="663.5" y="954">IPv4アドレス・default route・DNSリゾルバ等設定</text>
+  <path d="M 328 1078 L 416 1078" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 416 1078 L 416 1094" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 416 1094 L 328 1094" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="336,1090 328,1094 336,1098" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="432,1070 693,1070 701,1078 701,1086 432,1086 432,1070" stroke="rgb(0,0,0)" />
+  <path d="M 693 1070 L 693 1078" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 693 1078 L 701 1078" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="245" x="562.5" y="1084">(31)routerでmkk/nvr間のIPv4(とARP)をブリッジ</text>
+  <path d="M 136 1188 L 696 1188" fill="none" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(0,0,0)" points="688,1184 696,1188 688,1192" stroke="rgb(0,0,0)" />
+  <polygon fill="rgb(255,182,193)" points="720,1180 991,1180 999,1188 999,1196 720,1196 720,1180" stroke="rgb(0,0,0)" />
+  <path d="M 991 1180 L 991 1188" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 991 1188 L 999 1188" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="255" x="855.5" y="1194">IPv4アドレス・default route・DNSリゾルバ等設定</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="116" x="202.0" y="138">(1)SLAAC with MO flag</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="58" x="173.0" y="224">(2)DHCPv6</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="169" x="228.5" y="238">(DNSリゾルバ・SNTPサーバ情報)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="44" x="166.0" y="252">(PD情報)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="48" x="360.0" y="332">(3)SLAAC</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="169" x="420.5" y="346">(DNSリゾルバ・SNTPサーバ情報)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="48" x="360.0" y="410">(4)SLAAC</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="169" x="420.5" y="424">(DNSリゾルバ・SNTPサーバ情報)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="55" x="280.5" y="582">(11)PPPoE</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="51" x="282.5" y="596">(認証情報)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="65" x="368.5" y="662">(12)DHCPv4</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="158" x="415.0" y="676">(IPv4アドレス・default route・</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="82" x="377.0" y="690">DNSリゾルバ等)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="158" x="229.0" y="843">(21)DS-Lite (gif:IPv4 over IPv6)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="65" x="368.5" y="916">(22)DHCPv4</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="158" x="415.0" y="930">(IPv4アドレス・default route・</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="82" x="377.0" y="944">DNSリゾルバ等)</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="65" x="176.5" y="1170">(32)DHCPv4</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="240" x="264.0" y="1184">(IPv4アドレス・default route・DNSリゾルバ等)</text>
+  <path d="M 40 508 L 356 508" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 40 512 L 356 512" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 475 508 L 792 508" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 475 512 L 792 512" fill="none" stroke="rgb(0,0,0)" />
+  <rect fill="rgb(208,208,208)" height="20" stroke="rgb(0,0,0)" width="119" x="356" y="500" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="99" x="415.5" y="516">これでIPv6通信可能</text>
+  <path d="M 40 762 L 323 762" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 40 766 L 323 766" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 509 762 L 792 762" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 509 766 L 792 766" fill="none" stroke="rgb(0,0,0)" />
+  <rect fill="rgb(208,208,208)" height="20" stroke="rgb(0,0,0)" width="186" x="323" y="754" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="166" x="416.0" y="770">これでPPPoEによるIPv4通信可能</text>
+  <path d="M 40 1016 L 321 1016" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 40 1020 L 321 1020" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 511 1016 L 792 1016" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 511 1020 L 792 1020" fill="none" stroke="rgb(0,0,0)" />
+  <rect fill="rgb(208,208,208)" height="20" stroke="rgb(0,0,0)" width="190" x="321" y="1008" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="170" x="416.0" y="1024">これでDS-LiteによるIPv4通信可能</text>
+  <path d="M 40 1256 L 325 1256" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 40 1260 L 325 1260" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 507 1256 L 792 1256" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 507 1260 L 792 1260" fill="none" stroke="rgb(0,0,0)" />
+  <rect fill="rgb(208,208,208)" height="20" stroke="rgb(0,0,0)" width="182" x="325" y="1248" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="162" x="416.0" y="1264">これでmkk-nvr間のIPv4通信可能</text>
+</svg>
