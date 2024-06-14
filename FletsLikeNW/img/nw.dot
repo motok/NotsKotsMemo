@@ -24,7 +24,7 @@ graph interfaces {
         {
             rank="same"
             mkk_pf [label="pf NAT"]
-            mkk_dhcp4c [label="dhcp4c"]
+            dhclient [label="dhclient"]
             mkk_rtsold [label="rtsold"]
             #mkk_dhcp6c [label="dhcp6c"]
         }
@@ -92,7 +92,7 @@ graph interfaces {
         hgw_dhcp4s -- lan4
 
         lan4 -- mkk_pf [label="72"]
-        lan4 -- mkk_dhcp4c
+        lan4 -- dhclient
         mkk_pf -- mkk_routing4
         mkk_routing4 -- mkk_pppoes
         mkk_pppoes -- pppoe4 [label="1"]

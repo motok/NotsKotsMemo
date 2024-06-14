@@ -11,8 +11,8 @@
 <polygon fill="white" stroke="none" points="-4,4 -4,-1449.91 780.5,-1449.91 780.5,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster_hgw</title>
-<polygon fill="none" stroke="black" points="333.26,-1211.43 333.26,-1382.91 547.26,-1382.91 547.26,-1211.43 333.26,-1211.43"/>
-<text text-anchor="middle" x="440.26" y="-1365.61" font-family="Times,serif" font-size="14.00">Home Gateway</text>
+<polygon fill="none" stroke="black" points="327.26,-1211.43 327.26,-1382.91 541.26,-1382.91 541.26,-1211.43 327.26,-1211.43"/>
+<text text-anchor="middle" x="434.26" y="-1365.61" font-family="Times,serif" font-size="14.00">Home Gateway</text>
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_mkk</title>
@@ -26,8 +26,8 @@
 </g>
 <g id="clust12" class="cluster">
 <title>cluster_pc</title>
-<polygon fill="none" stroke="black" points="237.26,-8 237.26,-84.5 381.26,-84.5 381.26,-8 237.26,-8"/>
-<text text-anchor="middle" x="309.26" y="-67.2" font-family="Times,serif" font-size="14.00">pc</text>
+<polygon fill="none" stroke="black" points="211.26,-8 211.26,-84.5 355.26,-84.5 355.26,-8 211.26,-8"/>
+<text text-anchor="middle" x="283.26" y="-67.2" font-family="Times,serif" font-size="14.00">pc</text>
 </g>
 <g id="clust13" class="cluster">
 <title>cluster_nvr</title>
@@ -37,93 +37,93 @@
 <!-- internet -->
 <g id="node1" class="node">
 <title>internet</title>
-<ellipse fill="none" stroke="black" cx="427.26" cy="-1427.91" rx="39.58" ry="18"/>
-<text text-anchor="middle" x="427.26" y="-1422.86" font-family="Times,serif" font-size="14.00">Internet</text>
+<ellipse fill="none" stroke="black" cx="421.26" cy="-1427.91" rx="39.58" ry="18"/>
+<text text-anchor="middle" x="421.26" y="-1422.86" font-family="Times,serif" font-size="14.00">Internet</text>
 </g>
 <!-- hgw_routing4 -->
 <g id="node2" class="node">
 <title>hgw_routing4</title>
-<ellipse fill="none" stroke="black" cx="380.26" cy="-1321.42" rx="38.89" ry="28.99"/>
-<text text-anchor="middle" x="380.26" y="-1324.62" font-family="Times,serif" font-size="14.00">IPv4</text>
-<text text-anchor="middle" x="380.26" y="-1308.12" font-family="Times,serif" font-size="14.00">routing</text>
+<ellipse fill="none" stroke="black" cx="374.26" cy="-1321.42" rx="38.89" ry="28.99"/>
+<text text-anchor="middle" x="374.26" y="-1324.62" font-family="Times,serif" font-size="14.00">IPv4</text>
+<text text-anchor="middle" x="374.26" y="-1308.12" font-family="Times,serif" font-size="14.00">routing</text>
 </g>
 <!-- internet&#45;&#45;hgw_routing4 -->
 <g id="edge5" class="edge">
 <title>internet&#45;&#45;hgw_routing4</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M419.71,-1410.13C412.34,-1393.74 401.01,-1368.55 392.38,-1349.36"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M413.71,-1410.13C406.34,-1393.74 395.01,-1368.55 386.38,-1349.36"/>
 </g>
 <!-- hgw_routing6 -->
 <g id="node3" class="node">
 <title>hgw_routing6</title>
-<ellipse fill="none" stroke="black" cx="476.26" cy="-1321.42" rx="38.89" ry="28.99"/>
-<text text-anchor="middle" x="476.26" y="-1324.62" font-family="Times,serif" font-size="14.00">IPv6</text>
-<text text-anchor="middle" x="476.26" y="-1308.12" font-family="Times,serif" font-size="14.00">routing</text>
+<ellipse fill="none" stroke="black" cx="470.26" cy="-1321.42" rx="38.89" ry="28.99"/>
+<text text-anchor="middle" x="470.26" y="-1324.62" font-family="Times,serif" font-size="14.00">IPv6</text>
+<text text-anchor="middle" x="470.26" y="-1308.12" font-family="Times,serif" font-size="14.00">routing</text>
 </g>
 <!-- internet&#45;&#45;hgw_routing6 -->
 <g id="edge30" class="edge">
 <title>internet&#45;&#45;hgw_routing6</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M435.14,-1410.13C442.87,-1393.63 454.8,-1368.19 463.82,-1348.96"/>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M429.14,-1410.13C436.87,-1393.63 448.8,-1368.19 457.82,-1348.96"/>
 </g>
 <!-- hgw_dhcp4s -->
 <g id="node4" class="node">
 <title>hgw_dhcp4s</title>
-<polygon fill="none" stroke="black" points="395.39,-1255.43 353.14,-1255.43 353.14,-1259.43 341.14,-1259.43 341.14,-1219.43 395.39,-1219.43 395.39,-1255.43"/>
-<polyline fill="none" stroke="black" points="341.14,-1255.43 353.14,-1255.43"/>
-<text text-anchor="middle" x="368.26" y="-1232.38" font-family="Times,serif" font-size="14.00">dhcp4s</text>
+<polygon fill="none" stroke="black" points="389.39,-1255.43 347.14,-1255.43 347.14,-1259.43 335.14,-1259.43 335.14,-1219.43 389.39,-1219.43 389.39,-1255.43"/>
+<polyline fill="none" stroke="black" points="335.14,-1255.43 347.14,-1255.43"/>
+<text text-anchor="middle" x="362.26" y="-1232.38" font-family="Times,serif" font-size="14.00">dhcp4s</text>
 </g>
 <!-- hgw_routing4&#45;&#45;hgw_dhcp4s -->
 <!-- lan4 -->
 <g id="node7" class="node">
 <title>lan4</title>
-<ellipse fill="none" stroke="black" cx="277.26" cy="-1164.43" rx="60.05" ry="18"/>
-<text text-anchor="middle" x="277.26" y="-1159.38" font-family="Times,serif" font-size="14.00">192.168.1/24</text>
+<ellipse fill="none" stroke="black" cx="270.26" cy="-1164.43" rx="60.05" ry="18"/>
+<text text-anchor="middle" x="270.26" y="-1159.38" font-family="Times,serif" font-size="14.00">192.168.1/24</text>
 </g>
 <!-- hgw_routing4&#45;&#45;lan4 -->
 <g id="edge6" class="edge">
 <title>hgw_routing4&#45;&#45;lan4</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M341.08,-1320.95C292.94,-1319.2 213.18,-1307.95 176.51,-1255.43 165.32,-1239.4 165.94,-1227.88 176.51,-1211.43 188.21,-1193.23 209.08,-1182.15 228.81,-1175.43"/>
-<text text-anchor="middle" x="180.64" y="-1232.38" font-family="Times,serif" font-size="14.00">1</text>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M335.08,-1320.95C286.94,-1319.2 207.18,-1307.95 170.51,-1255.43 159.32,-1239.4 159.97,-1227.9 170.51,-1211.43 182.08,-1193.36 202.74,-1182.29 222.28,-1175.56"/>
+<text text-anchor="middle" x="174.64" y="-1232.38" font-family="Times,serif" font-size="14.00">1</text>
 </g>
 <!-- lan6 -->
 <g id="node8" class="node">
 <title>lan6</title>
-<ellipse fill="none" stroke="black" cx="440.26" cy="-1164.43" rx="76.43" ry="18"/>
-<text text-anchor="middle" x="440.26" y="-1159.38" font-family="Times,serif" font-size="14.00">24xx:xx:xx:xx/64</text>
+<ellipse fill="none" stroke="black" cx="434.26" cy="-1164.43" rx="76.43" ry="18"/>
+<text text-anchor="middle" x="434.26" y="-1159.38" font-family="Times,serif" font-size="14.00">24xx:xx:xx:xx/64</text>
 </g>
 <!-- hgw_routing6&#45;&#45;lan6 -->
 <g id="edge31" class="edge">
 <title>hgw_routing6&#45;&#45;lan6</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M447.66,-1301.45C441.46,-1298 434.81,-1294.77 428.26,-1292.43 379.15,-1274.89 230.36,-1295.11 196.51,-1255.43 183.82,-1240.55 184.03,-1226.49 196.51,-1211.43 198,-1209.63 309.44,-1189.14 381.1,-1176.12"/>
-<text text-anchor="middle" x="265.14" y="-1232.38" font-family="Times,serif" font-size="14.00">fe80::225:36ff:fe43:83a5</text>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M441.66,-1301.45C435.46,-1298 428.81,-1294.77 422.26,-1292.43 373.15,-1274.89 224.36,-1295.11 190.51,-1255.43 177.82,-1240.55 178.03,-1226.49 190.51,-1211.43 192,-1209.63 303.44,-1189.14 375.1,-1176.12"/>
+<text text-anchor="middle" x="259.14" y="-1232.38" font-family="Times,serif" font-size="14.00">fe80::225:36ff:fe43:83a5</text>
 </g>
 <!-- hgw_dhcp4s&#45;&#45;lan4 -->
 <g id="edge7" class="edge">
 <title>hgw_dhcp4s&#45;&#45;lan4</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M346.24,-1219.24C331.61,-1207.83 312.54,-1192.95 298.15,-1181.73"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M339.99,-1219.24C325.21,-1207.83 305.92,-1192.95 291.38,-1181.73"/>
 </g>
 <!-- hgw_rtadvd -->
 <g id="node5" class="node">
 <title>hgw_rtadvd</title>
-<polygon fill="none" stroke="black" points="467.26,-1255.43 425.26,-1255.43 425.26,-1259.43 413.26,-1259.43 413.26,-1219.43 467.26,-1219.43 467.26,-1255.43"/>
-<polyline fill="none" stroke="black" points="413.26,-1255.43 425.26,-1255.43"/>
-<text text-anchor="middle" x="440.26" y="-1232.38" font-family="Times,serif" font-size="14.00">rtadvd</text>
+<polygon fill="none" stroke="black" points="461.26,-1255.43 419.26,-1255.43 419.26,-1259.43 407.26,-1259.43 407.26,-1219.43 461.26,-1219.43 461.26,-1255.43"/>
+<polyline fill="none" stroke="black" points="407.26,-1255.43 419.26,-1255.43"/>
+<text text-anchor="middle" x="434.26" y="-1232.38" font-family="Times,serif" font-size="14.00">rtadvd</text>
 </g>
 <!-- hgw_rtadvd&#45;&#45;lan6 -->
 <g id="edge32" class="edge">
 <title>hgw_rtadvd&#45;&#45;lan6</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M440.26,-1219.24C440.26,-1208.08 440.26,-1193.59 440.26,-1182.46"/>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M434.26,-1219.24C434.26,-1208.08 434.26,-1193.59 434.26,-1182.46"/>
 </g>
 <!-- hgw_dhcp6s -->
 <g id="node6" class="node">
 <title>hgw_dhcp6s</title>
-<polygon fill="none" stroke="black" points="539.39,-1255.43 497.14,-1255.43 497.14,-1259.43 485.14,-1259.43 485.14,-1219.43 539.39,-1219.43 539.39,-1255.43"/>
-<polyline fill="none" stroke="black" points="485.14,-1255.43 497.14,-1255.43"/>
-<text text-anchor="middle" x="512.26" y="-1232.38" font-family="Times,serif" font-size="14.00">dhcp6s</text>
+<polygon fill="none" stroke="black" points="533.39,-1255.43 491.14,-1255.43 491.14,-1259.43 479.14,-1259.43 479.14,-1219.43 533.39,-1219.43 533.39,-1255.43"/>
+<polyline fill="none" stroke="black" points="479.14,-1255.43 491.14,-1255.43"/>
+<text text-anchor="middle" x="506.26" y="-1232.38" font-family="Times,serif" font-size="14.00">dhcp6s</text>
 </g>
 <!-- hgw_dhcp6s&#45;&#45;lan6 -->
 <g id="edge33" class="edge">
 <title>hgw_dhcp6s&#45;&#45;lan6</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M494.84,-1219.24C483.35,-1207.92 468.39,-1193.16 457.04,-1181.97"/>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M488.84,-1219.24C477.35,-1207.92 462.39,-1193.16 451.04,-1181.97"/>
 </g>
 <!-- mkk_pf -->
 <g id="node9" class="node">
@@ -135,26 +135,26 @@
 <!-- lan4&#45;&#45;mkk_pf -->
 <g id="edge8" class="edge">
 <title>lan4&#45;&#45;mkk_pf</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M283.58,-1146.43C287.56,-1136.24 293.01,-1123.14 298.76,-1111.93 305.89,-1098.05 315.19,-1083.07 322.49,-1071.88"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M279.31,-1146.62C284.81,-1136.5 292.06,-1123.4 298.76,-1111.93 306.7,-1098.36 316.06,-1083.24 323.17,-1071.92"/>
 <text text-anchor="middle" x="306.01" y="-1115.13" font-family="Times,serif" font-size="14.00">72</text>
 </g>
-<!-- mkk_dhcp4c -->
+<!-- dhclient -->
 <g id="node10" class="node">
-<title>mkk_dhcp4c</title>
-<polygon fill="none" stroke="black" points="287.76,-1071.43 244.76,-1071.43 244.76,-1075.43 232.76,-1075.43 232.76,-1035.43 287.76,-1035.43 287.76,-1071.43"/>
-<polyline fill="none" stroke="black" points="232.76,-1071.43 244.76,-1071.43"/>
-<text text-anchor="middle" x="260.26" y="-1048.38" font-family="Times,serif" font-size="14.00">dhcp4c</text>
+<title>dhclient</title>
+<polygon fill="none" stroke="black" points="288.01,-1071.43 240.51,-1071.43 240.51,-1075.43 228.51,-1075.43 228.51,-1035.43 288.01,-1035.43 288.01,-1071.43"/>
+<polyline fill="none" stroke="black" points="228.51,-1071.43 240.51,-1071.43"/>
+<text text-anchor="middle" x="258.26" y="-1048.38" font-family="Times,serif" font-size="14.00">dhclient</text>
 </g>
-<!-- lan4&#45;&#45;mkk_dhcp4c -->
+<!-- lan4&#45;&#45;dhclient -->
 <g id="edge9" class="edge">
-<title>lan4&#45;&#45;mkk_dhcp4c</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M274.61,-1146.4C271.43,-1126.04 266.15,-1092.17 262.96,-1071.7"/>
+<title>lan4&#45;&#45;dhclient</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M268.39,-1146.4C266.15,-1126.04 262.42,-1092.17 260.17,-1071.7"/>
 </g>
 <!-- lan6&#45;&#45;mkk_pf -->
 <g id="edge35" class="edge">
 <title>lan6&#45;&#45;mkk_pf</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M376.4,-1154.22C361.6,-1149.02 347.44,-1140.94 338.01,-1128.43 325.86,-1112.3 327.2,-1088.12 330.06,-1071.84"/>
-<text text-anchor="middle" x="387.89" y="-1115.13" font-family="Times,serif" font-size="14.00">:2a0:98ff:fe27:fdff</text>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M370.67,-1154.08C356.36,-1148.87 342.82,-1140.83 334.01,-1128.43 322.34,-1111.99 325.08,-1087.88 328.94,-1071.69"/>
+<text text-anchor="middle" x="384.89" y="-1115.13" font-family="Times,serif" font-size="14.00">:2a0:98ff:fe27:fdff</text>
 </g>
 <!-- mkk_rtsold -->
 <g id="node11" class="node">
@@ -166,7 +166,7 @@
 <!-- lan6&#45;&#45;mkk_rtsold -->
 <g id="edge34" class="edge">
 <title>lan6&#45;&#45;mkk_rtsold</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M441.83,-1146.4C443.69,-1126.04 446.8,-1092.17 448.68,-1071.7"/>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M436.76,-1146.4C439.75,-1126.04 444.73,-1092.17 447.73,-1071.7"/>
 </g>
 <!-- mkk_routing4 -->
 <g id="node12" class="node">
@@ -556,28 +556,28 @@
 <!-- pc_dhcp4c -->
 <g id="node39" class="node">
 <title>pc_dhcp4c</title>
-<polygon fill="none" stroke="black" points="300.76,-52 257.76,-52 257.76,-56 245.76,-56 245.76,-16 300.76,-16 300.76,-52"/>
-<polyline fill="none" stroke="black" points="245.76,-52 257.76,-52"/>
-<text text-anchor="middle" x="273.26" y="-28.95" font-family="Times,serif" font-size="14.00">dhcp4c</text>
+<polygon fill="none" stroke="black" points="274.76,-52 231.76,-52 231.76,-56 219.76,-56 219.76,-16 274.76,-16 274.76,-52"/>
+<polyline fill="none" stroke="black" points="219.76,-52 231.76,-52"/>
+<text text-anchor="middle" x="247.26" y="-28.95" font-family="Times,serif" font-size="14.00">dhcp4c</text>
 </g>
 <!-- pc4&#45;&#45;pc_dhcp4c -->
 <g id="edge28" class="edge">
 <title>pc4&#45;&#45;pc_dhcp4c</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M219.26,-126.97C231.22,-106.61 251.11,-72.73 263.12,-52.27"/>
-<text text-anchor="middle" x="247.01" y="-95.7" font-family="Times,serif" font-size="14.00">10</text>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M215.2,-126.97C222.3,-106.61 234.11,-72.73 241.24,-52.27"/>
+<text text-anchor="middle" x="234.01" y="-95.7" font-family="Times,serif" font-size="14.00">10</text>
 </g>
 <!-- pc_rtsold -->
 <g id="node40" class="node">
 <title>pc_rtsold</title>
-<polygon fill="none" stroke="black" points="373.26,-52 331.26,-52 331.26,-56 319.26,-56 319.26,-16 373.26,-16 373.26,-52"/>
-<polyline fill="none" stroke="black" points="319.26,-52 331.26,-52"/>
-<text text-anchor="middle" x="346.26" y="-28.95" font-family="Times,serif" font-size="14.00">rtsold</text>
+<polygon fill="none" stroke="black" points="347.26,-52 305.26,-52 305.26,-56 293.26,-56 293.26,-16 347.26,-16 347.26,-52"/>
+<polyline fill="none" stroke="black" points="293.26,-52 305.26,-52"/>
+<text text-anchor="middle" x="320.26" y="-28.95" font-family="Times,serif" font-size="14.00">rtsold</text>
 </g>
 <!-- pc6&#45;&#45;pc_rtsold -->
 <g id="edge54" class="edge">
 <title>pc6&#45;&#45;pc_rtsold</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M378.33,-126.97C371.23,-106.61 359.42,-72.73 352.29,-52.27"/>
-<text text-anchor="middle" x="424.14" y="-95.7" font-family="Times,serif" font-size="14.00">:2a0:98ff:fe0a:ae8d</text>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M374.26,-126.97C362.31,-106.61 342.42,-72.73 330.41,-52.27"/>
+<text text-anchor="middle" x="416.14" y="-95.7" font-family="Times,serif" font-size="14.00">:2a0:98ff:fe0a:ae8d</text>
 </g>
 <!-- nvr_dhcp4c -->
 <g id="node41" class="node">
