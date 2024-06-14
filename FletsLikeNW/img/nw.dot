@@ -26,7 +26,7 @@ graph interfaces {
             mkk_pf [label="pf NAT"]
             mkk_dhcp4c [label="dhcp4c"]
             mkk_rtsold [label="rtsold"]
-            mkk_dhcp6c [label="dhcp6c"]
+            #mkk_dhcp6c [label="dhcp6c"]
         }
         mkk_routing4 [shape="oval" label="IPv4\nrouting"]
         mkk_routing6 [shape="oval" label="IPv6\nrouting"]
@@ -123,7 +123,7 @@ graph interfaces {
         hgw_rtadvd -- lan6
         hgw_dhcp6s -- lan6
         lan6 -- mkk_rtsold
-        lan6 -- mkk_dhcp6c
+        #lan6 -- mkk_dhcp6c
         lan6 -- mkk_pf [label=":2a0:98ff:fe27:fdff"]
         mkk_pf -- mkk_routing6
         mkk_pppoes -- mkk_routing6
