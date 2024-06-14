@@ -1,0 +1,36 @@
+#
+# /etc/rc.conf.local
+#
+
+ifconfig_vtnet0_ipv6="inet6 accept_rtadv"
+rtsold_enable="YES"
+rtsold_flags="-A /etc/rtsold-A.sh vtnet0"
+
+ifconfig_vtnet0="DHCP"
+
+ipv6_gateway_enable="YES"
+gateway_enable="YES"
+
+ifconfig_vtnet1_ipv6="inet6 2001:db8:cafe::/64 eui64"
+rtadvd_enable="YES"
+rtadvd_interfaces="vtnet1"
+dhcp6s_enable="YES"
+dhcp6s_config="/usr/local/etc/dhcp6s.conf"
+dhcp6s_interface="vtnet1"
+
+ifconfig_vtnet1="inet 10.3.3.1/24"
+
+mpd_enable="YES"
+static_routes="mpdpppoe"
+route_mpdpppoe="-4 -net 192.168.222.0/24 192.168.111.1"
+
+cloned_interfaces="gif0"
+ifconfig_gif0_ipv6="inet6 tunnel 2001:db8:cafe::2a0:98ff:fe29:5561 2001:db8:cafe::2a0:98ff:fe7a:53ab mtu 1500"
+ifconfig_gif0="192.168.99.1 192.168.99.2"
+
+unbound_enable="YES"
+
+
+pf_enable="YES"
+pflog_enable="YES"
+
