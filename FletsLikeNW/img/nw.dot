@@ -64,7 +64,7 @@ graph interfaces {
         {
             rank="same"
             rt_routing4 [shape="oval" label="IPv4\nrouting"]
-            rt_dhcp4s [label="dhcp4s"]
+            rt_dhcp4s [label="dhcpd"]
             rt_rtadvd [label="rtadvd"]
             rt_resolver [label="DNS\nresolver"]
         }
