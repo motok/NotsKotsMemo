@@ -1,0 +1,46 @@
+#
+# router:/etc/rc.conf.local
+#
+
+hostname="router.example.org"
+
+gateway_enable="YES"
+ipv6_gateway_enable="YES"
+
+ifconfig_vtnet0_ipv6="inet6 accept_rtadv"
+rtsold_enable="YES"
+rtsold_flags="-A /etc/rtsold-A.sh -M /etc/rtsold-M.sh -O /etc/rtsold-O.sh vtnet0"
+dhcp6c_enable="YES"
+dhcp6c_interfaces="vtnet0"
+
+ifconfig_vtnet1_ipv6="inet6 -ifdisabled"
+ifconfig_vtnet2_ipv6="inet6 -ifdisabled"
+rtadvd_enable="YES"
+rtadvd_flags="-s -c /etc/rtadvd-dhcp6c.conf"
+rtadvd_interfaces="vtnet1 vtnet2"
+
+unbound_enable="YES"
+
+ifconfig_vtnet0="up"
+mpd_enable="YES"
+cloned_interfaces="${cloned_interfaces} gif0"
+
+ifconfig_vtnet1="inet 192.168.222.1/24"
+
+dhcpd_enable="YES"
+dhcpd_flags="vtnet1"
+
+ifconfig_vtnet2="up"
+cloned_interfaces="${cloned_interfaces} bridge0 bridge2 epair0"
+autobridge_interfaces="bridge0 bridge2"
+autobridge_bridge0="vtnet0 epair0a"
+autobridge_bridge2="vtnet2 epair0b"
+ifconfig_bridge0="up"
+ifconfig_bridge2="up"
+ifconfig_epair0a="up fib 3"
+ifconfig_epair0b="up fib 3"
+
+firewall_enable="YES"
+firewall_script="/etc/ipfw.rules"
+firewall_logging="YES"
+firewall_logif="NO"

@@ -1,0 +1,283 @@
+#
+# /etc/ipfw.rules (for IPv4 only bridge on router, between mkk and nvr)
+#
+
+ipfw -f flush
+
+# allow all via internal interfaces.
+ipfw table INNER_IF create type iface or-flush
+ipfw table INNER_IF add lo0
+ipfw table INNER_IF add vtnet1
+ipfw table INNER_IF add vtnet2
+ipfw table INNER_IF add bridge0
+ipfw table INNER_IF add bridge2
+ipfw add 100 allow all from any to any via "table(INNER_IF)"
+
+# allow mandatory IPv6.
+# ipfw add 110 allow ipv6-icmp from :: to ff02::/16 via vtnet0
+# ipfw add 110 allow ipv6-icmp from fe80::/10 to fe80::/10 via vtnet0
+# ipfw add 110 allow ipv6-icmp from fe80::/10 to ff02::/16 via vtnet0
+# ipfw add 110 allow ipv6-icmp from any to any icmp6types 1 via vtnet0
+# ipfw add 110 allow ipv6-icmp from any to any icmp6types 2,135,136 via vtnet0
+
+# deny spoofing packets.
+ipfw table INNER_CIDR create or-flush
+ipfw table INNER_CIDR add 192.168.222.0/24
+ipfw table INNER_CIDR add 192.168.111.0/30
+ipfw table INNER_CIDR add 192.168.99.0/30
+ipfw add 200 deny ip4 from "table(INNER_CIDR)" to any in recv vtnet0
+
+ipfw table INNER_PREFIX create or-flush
+ipfw table INNER_PREFIX add 2001:db8:beef:b::/64 
+ipfw table INNER_PREFIX add 2001:db8:beef:c::/64 
+ipfw add 210 deny ip6 from "table(INNER_PREFIX)" to any in recv vtnet0
+
+# allow friend IP addresses and deny foe ones.
+ipfw table FRIEND_IP create or-flush
+#ipfw table FRIEND_IP add <IPaddress>   # for maintenance.
+ipfw table EXPOSED_IF create or-flush type iface
+ipfw table EXPOSED_IF add vtnet0
+ipfw table EXPOSED_IF add ng0
+ipfw table EXPOSED_IF add gif0
+ipfw table EXPOSED_IF add epair0a
+ipfw add 300 allow all from "table(FRIEND_IP)" to any in  recv "table(EXPOSED_IF)"
+ipfw add 300 allow all from any to "table(FRIEND_IP)" out xmit "table(EXPOSED_IF)"
+
+# good port numbers.
+ipfw table GOOD_PORTS create or-flush type number
+ipfw table GOOD_PORTS add 13220
+ipfw add 310 allow all from any to me lookup dst-port GOOD_PORTS in recv "table(EXPOSED_IF)"
+ipfw add 310 allow all from me to any lookup src-port GOOD_PORTS out xmit "table(EXPOSED_IF)"
+
+ipfw table FOE_IP create or-flush
+#ipfw table FOE_IP add 192.168.8.81	# virtual enemy
+ipfw add 320 deny all from "table(FOE_IP)" to any in  recv "table(EXPOSED_IF)"
+ipfw add 320 deny all from any to "table(FOE_IP)" out xmit "table(EXPOSED_IF)"
+
+# bad port numbers.
+ipfw table BAD_PORTS create or-flush type number
+ipfw table BAD_PORTS add 135
+ipfw table BAD_PORTS add 137
+ipfw table BAD_PORTS add 139
+ipfw table BAD_PORTS add 445
+ipfw add 330 deny tcp from any to any lookup dst-port BAD_PORTS via "table(EXPOSED_IF)"
+ipfw add 330 deny udp from any to any lookup dst-port BAD_PORTS via "table(EXPOSED_IF)"
+# This should locate in branched rules.
+
+# skipto
+ipfw add 500 skipto  5000 ip4 from any to any out xmit vtnet0
+ipfw add 500 skipto  7000 ip4 from any to any in  recv vtnet0
+ipfw add 500 skipto  9000 ip6 from any to any out xmit vtnet0
+ipfw add 500 skipto 11000 ip6 from any to any in  recv vtnet0
+ipfw add 500 skipto 13000 all from any to any layer2 out xmit vtnet0
+ipfw add 500 skipto 15000 all from any to any layer2 in  recv vtnet0
+ipfw add 500 skipto 17000 ip4 from any to any out xmit ng0
+ipfw add 500 skipto 19000 ip4 from any to any in  recv ng0
+ipfw add 500 skipto 21000 ip6 from any to any out xmit ng0
+ipfw add 500 skipto 23000 ip6 from any to any in  recv ng0
+ipfw add 500 skipto 25000 all from any to any layer2 out xmit ng0
+ipfw add 500 skipto 27000 all from any to any layer2 in  recv ng0
+ipfw add 500 skipto 29000 ip4 from any to any out xmit gif0
+ipfw add 500 skipto 31000 ip4 from any to any in  recv gif0
+ipfw add 500 skipto 33000 ip6 from any to any out xmit gif0
+ipfw add 500 skipto 35000 ip6 from any to any in  recv gif0
+ipfw add 500 skipto 37000 all from any to any layer2 out xmit gif0
+ipfw add 500 skipto 39000 all from any to any layer2 in  recv gif0
+ipfw add 500 skipto 41000 ip4 from any to any out xmit epair0a
+ipfw add 500 skipto 43000 ip4 from any to any in  recv epair0a
+ipfw add 500 skipto 45000 ip6 from any to any out xmit epair0a
+ipfw add 500 skipto 47000 ip6 from any to any in  recv epair0a
+ipfw add 500 skipto 49000 all from any to any layer2 out xmit epair0a
+ipfw add 500 skipto 51000 all from any to any layer2 in  recv epair0a
+ipfw add 500 skipto 53000 ip4 from any to any out xmit epair0b
+ipfw add 500 skipto 55000 ip4 from any to any in  recv epair0b
+ipfw add 500 skipto 57000 ip6 from any to any out xmit epair0b
+ipfw add 500 skipto 59000 ip6 from any to any in  recv epair0b
+ipfw add 500 skipto 61000 all from any to any layer2 out xmit epair0b
+ipfw add 500 skipto 63000 all from any to any layer2 in  recv epair0b
+ipfw add 500 skipto 65500 all from any to any
+ipfw add 500 skipto 65500 all from any to any layer2
+
+ipfw add 5000 // vtnet0 IPv4 OUT
+ipfw add 5010 allow ip4 from 0.0.0.0/32 68 to 255.255.255.255/32 67 proto udp out xmit vtnet0 # DHCPv4
+ipfw add 5100 allow icmp from any to any icmptype 8,3,4,11,12 out xmit vtnet0 # ICMP
+ipfw add 5100 deny icmp from any to any out xmit vtnet0
+ipfw add 6800 allow ip4 from any to any proto tcp setup out xmit vtnet0 keep-state :vtnet04 # TCP
+ipfw add 6800 allow ip4 from any to any proto udp       out xmit vtnet0 keep-state :vtnet04 # UDP
+ipfw add 6900 deny ip4 from any to any out xmit vtnet0
+
+ipfw add 7000 // vtnet0 IPv4 IN
+ipfw add 7015 allow ip4 from any 67 to any 68 proto udp in recv vtnet0 # DHCPv4
+ipfw add 7010 check-state :vtnet04
+ipfw add 7100 allow icmp from any to any icmptype 0,3,4,11,12 in recv vtnet0 # ICMP
+ipfw add 7100 deny icmp from any to any in recv vtnet0
+ipfw add 8900 deny ip4 from any to any in recv vtnet0
+
+# ipfw add 110 allow ipv6-icmp from :: to ff02::/16 via vtnet0
+# ipfw add 110 allow ipv6-icmp from fe80::/10 to fe80::/10 via vtnet0
+# ipfw add 110 allow ipv6-icmp from fe80::/10 to ff02::/16 via vtnet0
+# ipfw add 110 allow ipv6-icmp from any to any icmp6types 1 via vtnet0
+# ipfw add 110 allow ipv6-icmp from any to any icmp6types 2,135,136 via vtnet0
+
+ipfw add 9000 // vtnet0 IPv6 OUT
+ipfw add 9010 check-state :vtnet06out
+ipfw add 9100 allow ip6 from me 546 to any 547 proto udp out xmit vtnet0 # DHCPv6
+
+ipfw add 9200 allow ip6 from :: to ff02::/16 proto icmp6 out xmit vtnet0 #ICMPv6
+ipfw add 9200 allow ip6 from fe80::/10 to ff02::/16 proto icmp6 out xmit vtnet0 #ICMPv6
+ipfw add 9200 allow ip6 from fe80::/10 to fe80::/10 proto icmp6 out xmit vtnet0 #ICMPv6
+ipfw add 9200 allow ip6 from any to any proto icmp6 icmp6types 128,1,2,3,4,130,131,132,133,134,135,136,137,143,151,152,153 out xmit vtnet0 #ICMPv6
+ipfw add 9200 deny ip6 from any to any proto icmp6 out xmit vtnet0 #ICMPv6
+
+ipfw add 9300 allow ip6 from me to any proto ipencap out xmit vtnet0 # GIF tunnel
+ipfw add 10700 allow ip6 from any to any proto tcp setup out xmit vtnet0 keep-state :vtnet06 # TCP6
+ipfw add 10800 allow ip6 from any to any proto udp out xmit vtnet0 keep-state :vtnet06 # UDP6
+ipfw add 10900 deny ip6 from any to any out xmit vtnet0
+
+ipfw add 11000 // vtnet0 IPv6 IN
+ipfw add 11010 check-state :vtnet06
+ipfw add 11100 allow ip6 from any to me 546 proto udp in recv vtnet0 # DHCPv6
+ipfw add 11200 allow ip6 from any to me proto ipencap in recv vtnet0 # GIF tunnel
+ipfw add 11300 allow ip6 from any to me proto tcp dst-port 80,443,13220 setup in recv vtnet0 keep-state :vtnet06out # service on me
+
+ipfw add 11400 allow ip6 from :: to ff02::/16 proto icmp6 in recv vtnet0 # ICMPv6
+ipfw add 11400 allow ip6 from fe80::/10 to ff02::/16 proto icmp6 in recv vtnet0 # ICMPv6
+ipfw add 11400 allow ip6 from fe80::/10 to fe80::/10 proto icmp6 in recv vtnet0 # ICMPv6
+ipfw add 11400 allow ip6 from any to any proto icmp6 icmp6types 129,1,2,3,4,130,131,132,133,134,135,136,137,143,151,152,153 in recv vtnet0 # ICMPv6
+ipfw add 11400 deny ip6 from any to any proto icmp6 in recv vtnet0 # ICMPv6
+ipfw add 12900 deny ip6 from any to any in recv vtnet0
+
+ipfw add 13000 // vtnet0 L2 OUT
+ipfw add 13100 allow all from any to any layer2 mac-type 0x0800 out xmit vtnet0 # IPv4
+ipfw add 13101 allow all from any to any layer2 mac-type 0x86dd out xmit vtnet0 # IPv6
+ipfw add 13102 allow all from any to any layer2 mac-type 0x0806 out xmit vtnet0 # ARP
+ipfw add 13103 allow all from any to any layer2 mac-type 0x8863 out xmit vtnet0 # PPPoE (discovery)
+ipfw add 13104 allow all from any to any layer2 mac-type 0x8864 out xmit vtnet0 # PPPoE (session)
+ipfw add 14900 deny all from any to any layer2 out xmit vtnet0
+
+ipfw add 15000 // vtnet0 L2 IN
+ipfw add 15100 allow all from any to any layer2 mac-type 0x0800 in recv vtnet0 # IPv4
+ipfw add 15101 allow all from any to any layer2 mac-type 0x86dd in recv vtnet0 # IPv6
+ipfw add 15102 allow all from any to any layer2 mac-type 0x0806 in recv vtnet0 # ARP
+ipfw add 15103 allow all from any to any layer2 mac-type 0x8863 in recv vtnet0 # PPPoE (discovery)
+ipfw add 15104 allow all from any to any layer2 mac-type 0x8864 in recv vtnet0 # PPPoE (session)
+ipfw add 16900 deny all from any to any layer2 in recv vtnet0
+
+# ng0 == PPPoE
+ipfw add 17000 // ng0 IPv4 OUT
+ipfw add 17100 allow icmp from any to any icmptype 8,3,4,11,12 out xmit ng0 keep-state :ng04out # ICMP
+ipfw add 17100 deny icmp from any to any out xmit ng0
+ipfw add 17200 allow ip4 from any to any proto tcp setup out xmit ng0 keep-state :ng04out
+ipfw add 17300 allow ip4 from any to any proto udp       out xmit ng0 keep-state :ng04out
+ipfw add 18900 deny ip4 from any to any out xmit ng0
+
+ipfw add 19000 // ng0 IPv4 IN
+ipfw add 19010 check-state :ng04out
+ipfw add 19100 allow icmp from any to any icmptype 0,3,4,11,12 in recv vtnet0
+ipfw add 19100 deny icmp from any to any in recv vtnet0
+ipfw add 20900 deny ip4 from any to any in recv ng0
+
+ipfw add 21000 // ng0 IPv6 OUT
+ipfw add 22900 deny ip6 from any to any out xmit ng0
+
+ipfw add 23000 // ng0 IPv6 IN
+ipfw add 24900 deny ip6 from any to any in recv ng0
+
+ipfw add 25000 // ng0 L2 OUT
+ipfw add 25100 allow all from any to any layer2 mac-type 0x0800 out xmit ng0 # IPv4
+ipfw add 25100 allow all from any to any layer2 mac-type 0x0806 out xmit ng0 # ARP
+ipfw add 26900 deny all from any to any layer2 out xmit ng0
+
+ipfw add 27000 // ng0 L2 IN
+ipfw add 27100 allow all from any to any layer2 mac-type 0x0800 in recv ng0 # IPv4
+ipfw add 27100 allow all from any to any layer2 mac-type 0x0806 in recv ng0 # ARP
+ipfw add 28900 deny all from any to any layer2 in recv ng0
+
+# gif0 == DS-Lite
+ipfw add 29000 // gif0 IPv4 OUT
+ipfw add 29100 allow ip4 from any to any proto icmp icmptype 8,3,4,11,12 out xmit gif0 # ICMP
+ipfw add 29100 deny ip4 from any to any proto icmp out xmit gif0
+ipfw add 29200 allow ip4 from any to any proto tcp setup out xmit gif0 keep-state :gif04out # TCP
+ipfw add 29300 allow ip4 from any to any proto udp       out xmit gif0 keep-state :gif04out # UDP
+ipfw add 30900 deny ip4 from any to any out xmit gif0
+
+ipfw add 31000 // gif0 IPv4 IN
+ipfw add 31010 check-state :gif04out
+ipfw add 31100 allow ip4 from any to any proto icmp icmptype 0,3,4,11,12 in recv gif0 # ICMP
+ipfw add 31100 deny ip4 from any to any proto icmp in recv gif0
+ipfw add 32900 deny ip4 from any to any in recv gif0
+
+ipfw add 33000 // gif0 IPv6 OUT
+ipfw add 34900 deny ip6 from any to any out xmit gif0
+
+ipfw add 35000 // gif0 IPv6 IN
+ipfw add 36900 deny ip6 from any to any in recv gif0
+
+ipfw add 37000 // gif0 L2 OUT
+ipfw add 37100 allow all from any to any layer2 mac-type 0x0800 out xmit gif0 # IPv4
+ipfw add 37100 allow all from any to any layer2 mac-type 0x0806 out xmit gif0 # ARP
+ipfw add 38900 deny all from any to any layer2 out xmit gif0
+
+ipfw add 39000 // gif0 L2 IN
+ipfw add 39100 allow all from any to any layer2 mac-type 0x0800 in recv gif0 # IPv4
+ipfw add 39100 allow all from any to any layer2 mac-type 0x0806 in recv gif0 # ARP
+ipfw add 40900 deny all from any to any layer2 in recv gif0
+
+# epair0a == IPv4 bridge, upper side. out==downstream (internet to localnet)
+ipfw add 41000 // epair0a IPv4 OUT
+ipfw add 41010 setfib 3 ip4 from any to any out xmit epair0a # FIB
+ipfw add 41100 allow ip4 from any to any out xmit epair0a
+ipfw add 42900 deny all from any to any out xmit epair0a
+
+ipfw add 43000 // epair0a IPv4 IN
+ipfw add 43010 setfib 0 ip4 from any to any in recv epair0a
+ipfw add 43100 allow ip4 from any to any in recv epair0a
+ipfw add 44900 deny all from any to any in recv epair0a
+
+ipfw add 45000 // epair0a IPv6 OUT
+ipfw add 46900 deny ip6 from any to any out xmit epair0a
+
+ipfw add 47000 // epair0a IPv6 IN
+ipfw add 48900 deny ip6 from any to any in recv epair0a
+
+ipfw add 49000 // epair0a L2 OUT
+ipfw add 49100 allow all from any to any layer2 mac-type 0x0800 out xmit epair0a # IPv4
+ipfw add 49200 allow all from any to any layer2 mac-type 0x0806 out xmit epair0a # ARP
+ipfw add 50900 deny all from any to any layer2 out xmit epair0a
+
+ipfw add 51000 // epair0a L2 IN
+ipfw add 51100 allow all from any to any layer2 mac-type 0x0800 in recv epair0a # IPv4
+ipfw add 51200 allow all from any to any layer2 mac-type 0x0806 in recv epair0a # ARP
+ipfw add 52900 deny all from any to any layer2 in recv epair0a
+
+# epair0b == IPv4 bridge, lower side. out==upstream (localnet to internet)
+ipfw add 53000 // epair0b IPv4 OUT
+ipfw add 53010 setfib 3 ip4 from any to any out xmit epair0b
+ipfw add 53100 allow ip4 from any to any out xmit epair0b
+ipfw add 54900 deny all from any to any out xmit epair0b
+
+ipfw add 55000 // epair0b IPv4 OUT
+ipfw add 55010 setfib 0 ip4 from any to any in recv epair0b
+ipfw add 55100 allow ip4 from any to any in recv epair0b
+ipfw add 56900 deny all from any to any in recv epair0b
+
+ipfw add 57000 // epair0b IPv6 OUT
+ipfw add 58900 deny ip6 from any to any out xmit epair0b
+
+ipfw add 59000 // epair0b IPv6 IN
+ipfw add 60900 deny ip6 from any to any in recv epair0b
+
+ipfw add 61000 // epair0b L2 OUT
+ipfw add 61100 allow all from any to any layer2 mac-type 0x0800 out xmit epair0b # IPv4
+ipfw add 61100 allow all from any to any layer2 mac-type 0x0806 out xmit epair0b # ARP
+ipfw add 62900 deny all from any to any layer2 out xmit epair0b
+
+ipfw add 63000 // epair0b L2 IN
+ipfw add 63100 allow all from any to any layer2 mac-type 0x0800 in recv epair0b # IPv4
+ipfw add 63200 allow all from any to any layer2 mac-type 0x0806 in recv epair0b # ARP
+ipfw add 64900 deny all from any to any layer2 in recv epair0b
+
+# default deny
+ipfw add 65500 // default DENY
+ipfw add 65510 deny all from any to any
+ipfw add 65510 deny all from any to any layer2
