@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# _bhyve freebsd startup rc.d script.
+
+# PROVIDE: _bhyve
+# REQUIRE: FILESYSTEMS NETWORKING
+# KEYWORD: shutdown
+
+# /etc/rc.conf variables
+#   _bhyve_enable="YES"
+#   _bhyve_dir="/path/to/_bhyve"
+#   _bhyve_vms="vm1 vm2"
+
+. /etc/rc.subr
+
+name=_bhyve
+rcvar=${name}_enable
+
+: ${_bhyve_enable:="NO"}
+: ${_bhyve_dir="/home/moto/local/_bhyve"}
+load_rc_config "${name}"
+
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+
+export PATH=${_bhyve_dir}:${_bhyve_dir}/bhyve:/usr/local/bin:${PATH}
+
+_bhyve_start() {
+	for bee in ${_bhyve_vms}
+	do
+		echo -n "starting _bhyve virtual machine: ${bee}..."
+		${bee}-boot > /dev/null 2>&1
+		echo " done."
+	done
+}
+
+_bhyve_stop() {
+	for bee in ${_bhyve_vms}
+	do
+		echo -n "stopping _bhyve virtual machine: ${bee}..."
+		${bee}-shutdown > /dev/null 2>&1
+		echo " done."
+	done
+}
+
+__get_mem_and_cpu () {
+	(
+	eval $(${_bhyve_dir}/bhyve/$1-resources);
+        echo $cpu $mem
+	)
+}
+
+_bhyve_status() {
+	sudo pgrep -fl bhyve: \
+	| while read pid dummy vm
+	  do
+	    printf '%-5d %-10s %d %s\n' ${pid} ${vm} $(__get_mem_and_cpu ${vm})
+	  done \
+	| sort +1
+}
+
+run_rc_command "$1"
