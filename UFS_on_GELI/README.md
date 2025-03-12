@@ -63,7 +63,9 @@ md0
 その中には適当なファイル(README.txt)がある、という状況ができた。
 
 では、foo.imgを探索すれば、ファイル名(README.txt)やその内容("THIS IS A
-MARKER.")を復元することができるのか？できるのである。
+MARKER.")を復元することができるのか？
+(DFIRとかDisk Forensicsとかを持ち出すまでもなく)できるのである。
+まあ、マウントすれば読めるしね。
 
 ``` shell
 # strings foo.img | grep README
