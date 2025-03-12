@@ -82,7 +82,7 @@ THIS IS A MARKER.
   - bar.keyの暗号鍵は事実上変更できないので、強い乱雑さを持たせておく。
   - 実際にディスク暗号化に使う鍵はここでのbar.keyの方で、
     これを保護するためにパスフレーズ(bar.pass)を使うということらしい。
-  - 運用上パスフレーズを変更したい時ても暗号鍵は変わらないのでディスク
+  - 運用上パスフレーズを変更したい時でも暗号鍵は変わらないのでディスク
     全体を再暗号化するようなことにはならない。
   - パスフレーズも暗号鍵も分割して何人かが集まらないと復号できないよう
     な運用もできるらしいが、今回は割愛。
@@ -143,11 +143,12 @@ bar.img: data
 というわけで、GELIによる暗号化を行えば、ディスクデバイスを処分するとき
 でも平文のデータが格納されているわけではない(らしい)ことがわかった。
 実際にはパスフレーズや暗号鍵がわかると復号できてしまうのでこれらを一緒
-に処分してはならないとか、強いパスフレーズ・暗号鍵を使うとか、いろいろ
-考えることはあるけれども。
+に処分してはならないとか、強いパスフレーズ・暗号鍵を使おうよとか、
+いろいろ考えることはあるけれども。
 
-なお、２回目以降に暗号化ディスクを使う時は、`geli attach`して使えばよ
-く、保護状態に戻すには`geli detach`すればよい。
+なお、２回目以降に暗号化ディスクを使う時は、`geli attach`して
+`mount`して使えばよく、保護状態に戻すには`umount`して
+`geli detach`すればよい。
 (`newfs`や`geli attach`は初回だけ実行すればよい。)
 
 ``` shell
@@ -248,96 +249,106 @@ GELI的にアタッチするには
 ントし、システム終了時には自動的にアンマウントしてGELI的デタッチをして
 くれるはずである。
 
+## GPTパーティションとの関係
+
+上のada1の場合には、ディスクデバイスに直接にファイルシステムを載せたが、
+パーティションを切りたい場合もあるだろう。
+ということで、
+
+- (ada1) 上述のディスクデバイスに直接にファイルシステムを載せる場合に
+  加えて、
+- (ada2) ディスクデバイスにGPTのパーティションを切って、その中のスライスを
+  暗号化する場合と、
+- (ada3) ディスクデバイス全体を暗号化して、その上にGPTのパーティションを
+  切る場合
+
+についてやってみよう。
+
+/etc/rc.confと/etc/fstabの設定としては、以下のものでよい。
+
+``` shell
+[/etc/rc.conf]
+geli_devices="ada1.eli ada2p1.eli ada3.eli"
+geli_ada1_flags="  -j /etc/geli/ada1.pass   -k /etc/geli/ada1.key"
+geli_ada2p1_flags="-j /etc/geli/ada2p1.pass -k /etc/geli/ada2p1.key"
+geli_ada3_flags="  -j /etc/geli/ada3.pass   -k /etc/geli/ada3.key"
+```
+
+``` shell
+[/etc/fstab]
+/dev/ada1.eli   /mnt/a          ufs     rw      2       2
+/dev/ada2p1.eli /mnt/b          ufs     rw      2       2
+/dev/ada3.elip1 /mnt/c          ufs     rw      2       2
+```
+
+ada2とada3用のパスフレーズと暗号鍵の作り方はada1と同様なので割愛する。
+
+ada2の初期化は次の通り。GPTのパーティション上にスライスを作成し、その
+スライスを暗号化して使用するパターン。
+
+- `gpart create`でGPTのパーティションを作成
+- `gpart add`でスライスを追加。
+  ここではタイプとしてfreebsd-ufsを指定しているが、正しくはgeliとか
+  なんとかにしないといけない気がする。
+  `man gpart`で見た限りだと適当なものがないし、
+  freebsd-ufs指定で動いているので、これにしておく。
+- お馴染みの`geli init`と`geli attach`。
+  デバイスとしてada2p1スライスを指定している点に注目。
+- あとは、マウントして使えばよい。
+- 後片付けも、お馴染みの `umount`と`geli detach`。
+
+``` shell
+# gpart create -s GPT /dev/ada2
+# gpart add -t freebsd-ufs -s 100M /dev/ada2
+
+# geli init -J /etc/geli/ada2p1.pass -K /etc/geli/ada2p1.key /dev/ada2p1
+
+# geli attach -j /etc/geli/ada2p1.pass -k /etc/geli/ada2p1.key /dev/ada2p1
+# mount /dev/ada2p1.eli /mnt/b
+# ls /mnt/b
+    :
+# umount /mnt/b
+# geli detach /dev/ada2p1.eli
+```
+
+ada3の初期化は次の通り。ada3全体を暗号化して、その上にGPTの
+パーティションを作成するパターン。
+
+- `geli init`でada3全体を暗号化し、`geli attach`でアタッチする。
+  これはada1の時と同様。
+- アタッチで生えてきた/dev/ada3.eliに対して`gpart create`でGPTのパーティ
+  ションを作成し、`gpart add`でスライスを追加する。
+  デバイス名に.eliが付いている点に注目。
+- あとは、マウントして使えばよい。
+- 後片付けも、お馴染みの `umount`と`geli detach`。
 
 
+``` shell
+# geli init -J /etc/geli/ada3.pass -K /etc/geli/ada3.key /dev/ada3
+# geli attach -j /etc/geli/ada3.pass -k /etc/geli/ada3.key /dev/ada3
+
+# gpart create -s GPT /dev/ada3.eli
+# gpart add -t freebsd-ufs -s 100M /dev/ada3.eli
+
+# mount /dev/ada3.elip1 /mnt/c
+# ls /mnt/c
+    :
+# umount /mnt/c
+# geli detach /dev/ada3.eli
+```
 
 
+## まとめ
 
+ということで、FreeBSD 14.2で、GELIによるディスクの暗号化を行い、システ
+ム起動時・終了時に自動的に処理されるように設定を行なった。
 
+実際に運用する場合には、スワップパーティションの準備やスライス分割して
+使う場合などが頭をよぎるので、
+「ディスク全体を暗号化して、その上にGPTパーティションを作成する」
+パターンが使いやすいかなぁ。
 
-# cd /etc
-# mkdir geli
-# cd geli
-# pwgen -y 32 1 > ada1.pass
-# dd if=/dev/random of=ada1.key bs=64 count=1
-1+0 records in
-1+0 records out
-64 bytes transferred in 0.000133 secs (480878 bytes/sec)
+スワップの暗号化やZFSとの統合、暗号化した場合のパフォーマンス低下がど
+の程度か、などについては、将来の課題として保留しておく。
 
-
-# geli init -s 4096 -J foo.pass -K foo.key /dev/md0
-
-Metadata backup for provider /dev/md0 can be found in /var/backups/md0.eli
-and can be restored with the following command:
-
-	# geli restore /var/backups/md0.eli /dev/md0
-
-
-# geli attach -j foo.pass -k foo.key /dev/md0
-# ls -l /dev/md*
-crw-r-----  1 root operator 0xa4 Mar 10 17:50 /dev/md0
-crw-r-----  1 root operator 0xa7 Mar 10 17:51 /dev/md0.eli
-crw-------  1 root wheel     0xa Mar 10 11:43 /dev/mdctl
-
-# newfs /dev/md0.eli
-/dev/md0.eli: 100.0MB (204792 sectors) block size 32768, fragment size 4096
-	using 4 cylinder groups of 25.00MB, 800 blks, 3200 inodes.
-	with soft updates
-super-block backups (for fsck_ffs -b #) at:
- 192, 51392, 102592, 153792
-
-# ls -l /mnt
-total 0
-# mount /dev/md0.eli /mnt
-# ls -l /mnt
-total 8
-drwxrwxr-x  2 root operator 512 Mar 10 18:00 .snap/
-
-# echo "This is a marker." > /mnt/README.txt
-# ls -l /mnt
-total 16
-drwxrwxr-x  2 root operator 512 Mar 10 18:00 .snap/
--rw-r--r--  1 root wheel     18 Mar 10 18:02 README.txt
-
-# umount /mnt
-# ls -l /mnt
-total 0
-
-# ls -l /dev/md*
-crw-r-----  1 root operator 0xa4 Mar 10 17:50 /dev/md0
-crw-r-----  1 root operator 0xa7 Mar 10 18:04 /dev/md0.eli
-crw-------  1 root wheel     0xa Mar 10 11:43 /dev/mdctl
-# geli detach /dev/md0.eli
-# ls -l /dev/md*
-crw-r-----  1 root operator 0xa4 Mar 10 17:50 /dev/md0
-crw-------  1 root wheel     0xa Mar 10 11:43 /dev/mdctl
-
-# mdconfig -d -u 0
-[root@dreadnought gelitest]# ls -l /dev/md*
-crw-------  1 root wheel 0xa Mar 10 11:43 /dev/mdctl
-
-# file foo.img
-foo.img: data
-# strings foo.img | grep "This is a marker."
-#
-
-gpart create -s GPT /dev/md0.eli
-gpart add -t freebsd-ufs /dev/md0.eli
-gpart status /dev/md0.eli
-gpart list /dev/md0.eli
-
-newfs /dev/md0.elip1
-
-mount -t ufs /dev/md0.elip1 /mnt
-
-echo "This is a marker." > /mnt/README.txt
-ls -l /mnt
-
-umount /mnt
-
-geli detach /dev/md0.eli
-ls /dev/md*
-
-
-
-
+(2025-03-12)
