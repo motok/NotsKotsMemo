@@ -15,16 +15,21 @@ $ dig -t A eng-blog.iij.ad.jp +short
 202.232.2.203
 
 $ dig -t RRSIG eng-blog.iij.ad.jp +short
+# RRSIG-A
 A 8 4 300 20250506151005 20250406151005 31668 iij.ad.jp. ymqOC9wWY8IgYMHXBYB3o6RJ1v7n2bUMq7LiIysVvjbIcfmFm0yT+5uV XEBTKJGTMS3hwKufrTdD4QcJVqgtlfvOkl9l2Vpd2mGk43yRRc0DQkOe 211wxwP7DlUOlj6xTdlcqRCwgHEhKWK+vld1S4nQkbLm/CImQNDRMG2p mHw=
+# RRSIG-B
 AAAA 8 4 300 20250506151005 20250406151005 31668 iij.ad.jp. BuacmI1zH/Xz2ur8vSinD9RwSVSQdPbovjlLZieYLk6miMo9HMsOsD63 5yvbHMZbb0Fic5LOWGc9mnAFFsL1U7rL/eeAyMofXh1z7q4fRy95R5ne tD+1k97wU9T8uycl9OQyuGjVnvSH8WZgFtKWiKoXPMiB3t/7M37BRIPF 83o=
 
 $ dig -t DNSKEY eng-blog.iij.ad.jp +short
 (DNSKEY RRなし)
 
 $ dig -t DNSKEY iij.ad.jp +short
-257 3 8 AwEAAahXWyIn8JmvtyrzvlNNYFvACfOS/LZoOpUzF3HpFje8ySj6z4d7 5p4P4VSIelgRFXDtjYpeqc8uUxIo6lg6Y69gyH+QK9UPS5/GdDlxpl2F jp7LifaeWPpMAYtr8frwjImY0sDeeWfYqgwZZD722aSEArM5Wpjft5F+ UzbPAnTYBnri29UA6YVCg4ZFRrGBYAUWKJfngPKMNRjLUyr9LeqgQp95 nal86y4LQjEJNbSXlP6GA0OOZ0JuyIZLJ8NPPqM8HD13DFDOc5He5pn/ N7PfCB5WGvYx58ZEvxpqWf0+V2a2XE6c1Ffomil/fQNiAu5JFTgumHY1 OXS5oLdRiuM=
-256 3 8 AwEAAdC5VKJuA30xxtw4DE2t5ihxGKzc3o527l1na+uUh/KkKLvqmYdT +t7kBKP1SVnO6Mz9w7wqqpiV5VwKdb0CWyA0N7rlBnWWhRCkIzVp/iuu ZB+fO4EcBKrUckWf6Kx/a7HXxRFrkF0Bi0E3dy8pMBbRukQpNOXFqlkc RR/G6qO9
+# DNSKEY-1
 256 3 8 AwEAAayQtSx/pvXV+AoGFJeNPv5vnZf6BATFUrx/ys5j9BQ3emE3sab4 Hro/zW1n/pEmfDG/AlC/mFg9t0vrFimiLM8GsymNoIXpw0PbaTbi0jhD 4eDUGZ2OpjtWMyCUYJPMfjx3pAisWg5zSYWuKQiv8TFbfy7yoWY6RzlV dbma9kop
+# DNSKEY-2
+256 3 8 AwEAAdC5VKJuA30xxtw4DE2t5ihxGKzc3o527l1na+uUh/KkKLvqmYdT +t7kBKP1SVnO6Mz9w7wqqpiV5VwKdb0CWyA0N7rlBnWWhRCkIzVp/iuu ZB+fO4EcBKrUckWf6Kx/a7HXxRFrkF0Bi0E3dy8pMBbRukQpNOXFqlkc RR/G6qO9
+# DNSKEY-3
+257 3 8 AwEAAahXWyIn8JmvtyrzvlNNYFvACfOS/LZoOpUzF3HpFje8ySj6z4d7 5p4P4VSIelgRFXDtjYpeqc8uUxIo6lg6Y69gyH+QK9UPS5/GdDlxpl2F jp7LifaeWPpMAYtr8frwjImY0sDeeWfYqgwZZD722aSEArM5Wpjft5F+ UzbPAnTYBnri29UA6YVCg4ZFRrGBYAUWKJfngPKMNRjLUyr9LeqgQp95 nal86y4LQjEJNbSXlP6GA0OOZ0JuyIZLJ8NPPqM8HD13DFDOc5He5pn/ N7PfCB5WGvYx58ZEvxpqWf0+V2a2XE6c1Ffomil/fQNiAu5JFTgumHY1 OXS5oLdRiuM=
 ```
 
 A RRが信頼できるかどうかを知るためには、対応するRRSIGにある各データが正しいかどうかを調べる必要がある。
@@ -35,6 +40,12 @@ A RRが信頼できるかどうかを知るためには、対応するRRSIGに�
 | フィールド     | 値                | 意味                                            |
 +----------------+-------------------+-------------------------------------------------+
 | 署名対象タイプ | A                 | (eng-blog.iij.ad.jpの) A RR に対する署名である  |
++----------------+-------------------+-------------------------------------------------+
+
+
+
+
+
 | アルゴリズム   | 8                 | DNSKEYアルゴリズム8番はRSASHA256(RFC8624)       |
 | ラベル数       | 4                 | (eng-blog.iij.ad.jpの)ラベルの数。              |
 | オリジナルTTL  | 300               | 権威サーバで付与されたTTL(リゾルバなどが書き換えることがあるのでここに書いておく？) |
