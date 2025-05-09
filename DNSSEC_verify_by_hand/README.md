@@ -1,36 +1,61 @@
 # DNSSEC verification by hand
 
+DNSSECを知らないのでちょっと勉強したいと思っていたら、
+[手を動かしてDNSSECの検証をやってみよう](https://eng-blog.iij.ad.jp/archives/7689)
+を見つけた。
+コマンドラインでDNSSECの信頼の鎖を追ってみようという趣旨で、
+ちょうど良いのでこれに従う形でやってみることにします。
+IIJさん、良い記事を出していただいてありがとうございます。
+なお、本稿に錯誤などがあれば、もちろんそれは本稿の責任であります。
+
+## DNSSECの資料など
 
 - [RFC 9364 DNS Security Extensions (DNSSEC)](https://tex2e.github.io/rfc-translater/html/rfc9364.html)
   - DNSSEC関連のRFCのガイドマップみたいなRFC。
   - RFC 9364自体は他のRFCを更新しない。
 
-- [手を動かしてDNSSECの検証をやってみよう](https://eng-blog.iij.ad.jp/archives/7689)
+- DNSSECの中核的なRFC
+  - [RFC 4033 - DNS Security Introduction and Requirements 日本語訳](https://tex2e.github.io/rfc-translater/html/rfc4033.html)
+    - [JPRS翻訳版 RFC 4033](https://jprs.jp/tech/material/rfc/RFC4033-ja.txt)
+  - [RFC 4034 - Resource Records for the DNS Security Extensions 日本語訳](https://tex2e.github.io/rfc-translater/html/rfc4034.html)
+    - [JPRS版 RFC 4034](https://jprs.jp/tech/material/rfc/RFC4034-ja.txt)
+    - DNSKEY, RRSIG, DSなどの定義がある。
+  - [RFC 4035 - Protocol Modifications for the DNS Security Extensions 日本語訳](https://tex2e.github.io/rfc-translater/html/rfc4035.html)
+    - [JPRS版 RFC 4035](https://jprs.jp/tech/material/rfc/RFC4035-ja.txt)
 
-IIJさんの記事に従って、`eng-blog.iij.ad.jp`のAレコードを検証してみる。
+- [DNSViz](https://dnsviz.net/d/eng-blog.iij.ad.jp/dnssec/)
+  - [ローカルコピー](./eng-blog.iij.ad.jp-2025-05-08-06_43_34-UTC.svg)
+  - 今回検証してみる`eng-blog.iij.ad.jp`のA RRからルートのDNSKEYまでの
+    信頼の鎖の図。
+  - RRSIGは矢印の部分に隠れている。
+
+- drillコマンドによる信頼の鎖
+  ``` shell
+  $ drill -DS -k /usr/local/etc/unbound/root.key eng-blog.iij.ad.jp. A
+  ;; Number of trusted keys: 2
+  ;; Chasing: eng-blog.iij.ad.jp. A
+
+
+  DNSSEC Trust tree:
+  eng-blog.iij.ad.jp. (A)
+  |---iij.ad.jp. (DNSKEY keytag: 13173 alg: 8 flags: 256)
+	  |---iij.ad.jp. (DNSKEY keytag: 18490 alg: 8 flags: 257)
+	  |---iij.ad.jp. (DS keytag: 18490 digest type: 2)
+		  |---jp. (DNSKEY keytag: 13611 alg: 8 flags: 256)
+			  |---jp. (DNSKEY keytag: 35821 alg: 8 flags: 257)
+			  |---jp. (DS keytag: 35821 digest type: 2)
+				  |---. (DNSKEY keytag: 53148 alg: 8 flags: 256)
+					  |---. (DNSKEY keytag: 20326 alg: 8 flags: 257)
+  ;; Chase successful
+  ```
+
+## 関連するリソースレコード
+
 関連するRRとしては、A, RRSIG, DNSKEYがあるので、一通り取得しておく。
 
-``` shell
-$ dig -t A eng-blog.iij.ad.jp +short
-202.232.2.203
+https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21-25
 
-$ dig -t RRSIG eng-blog.iij.ad.jp +short
-# RRSIG-A
-A 8 4 300 20250506151005 20250406151005 31668 iij.ad.jp. ymqOC9wWY8IgYMHXBYB3o6RJ1v7n2bUMq7LiIysVvjbIcfmFm0yT+5uV XEBTKJGTMS3hwKufrTdD4QcJVqgtlfvOkl9l2Vpd2mGk43yRRc0DQkOe 211wxwP7DlUOlj6xTdlcqRCwgHEhKWK+vld1S4nQkbLm/CImQNDRMG2p mHw=
-# RRSIG-B
-AAAA 8 4 300 20250506151005 20250406151005 31668 iij.ad.jp. BuacmI1zH/Xz2ur8vSinD9RwSVSQdPbovjlLZieYLk6miMo9HMsOsD63 5yvbHMZbb0Fic5LOWGc9mnAFFsL1U7rL/eeAyMofXh1z7q4fRy95R5ne tD+1k97wU9T8uycl9OQyuGjVnvSH8WZgFtKWiKoXPMiB3t/7M37BRIPF 83o=
 
-$ dig -t DNSKEY eng-blog.iij.ad.jp +short
-(DNSKEY RRなし)
-
-$ dig -t DNSKEY iij.ad.jp +short
-# DNSKEY-1
-256 3 8 AwEAAayQtSx/pvXV+AoGFJeNPv5vnZf6BATFUrx/ys5j9BQ3emE3sab4 Hro/zW1n/pEmfDG/AlC/mFg9t0vrFimiLM8GsymNoIXpw0PbaTbi0jhD 4eDUGZ2OpjtWMyCUYJPMfjx3pAisWg5zSYWuKQiv8TFbfy7yoWY6RzlV dbma9kop
-# DNSKEY-2
-256 3 8 AwEAAdC5VKJuA30xxtw4DE2t5ihxGKzc3o527l1na+uUh/KkKLvqmYdT +t7kBKP1SVnO6Mz9w7wqqpiV5VwKdb0CWyA0N7rlBnWWhRCkIzVp/iuu ZB+fO4EcBKrUckWf6Kx/a7HXxRFrkF0Bi0E3dy8pMBbRukQpNOXFqlkc RR/G6qO9
-# DNSKEY-3
-257 3 8 AwEAAahXWyIn8JmvtyrzvlNNYFvACfOS/LZoOpUzF3HpFje8ySj6z4d7 5p4P4VSIelgRFXDtjYpeqc8uUxIo6lg6Y69gyH+QK9UPS5/GdDlxpl2F jp7LifaeWPpMAYtr8frwjImY0sDeeWfYqgwZZD722aSEArM5Wpjft5F+ UzbPAnTYBnri29UA6YVCg4ZFRrGBYAUWKJfngPKMNRjLUyr9LeqgQp95 nal86y4LQjEJNbSXlP6GA0OOZ0JuyIZLJ8NPPqM8HD13DFDOc5He5pn/ N7PfCB5WGvYx58ZEvxpqWf0+V2a2XE6c1Ffomil/fQNiAu5JFTgumHY1 OXS5oLdRiuM=
-```
 
 A RRが信頼できるかどうかを知るためには、対応するRRSIGにある各データが正しいかどうかを調べる必要がある。
 
@@ -185,22 +210,3 @@ decrypted_sig: 1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
 
 
-$ drill -DS -k /usr/local/etc/unbound/root.key eng-blog.iij.ad.jp. A
-;; Number of trusted keys: 2
-;; Chasing: eng-blog.iij.ad.jp. A
-
-
-DNSSEC Trust tree:
-eng-blog.iij.ad.jp. (A)
-|---iij.ad.jp. (DNSKEY keytag: 13173 alg: 8 flags: 256)
-    |---iij.ad.jp. (DNSKEY keytag: 18490 alg: 8 flags: 257)
-    |---iij.ad.jp. (DS keytag: 18490 digest type: 2)
-        |---jp. (DNSKEY keytag: 13611 alg: 8 flags: 256)
-            |---jp. (DNSKEY keytag: 35821 alg: 8 flags: 257)
-            |---jp. (DS keytag: 35821 digest type: 2)
-                |---. (DNSKEY keytag: 53148 alg: 8 flags: 256)
-                    |---. (DNSKEY keytag: 20326 alg: 8 flags: 257)
-;; Chase successful
-
-
-https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21
