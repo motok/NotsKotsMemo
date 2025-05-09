@@ -202,3 +202,5 @@ eng-blog.iij.ad.jp. (A)
                     |---. (DNSKEY keytag: 20326 alg: 8 flags: 257)
 ;; Chase successful
 
+
+https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21
