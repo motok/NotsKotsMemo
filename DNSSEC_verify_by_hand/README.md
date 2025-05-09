@@ -50,17 +50,42 @@ IIJさん、良い記事を出していただいてありがとうございま�
   ;; Chase successful
   ```
 
-## 関連するリソースレコード
+## 関連するリソースレコードの取得
 
-関連するRRとしては、A, RRSIG, DNSKEYがあるので、一通り取得しておく。
+関連するRRとしては、A, RRSIG, DNSKEY, DSがあるので、一通り取得しておく。
 
-https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21-L25
+https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21-L34
+
+
+## `eng-blog.iij.ad.jp`のAリソースレコードA_RRを信頼できるか？
+
+A\_RRが信頼できるかどうかを知るためには、対応するRRSIGとDNSKEYを使って
+検証する必要がある。
+これは、次のふたつのハッシュ値が一致するか否かを調べる。
+  1. RRSIGにはDNSKEYで署名されたハッシュ値があるので、これを取り出す。
+	 このハッシュ値は、権威DNSサーバでA\RRとRRSIGから計算したもの。
+  1. A\_RRとRRSIGを使って上記のハッシュ値を再計算する。
+両者が一致するなら、「DNSKEYを信頼できる」という条件下でA\_RRを信頼す
+ることができる。
+信頼の鎖の最初のひとつである。
+
+### RRSIG\_A\_RR
+
+RRSIGの定義は
+[RFC 4034の3 RRSIGリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc4034.html#3--The-RRSIG-Resource-Record)
+の節にある。
+今、我々は`eng-blog.iij.ad.jp`のA RRを検証しようとしているので、同じ
+owner名のRRSIG RRでType Coveredが'A'であるもの、すなわち、上で取得した
+うちのRRSIG\_A\_RRが対応するRRSIGであることがわかる。
+同様に、AAAA RRを検証しようとするなら、RRSIG_AAAA_RRが対応する。
 
 
 
-A RRが信頼できるかどうかを知るためには、対応するRRSIGにある各データが正しいかどうかを調べる必要がある。
 
-A RRを検証しようとしているので、対応するRRSIGは上で取得したうちのRRSIG-Aの方である。
+
+
+
+
 (RRSIG-BはAAAA RRを検証するためのもの)
 
 このRRSIG-Aのフィールドは以下のように読める。
