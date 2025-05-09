@@ -1,8 +1,9 @@
 # DNSSEC verification by hand
 
 DNSSECを知らないのでちょっと勉強したいと思っていたら、
+IIJ Engineers Blog「
 [手を動かしてDNSSECの検証をやってみよう](https://eng-blog.iij.ad.jp/archives/7689)
-を見つけた。
+」を見つけた。
 コマンドラインでDNSSECの信頼の鎖を追ってみようという趣旨で、
 ちょうど良いのでこれに従う形でやってみることにします。
 IIJさん、良い記事を出していただいてありがとうございます。
@@ -23,8 +24,8 @@ IIJさん、良い記事を出していただいてありがとうございま�
   - [RFC 4035 - Protocol Modifications for the DNS Security Extensions 日本語訳](https://tex2e.github.io/rfc-translater/html/rfc4035.html)
     - [JPRS版 RFC 4035](https://jprs.jp/tech/material/rfc/RFC4035-ja.txt)
 
-- [DNSViz](https://dnsviz.net/d/eng-blog.iij.ad.jp/dnssec/)
-  - [ローカルコピー](./eng-blog.iij.ad.jp-2025-05-08-06_43_34-UTC.svg)
+- [DNSViz](https://dnsviz.net/d/eng-blog.iij.ad.jp/dnssec/) とその
+  [ローカルコピー](./eng-blog.iij.ad.jp-2025-05-08-06_43_34-UTC.svg)
   - 今回検証してみる`eng-blog.iij.ad.jp`のA RRからルートのDNSKEYまでの
     信頼の鎖の図。
   - RRSIGは矢印の部分に隠れている。
@@ -53,7 +54,7 @@ IIJさん、良い記事を出していただいてありがとうございま�
 
 関連するRRとしては、A, RRSIG, DNSKEYがあるので、一通り取得しておく。
 
-https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21-25
+https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21-L25
 
 
 
