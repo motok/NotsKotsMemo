@@ -136,15 +136,30 @@ RRSIGにはkey\_tagが直接に書いてあるが、DNSKEYには書いていな�
 であるが、
 [dns.dnssec.key_id()](https://dnspython.readthedocs.io/en/stable/dnssec.html#dns.dnssec.key_id)
 でもできる。
-やっていることは同じで、key\_id()関数でいうとL124のelse節内にあるよう
-に2バイトずつ取ってきて足し合わせてチェックサムを計算するだけである。
-(アルゴリズムによってはやり方が変わる)
+やっていることは同じで、2バイトずつ取ってきて足し合わせてチェックサム
+を計算するだけである。
+(アルゴリズムによってはやり方が変わる。ここではアルゴリズム'8'の場合。)
 
-https://github.com/rthalley/dnspython/blob/4d97d38fc71a40e97cddf8bc3d768a085cd5a6c0/dns/dnssec.py#L112-L131
+https://github.com/motok/NotsKotsMemo/blob/f7cdac56cb69d15d71b7f4bc6a20415176ad4fc4/DNSSEC_verify_by_hand/key_tag.py#L39-L45
+
+毎回計算するのも面倒なので、ここで計算しておく。
+
+  | DNSKEY          | key_tag |
+  | --------------- | ------- |
+  | DNSKEY_KSK_RR   |  18490  |
+  | DNSKEY_ZSK_0_RR |  31668  |
+  | DNSKEY_ZSK_1_RR |  13173  |
+
+
+ 
+ 
+### A\_RR/RRSIG\_A\_RR/DNSKEY_ZSK_1\_RR
 
 
 
 
+
+XXXXXXXX
 
 
 
