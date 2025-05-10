@@ -157,7 +157,6 @@ https://github.com/rthalley/dnspython/blob/4d97d38fc71a40e97cddf8bc3d768a085cd5a
 
 
 
-
 - 署名対象タイプはA RRだと言っているので正しい。
 - アルゴリズムは8はRSASHA256ということで理解できる。
 - ラベル数は4で正しい。
