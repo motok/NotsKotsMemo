@@ -139,7 +139,21 @@ RRSIGにはkey\_tagが直接に書いてあるが、DNSKEYには書いていな�
 やっていることは同じで、key\_id()関数でいうとL124のelse節内にあるよう
 に2バイトずつ取ってきて足し合わせてチェックサムを計算するだけである。
 (アルゴリズムによってはやり方が変わる)
+
 https://github.com/rthalley/dnspython/blob/4d97d38fc71a40e97cddf8bc3d768a085cd5a6c0/dns/dnssec.py#L112-L131
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -157,7 +171,14 @@ https://github.com/rthalley/dnspython/blob/4d97d38fc71a40e97cddf8bc3d768a085cd5a
   - (ひとつでも最後まで検証できたものがあればオッケーってこと？？？)
 - チェックサムの計算方法はC言語のものがRFC 4034に掲載されている。
 - それをPythonで実装したものがIIJさんのブログにあったので、それを借りてきて
-  少し改変したものが [./keytag.py](./keytag.py) 。
+  少し改変したものが [./key_tag.py](./key_tag.py) 。
+
+
+
+
+
+
+
 
 これを使ってDNSKEYのRDATAのチェックサムを計算すると、
 ``` shell
