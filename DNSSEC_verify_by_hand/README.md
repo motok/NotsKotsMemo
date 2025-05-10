@@ -23,6 +23,7 @@ IIJさん、良い記事を出していただいてありがとうございま�
     - DNSKEY, RRSIG, DSなどの定義がある。
   - [RFC 4035 - Protocol Modifications for the DNS Security Extensions 日本語訳](https://tex2e.github.io/rfc-translater/html/rfc4035.html)
     - [JPRS版 RFC 4035](https://jprs.jp/tech/material/rfc/RFC4035-ja.txt)
+  - [RFC 6840 - Clarifications and Implementation Notes for DNS Security (DNSSEC) 日本語訳](https://tex2e.github.io/rfc-translater/html/rfc6840.html)
 
 - [DNSViz](https://dnsviz.net/d/eng-blog.iij.ad.jp/dnssec/) とその
   [ローカルコピー](./eng-blog.iij.ad.jp-2025-05-08-06_43_34-UTC.svg)
@@ -50,18 +51,27 @@ IIJさん、良い記事を出していただいてありがとうございま�
   ;; Chase successful
   ```
 
+- dnspython
+  - 本稿では、DNSSECの処理を行う上で、大いに
+    [dnspython 2.7](https://www.dnspython.org/news/2.7.0/)
+    のお世話になった。
+  - [dnspythonマニュアル](https://dnspython.readthedocs.io/en/stable/)
+  - [dnspythonリポジトリ](https://github.com/rthalley/dnspython)
+
 ## 関連するリソースレコードの取得
 
 関連するRRとしては、A, RRSIG, DNSKEY, DSがあるので、一通り取得しておく。
+コマンドラインとしては、`dig +dnssec -t A eng-blog.iij.ad.jp`など。
 
 https://github.com/motok/NotsKotsMemo/blob/5784509cdcaccb54d41a56510ab8ca4b1198d8f4/DNSSEC_verify_by_hand/dnssec_validate.py#L21-L34
 
 
-## `eng-blog.iij.ad.jp`のAリソースレコードA_RRを信頼できるか？
+## A_RRを信頼できるか？
 
+`eng-blog.iij.ad.jp`のAリソースレコードである
 A\_RRが信頼できるかどうかを知るためには、対応するRRSIGとDNSKEYを使って
 検証する必要がある。
-これは、次のふたつのハッシュ値が一致するか否かを調べる。
+これには、次のふたつのハッシュ値が一致するか否かを調べる。
   1. RRSIGにはDNSKEYで署名されたハッシュ値があるので、これを取り出す。
 	 このハッシュ値は、権威DNSサーバでA\RRとRRSIGから計算したもの。
   1. A\_RRとRRSIGを使って上記のハッシュ値を再計算する。
@@ -74,33 +84,65 @@ A\_RRが信頼できるかどうかを知るためには、対応するRRSIGとD
 RRSIGの定義は
 [RFC 4034の3 RRSIGリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc4034.html#3--The-RRSIG-Resource-Record)
 の節にある。
-今、我々は`eng-blog.iij.ad.jp`のA RRを検証しようとしているので、同じ
-owner名のRRSIG RRでType Coveredが'A'であるもの、すなわち、上で取得した
-うちのRRSIG\_A\_RRが対応するRRSIGであることがわかる。
+
+今、我々は`eng-blog.iij.ad.jp`のA RRを検証しようとしているので、
+同じowner名のRRSIG RRでType Coveredが'A'であるもの、
+すなわち、上で取得したうちのRRSIG\_A\_RRを使うことになる。
 同様に、AAAA RRを検証しようとするなら、RRSIG_AAAA_RRが対応する。
 
+さて、このRRSIG\_A\_RRでは、アルゴリズム/algorithmが'8'となっている。
+このアルゴリズムは、元々は
+[RFC4034のA.1. DNSSECアルゴリズムタイプ](https://tex2e.github.io/rfc-translater/html/rfc4034.html#A-1--DNSSEC-Algorithm-Types)
+節で定義されていたが、その後拡張された
+[RFC 5072の3.1 RSA/SHA-256 RRSIGリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc5702.html#3-1--RSASHA-256-RRSIG-Resource-Records)
+に'8'なら'RSA/SHA256'だよと書かれている。
+
+次のラベル数/labelsは'4'であるが、これは、ownerの
+`eng-blog.iij.ad.jp`にはラベルとして`eng-blog`, `iij`, `ad`, `jp`の４
+個があるよということである。
+この辺も署名検証の時にはチェックするのであるが、本稿ではあまり立ち入ら
+ない。
+
+続いてオリジナルTTL/original ttlがあり、これは、DNSリゾルバなどでTTLを
+減算する場合があるので、元の権威DNSサーバでのTTLを保存しておくものらし
+い。
+ここでの例で言えばA\_RRのTTLが減算される場合があるが、ハッシュ値計算の
+対象になっているので元々のTTLが不明だとハッシュ値が変わってしまって都
+合が悪く、RRSIG\_A\_RR側に記録しておく必要があるということだと理解して
+いる。
+
+有効期間終了/expirationと有効期間開始/inceptionは、当該RRSIGがいつから
+いつまで有効であるかを示す。この有効期間の外のタイミングでは署名検証が
+意味を持たないので失敗させるべきということのようだ。
+
+署名者signerは、署名検証の対象(ここではA\_RR)に対して署名を行うもの、
+つまりDNSKEY\_A\_RRの所有者ということで、ここでは`iij.ad.jp`となってい
+る。
+
+鍵タグ/key\_tagは、RRSIGの署名/signatureを作成するのにどの鍵、つまり
+どのDNSKEYを使ったかを「示唆」するチェックサム値である。
+チェックサム値が衝突することもあるし、該当するDNSKEYが見つからないこと
+もあるらしいが、その時は全部のDNSKEYを試せということのようである。
+
+### DNSKEY_A_RRのkey\_tagを計算する
+
+RRSIGにはkey\_tagが直接に書いてあるが、DNSKEYには書いていないので計算
+しなければならない。
+その計算方法は、
+[RFC4034 付録B. キータグ計算](https://tex2e.github.io/rfc-translater/html/rfc4034.html#A-2--DNSSEC-Digest-Types)
+に出ているし、上述のIIJさんのブログにはPython実装がある。
+これらを整理したのが
+[key_tag.py](./key_tag.py)
+であるが、
+[dns.dnssec.key_id()](https://dnspython.readthedocs.io/en/stable/dnssec.html#dns.dnssec.key_id)
+でもできる。
+やっていることは同じで、key\_id()関数でいうとL124のelse節内にあるよう
+に2バイトずつ取ってきて足し合わせてチェックサムを計算するだけである。
+(アルゴリズムによってはやり方が変わる)
+https://github.com/rthalley/dnspython/blob/4d97d38fc71a40e97cddf8bc3d768a085cd5a6c0/dns/dnssec.py#L112-L131
 
 
 
-
-
-
-
-(RRSIG-BはAAAA RRを検証するためのもの)
-
-このRRSIG-Aのフィールドは以下のように読める。
-
-| フィールド     | 値                | 意味                                            |
------------------|-------------------|-------------------------------------------------|
-| 署名対象タイプ | A                 | (eng-blog.iij.ad.jpの) A RR に対する署名である  |
-| アルゴリズム   | 8                 | DNSKEYアルゴリズム8番はRSASHA256(RFC8624)       |
-| ラベル数       | 4                 | (eng-blog.iij.ad.jpの)ラベルの数。              |
-| オリジナルTTL  | 300               | 権威サーバで付与されたTTL(リゾルバなどが書き換えることがあるのでここに書いておく？) |
-| 有効期間終了   | 20250505151004    | いつまで有効な署名であるか                      |
-| 有効期間開始   | 20250405151004    | いつから有効な署名であるか                      |
-| 鍵タグ         | 31668             | DNSKEY RRのRDATA部分のチェックサム。計算方法はRFC4034で独自に定義。このRRSIGに対応するDNSKEYを探す手掛かりとなる。 |
-| 署名者名       | iij.ad.jp.        | 対応するDNSKEY RRの所有者                       |
-| 署名           | FZZeDLZhGl7Cd.... | RRSIG RDATA(ただし署名フィールドを除く)を対象とした署名。アルゴリズムに応じて計算方法が変わる。 |
 
 - 署名対象タイプはA RRだと言っているので正しい。
 - アルゴリズムは8はRSASHA256ということで理解できる。
