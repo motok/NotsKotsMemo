@@ -162,6 +162,15 @@ A\_RR/RRSIG\_A\_RR/DNSKEY_ZSK_1\_RR
 ### DNSKEY\_ZSK\_1\_RRの公開鍵
 
 では、DNSKEY\_ZSK\_1\_RRの公開鍵を取り出してみる。
+実は、下のようにdnspythonを使ってRRをパースしていれば、
+`dnskey\_zsk\_1\_rdset.key`みたいに取り出せる。
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L79
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L92
+
+ここではもう少し先まで手動でやってみることにする。
+
 先ほどRRSIGのアルゴリズム'8'を定義していたRFC 5702から
 RFC 3110を参照していて、
 [RFC 3110の2. RSA公開キーリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc3110.html#2--RSA-Public-KEY-Resource-Records)
@@ -196,6 +205,11 @@ https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967
 DNSKEY\_A\_RRから公開鍵を取り出すことができたので、これを使って
 RRSIG\_A\_RRのsignatureを検証する。
 
+これもdnspythonを使えば`dns.dnssec.validate()`でできる。
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L125-L133
+
+手動でやってみるとなると、
 signatureを整数として取り出す部分は
 
 https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L160
