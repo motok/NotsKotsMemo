@@ -273,7 +273,46 @@ DNSKEYの公開鍵に対応する秘密鍵を知ることなしにはこれら�
 が非常に困難なので、DNSKEY\_ZSK\_1\_RRを信じて良いならA\_RRを信じて良
 いことがわかった。
 
-## DNSKEY
+## DNSKEY\_ZSK\_1\_RRを信頼できるか？
+
+では、DNSKEY\_ZSK\_1\_RRを信用することはできるのか？
+これには、A\_RRの時と同様に、DNSKEY\_ZSK\_1\_RRに対応するRRSIGとDNSKEY
+を使って署名を検証すればよいはずである。
+先に結果を述べると、本稿ではこの署名検証に成功することができなかった。
+上記のDNSVizやdrillコマンドでは検証できているので、本稿のやり方が間違っ
+ているということになるが、筆者には誤りを見つけることができなかった。
+先達諸賢のご教示を乞いたいところであります。
+
+気を取り直して、署名検証をやってみよう。
+信用できるか否かを知りたいリソースレコードはDNSKEY\_ZSK\_1\_RRで、これ
+に対応する可能性のあるRRSIGは、RRSIG_DNSKEY_0_RRとRRSIG_DNSKEY_1_RRの
+２個である。
+
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L30-L32
+
+dns.dnssec.validate()を用いて署名検証を試みているのは下の部分である。
+
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L220
+
+手元にある３個のDNSKEYを全て使ってvalidate_keysを作り(L.229)、
+それを使ってDNSKEY\_ZSK\_1\_RRとRRSIG\_DNSKEY\_0\_RRのペアについて
+署名検証を試みた(L.235)が成功しなかった。
+もう一つのRRSIGであるRRSIG\_DNSKEY\_1\_RRについても試みた(L.243)が、
+やはり成功しなかった。
+
+では、手動で検証する方法ではどうか？
+下のように、A\_RRの時と同様にやってみたが、やはり成功しなかった。
+
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L251-L307
 
 
+本来であれば、KSKとそれを利用したRRSIG、つまり
+DNSKEY\_ZSK\_1\_RR/RRSIG\_DNSKEY\_1\_RR/DNSKEY\_KSK\_RR
+の組み合わせで署名が検証できるはずであるが、できなかったということにな
+る。
+DNSVizやdrillコマンドでは署名検証できているので、本稿のやり方がおかし
+いのであるが、誤りを発見できていない。
+先達諸賢の皆様のご教示を切に乞い願うところであります。
+
+## DNSKEY\_KSK\_RRを信頼できるか？
 
