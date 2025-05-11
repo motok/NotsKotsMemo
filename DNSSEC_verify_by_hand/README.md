@@ -7,7 +7,7 @@ IIJ Engineers Blog「
 コマンドラインでDNSSECの信頼の鎖を追ってみようという趣旨で、
 ちょうど良いのでこれに従う形でやってみることにします。
 IIJさん、良い記事を出していただいてありがとうございます。
-なお、本稿に錯誤などがあれば、もちろんそれは本稿の責任であります。
+なお、本稿に錯誤などがあれば、もちろんすべて本稿の責任であります。
 
 ## DNSSECの資料など
 
@@ -150,10 +150,124 @@ https://github.com/motok/NotsKotsMemo/blob/f7cdac56cb69d15d71b7f4bc6a20415176ad4
   | DNSKEY_ZSK_0_RR |  31668  |
   | DNSKEY_ZSK_1_RR |  13173  |
 
+RRSIG\_A\_RR に書かれているkey\_tagは13173なので、DNSKEY\_ZSK\_1\_RRが
+対応することがわかる。
 
- 
- 
-### A\_RR/RRSIG\_A\_RR/DNSKEY_ZSK_1\_RR
+これで、A\_RRを信用して良いかどうかを検証するには、
+RRSIG\_A\_RRとDNSKEY\_ZSK\_1\_RRを持ちいればよいことがわかった。
+以下では、このような対応関係を
+A\_RR/RRSIG\_A\_RR/DNSKEY_ZSK_1\_RR
+のように略記する場合がある。
+
+### DNSKEY\_ZSK\_1\_RRの公開鍵
+
+では、DNSKEY\_ZSK\_1\_RRの公開鍵を取り出してみる。
+先ほどRRSIGのアルゴリズム'8'を定義していたRFC 5702から
+RFC 3110を参照していて、
+[RFC 3110の2. RSA公開キーリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc3110.html#2--RSA-Public-KEY-Resource-Records)
+の節にRSAパブリックキーを(DNSKEYに)格納するやり方が出ている。
+ただし、これはアルゴリズム'5'のRSA/SHA-1の場合っぽいけれども、
+アルゴリズム'8'のRSA/SHA256でも同様であるようだ。
+
+DNSKEYの公開鍵部分はBASE64で符号化されているので、最初にこれを復号しな
+ければならないが、出てきたバイト列の構造は次のようになっているとのこと。
+
+- バイト列の先頭1バイトが0x00の場合
+  - 続く3バイト(第2から第4バイト)がRSA暗号のexponent
+  - さらに続く第5バイトから最後までがRSA暗号のmodulus
+- バイト列の先頭1バイトが0x00ではない場合
+  - その1バイトがexponentの長さ(exp_len)
+  - 続くexp_lenバイトがexponent
+  - 残りの部分がmodulus
+
+これをPythonで書くとこんな感じ。
+ただし、この関数に渡す前にBASE64で復号済み。
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L48-L58
+
+このやり方でDNSKEY\_ZSK\_1\_RRから公開鍵(exponentとmodulus)を取り出す
+と、次のようになった。
+
+- exponent = 65537
+- modulus = 127007425912000964714488293271813959090212068161547110390988345674781145963374145989328419379148946371196272690229816465331643091364504475049944858816134973456196613482581042741256361207887996874819718427946428176799616565692650827777062173351660205069754025885554424489650651260567113445763743276360536538071 (10進数)
+
+### RRSIG\_A\_RRの署名検証
+
+DNSKEY\_A\_RRから公開鍵を取り出すことができたので、これを使って
+RRSIG\_A\_RRのsignatureを検証する。
+
+signatureを整数として取り出す部分は
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L160
+
+のようにできて、公開鍵で検証(復号)しているのが
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L164
+
+であり、
+
+[RFC 5702の3. RRSIGリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc5702.html#3--RRSIG-Resource-Records)
+
+にあるように、
+
+- 先頭にパディング 0x0001FFFFFF..FF00があり
+- 次にPKCS#1 v2.1のprefix(0x3031300d060960864801650304020105000420)が
+  あって
+- その後にハッシュ値が続く
+
+形をしている。
+そこで、
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L169-L170
+
+のようにしてハッシュ値を取り出す。
+このハッシュ値は、次のとおりであった。
+
+- RRSIGから取り出したハッシュ値 = 87116a741e706921046eb34133178e418bcc44dbc3e609b7fa1fec3884c56c1e
+
+### A\_RRとRRSIG\_A\_RRからハッシュ値を計算する
+
+ここで、別の方法、すなわちA\_RRとRRSIG\_A\_RRを使ってハッシュ値を再計
+算する。
+この計算方法は
+[RFC 4034 3.1.8.1. 署名計算](https://tex2e.github.io/rfc-translater/html/rfc4034.html#3-1-8--The-Signature-Field)
+に出ている。
+
+> signature = sign(RRSIG_RDATA | RR(1) | RR(2) ...)
+
+ここで、RRSIG_RDATAのところは署名部分を除くので、
+
+[RFC 4034 3.1 RRSIG RDATAワイヤー形式](https://tex2e.github.io/rfc-translater/html/rfc4034.html#3-1--RRSIG-RDATA-Wire-Format)
+
+の図の、Type CoveredからSigner's Nameまで(両端含む)をワイヤー形式で並
+べたもの。
+さらに、RRが続く部分はownerからrdatamまでの全体、ここではA\_RRが該当す
+るので`eng-blog.iij.ad.jp 300 IN A 202.232.2.183`の全体をワイヤー形式
+で表現したもの。
+ただし、TTLのところは、途中のリゾルバが減算してたりするので、RRSIGの
+original ttlで上書きしておかないといけない。
+`|`の意味は連結(concatenation)ということなので、Python的にはbytes型を
+`+`で連結すればよい。
+
+このハッシュ値計算をしている部分は次のとおりで、今回の例では、ハッシュ
+値が
+`0x87116a741e706921046eb34133178e418bcc44dbc3e609b7fa1fec3884c56c1e`
+となった。
+
+https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L174-L195
+
+
+これで、RRSIG\_A\_RRの署名部分から復号したハッシュ値と、
+RRSIG\_A\_RRおよびA\_RRから計算したハッシュ値が一致することがわかった。
+DNSKEYの公開鍵に対応する秘密鍵を知ることなしにはこれらを一致させること
+が非常に困難なので、DNSKEY\_ZSK\_1\_RRを信じて良いならA\_RRを信じて良
+いことがわかった。
+
+## DNSKEY
+
+
+
+
 
 
 
