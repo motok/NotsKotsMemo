@@ -205,9 +205,7 @@ https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967
 https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967847/DNSSEC_verify_by_hand/dnssec_validate.py#L164
 
 であり、
-
 [RFC 5702の3. RRSIGリソースレコード](https://tex2e.github.io/rfc-translater/html/rfc5702.html#3--RRSIG-Resource-Records)
-
 にあるように、
 
 - 先頭にパディング 0x0001FFFFFF..FF00があり
@@ -236,9 +234,7 @@ https://github.com/motok/NotsKotsMemo/blob/34ed7265f1a6a9ebcff78d5b7842eef768967
 > signature = sign(RRSIG_RDATA | RR(1) | RR(2) ...)
 
 ここで、RRSIG_RDATAのところは署名部分を除くので、
-
 [RFC 4034 3.1 RRSIG RDATAワイヤー形式](https://tex2e.github.io/rfc-translater/html/rfc4034.html#3-1--RRSIG-RDATA-Wire-Format)
-
 の図の、Type CoveredからSigner's Nameまで(両端含む)をワイヤー形式で並
 べたもの。
 さらに、RRが続く部分はownerからrdatamまでの全体、ここではA\_RRが該当す
@@ -264,166 +260,6 @@ DNSKEYの公開鍵に対応する秘密鍵を知ることなしにはこれら�
 いことがわかった。
 
 ## DNSKEY
-
-
-
-
-
-
-
-
-
-XXXXXXXX
-
-
-
-
-
-
-
-
-
-
-
-
-- 署名対象タイプはA RRだと言っているので正しい。
-- アルゴリズムは8はRSASHA256ということで理解できる。
-- ラベル数は4で正しい。
-- 有効期間も現時点を含んでいるので正しい。
-- 署名者もeng-blog.iij.ad.jpを署名するのはiij.ad.jpで正しい。
-
-鍵タグについては、
-- RRSIGに対応するDNSKEYを探すためのチェックサムである。
-- DNSKEYが複数ある場合に、チェックサムが一致するものがあればそれが「対応する」。
-  - チェックサムが衝突する場合もあって、その場合には対応すると思われるDNSKEYを全部試せとのこと。
-  - (ひとつでも最後まで検証できたものがあればオッケーってこと？？？)
-- チェックサムの計算方法はC言語のものがRFC 4034に掲載されている。
-- それをPythonで実装したものがIIJさんのブログにあったので、それを借りてきて
-  少し改変したものが [./key_tag.py](./key_tag.py) 。
-
-
-
-
-
-
-
-
-これを使ってDNSKEYのRDATAのチェックサムを計算すると、
-``` shell
-$ dig -t DNSKEY iij.ad.jp +short | while read line; do echo $line; ./keytag.py $line; echo ""; done
-# DNSKEY-1
-256 3 8 AwEAAayQtSx/pvXV+AoGFJeNPv5vnZf6BATFUrx/ys5j9BQ3emE3sab4 Hro/zW1n/pEmfDG/AlC/mFg9t0vrFimiLM8GsymNoIXpw0PbaTbi0jhD 4eDUGZ2OpjtWMyCUYJPMfjx3pAisWg5zSYWuKQiv8TFbfy7yoWY6RzlV dbma9kop
-47508
-
-# DNSKEY-2
-256 3 8 AwEAAdC5VKJuA30xxtw4DE2t5ihxGKzc3o527l1na+uUh/KkKLvqmYdT +t7kBKP1SVnO6Mz9w7wqqpiV5VwKdb0CWyA0N7rlBnWWhRCkIzVp/iuu ZB+fO4EcBKrUckWf6Kx/a7HXxRFrkF0Bi0E3dy8pMBbRukQpNOXFqlkc RR/G6qO9
-31668
-
-# DNSKEY-3
-257 3 8 AwEAAahXWyIn8JmvtyrzvlNNYFvACfOS/LZoOpUzF3HpFje8ySj6z4d7 5p4P4VSIelgRFXDtjYpeqc8uUxIo6lg6Y69gyH+QK9UPS5/GdDlxpl2F jp7LifaeWPpMAYtr8frwjImY0sDeeWfYqgwZZD722aSEArM5Wpjft5F+ UzbPAnTYBnri29UA6YVCg4ZFRrGBYAUWKJfngPKMNRjLUyr9LeqgQp95 nal86y4LQjEJNbSXlP6GA0OOZ0JuyIZLJ8NPPqM8HD13DFDOc5He5pn/ N7PfCB5WGvYx58ZEvxpqWf0+V2a2XE6c1Ffomil/fQNiAu5JFTgumHY1 OXS5oLdRiuM=
-18490
-```
-ということで、鍵タグから見てDNSKEY-2が対応するDNSKEY RRであるらしいことがわかる。
-
-このDNSKEY-2は以下のように読める。
-
-| フィールド     | 値                | 意味                                            |
------------------|-------------------|-------------------------------------------------|
-| フラグ         | 256               | |
-| プロトコル     | 3                 | |
-| アルゴリズム   | 8                 | |
-| 公開鍵         | AwEAAdC5VKJuA3... | |
-
-- 256(10)は 0000 0001 0000 0000 (2)で、署名鍵ビット(ビット7)が立っているので、これは署名鍵(KSKまたはZSK)である。
-- セキュアエントリポイント(SEP)ビット(ビット15)は立っていないので、これはZSKである。
-- プロトコルは3に固定されているので、これで良い。
-- アルゴリズム8番は、RRSIGと同様にRSASHA256を指す。
-- 公開鍵の部分は、RSASHA256の公開鍵をBASE64で符号化したもの。
-
-
-
-続いて、DNSKEY-2のRDATAの公開鍵部分からRSASHA256で使うRSA公開鍵(指数expとモジュラスmodulus)を取り出す。
-
-- 先頭1バイトが0x03なので、これが指数長でその値は3。(先頭1バイトが0x00だと続く2バイトが指数長)
-- 従って、2,3,4バイト目の0x01 0x00 0x01が指数ということになる。
-  すなわち、指数は、0x010001 = 65537(10)である。
-- そして引き続く5バイト目から末尾までがモジュラスである。長さも1024 bit (128 Byte)でそれっぽいね。
-
-``` shell
-$ ./dnskey_pubkey.py 'AwEAAdC5VKJuA30xxtw4DE2t5ihxGKzc3o527l1na+uUh/KkKLvqmYdT +t7kBKP1SVnO6Mz9w7wqqpiV5VwKdb0CWyA0N7rlBnWWhRCkIzVp/iuu ZB+fO4EcBKrUckWf6Kx/a7HXxRFrkF0Bi0E3dy8pMBbRukQpNOXFqlkc RR/G6qO9' 
-exp_len:     3 byte
-exp:        65537 (10)
-modulus_len: 128 byte
-modulus:    146570940549784169560470017999114332147060637684277267914353988087770100550436284153018603966728195899715841350828674502930709645679912533263178982518867204828975579005111729953303455565104878375457027758339889765627365260603987810534482349585612830776590313168338334627378223244460959284522812712332521284541 (10)
-```
-
-DNSKEYから指数とモジュラスがわかったので、これを使ってRRSIGの署名部分を復号する。
-
-- RRSIG RDATAの署名部分はBASE64で符号化されているので、まず復号する。
-- それをネットワークバイトオーダで整数化する。
-- 出てきた整数をDNSKEYから得た指数乗し、DNSKEYから得たモジュラスで剰余を取る。
-- これでRRSIGの署名部分の復号ができた、はずなんだけど、16進数表記で先頭に0x1FFF...FFが付くやついず何？
-
-``` shell
-$ ./rrsig_decrypt.py 'AwEAAdC5VKJuA30xxtw4DE2t5ihxGKzc3o527l1na+uUh/KkKLvqmYdT +t7kBKP1SVnO6Mz9w7wqqpiV5VwKdb0CWyA0N7rlBnWWhRCkIzVp/iuu ZB+fO4EcBKrUckWf6Kx/a7HXxRFrkF0Bi0E3dy8pMBbRukQpNOXFqlkc RR/G6qO9' 'ymqOC9wWY8IgYMHXBYB3o6RJ1v7n2bUMq7LiIysVvjbIcfmFm0yT+5uV XEBTKJGTMS3hwKufrTdD4QcJVqgtlfvOkl9l2Vpd2mGk43yRRc0DQkOe 211wxwP7DlUOlj6xTdlcqRCwgHEhKWK+vld1S4nQkbLm/CImQNDRMG2p mHw='
-exp:        65537 (10)
-modulus:    146570940549784169560470017999114332147060637684277267914353988087770100550436284153018603966728195899715841350828674502930709645679912533263178982518867204828975579005111729953303455565104878375457027758339889765627365260603987810534482349585612830776590313168338334627378223244460959284522812712332521284541 (10)
-decrypted_sig: 5486124068793688683255936251187209270074392635932332070112001988456197381759672947165175699536362793613284725337872111744958183862744647903224103718245670299614498700710006264535421091908069935709303403272242499531581061652193638003161254969882234923063128204197235396325009847066687978672709751165647701 (16)
-decrypted_sig: 1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF003031300D0609608648016503040201050004203685662E4E10C6A8115074327314313B0A3E7567F3EDB0D05263BA3FA0937B55 (hex)
-```
-
-次に、A RRとRRSIG RRからハッシュ値を計算する。
-これが先ほどRRSIGの署名部分から復号したものに一致すれば署名を検証したことになる。
-ハッシュ値を計算するには、以下のデータを連結してSHA256のハッシュ値を計算すれば良い。
-
-- RRSIG RDATAのレコードタイプ
-- 同、アルゴリズム
-- 同、ラベル数
-- 同、オリジナルのTTL
-- 同、有効期間の終わり
-- 同、有効期間の始まり
-- 同、キータグ
-- 同、署名者の名前
-- 保護対象となるA RRのDNS名
-- 同、レコードタイプ
-- 同、クラス
-- 同、TTL
-- 同、RDATAの長さ
-- 同、RDATAの値
-
-
-
-
-
-
-
-
-
-
-
-次に、ZSKを使ってRRSIGの署名を計算する。
-
-
-
-
-
-
-
-
-次に、DNSKEY RRの公開鍵を取り出すことにする。
-
-
-
-
-
-管理者がゾーンに署名した時には、
-- DNSKEY RDATAの公開鍵を使って同様の署名を行った
-- RRSIG RDATAの署名部分を除いた残り全部についてZSKで署名し、その署名をBASE64符号化してRRSIG RDATAの署名部分に追加した
-はずなので、この署名と
-ときの署名が一致するかどうかを確認する。
-両者が一致すれば、RRSIG RRは確かにDNSKEY RRを使って署名されているということがわかる。
-
-
 
 
 
