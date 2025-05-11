@@ -292,7 +292,7 @@ https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e6
 
 dns.dnssec.validate()を用いて署名検証を試みているのは下の部分である。
 
-https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L220
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L220-L247
 
 手元にある３個のDNSKEYを全て使ってvalidate_keysを作り(L.229)、
 それを使ってDNSKEY\_ZSK\_1\_RRとRRSIG\_DNSKEY\_0\_RRのペアについて
@@ -306,13 +306,91 @@ https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e6
 https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L251-L307
 
 
-本来であれば、KSKとそれを利用したRRSIG、つまり
-DNSKEY\_ZSK\_1\_RR/RRSIG\_DNSKEY\_1\_RR/DNSKEY\_KSK\_RR
-の組み合わせで署名が検証できるはずであるが、できなかったということにな
-る。
+本来であれば、KSKとそれを利用したRRSIG、つまりDNSKEY\_ZSK\_1\_RR /
+RRSIG\_DNSKEY\_1\_RR / DNSKEY\_KSK\_RRの組み合わせで署名が検証できるは
+ずであるが、できなかったということになる。
 DNSVizやdrillコマンドでは署名検証できているので、本稿のやり方がおかし
 いのであるが、誤りを発見できていない。
+
 先達諸賢の皆様のご教示を切に乞い願うところであります。
 
 ## DNSKEY\_KSK\_RRを信頼できるか？
 
+DNSKEY\_ZSK\_1\_RR /RRSIG\_DNSKEY\_1\_RR / DNSKEY\_KSK\_RRの
+署名検証ができたと仮定すると、次は、DNSKEY\_KSK\_RRを信頼することがで
+きるのか否かが問題になる。
+これには、DS\_RRを用いるのであるが、DS RRはひとつ上側の権威サーバに登
+録しておいてもらうという点に注意。
+ここの例で言うと、KSKは`iij.ad.jp`の権威サーバにあるRRだが、DSはひとつ
+上の`ad.jp`の権威サーバに登録してもらっているのである。
+(ただし、`ad.jp`の場合は、`jp`の権威サーバが`ad.jp`の権威サーバも兼ね
+ているのでそちらにある。)
+
+そして、DS RRのdigestが
+[RFC 4034 5.1.4.ダイジェストフィールド](https://tex2e.github.io/rfc-translater/html/rfc4034.html#5-1-4--The-Digest-Field)
+にあるとおり、DNSKEYのowner, flags, protocol, algorithm, keyを連結した
+ものについて指定されたダイジェストアルゴリズムでハッシュ値をとったもの
+なので、両者を比較して同じであれば信頼して良いと判断できるのである。
+
+DS\_RRのdigestにあるハッシュ値については、下のようにして調べることがで
+きる。
+
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L314-L320
+
+
+DNSKEY\_KSK\_RRの各要素からハッシュ値を計算するには下のようにする。
+
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L314-L329
+
+両者が一致したので、DSによるKSKのハッシュ値検証に成功したと言える。
+
+https://github.com/motok/NotsKotsMemo/blob/f2dabcfa3a429276622a7e9f4c76e817256e64c4/DNSSEC_verify_by_hand/dnssec_validate.py#L334-L337
+
+こうして、DS\_RRを信頼できるのであれば、DNSKEY\_KSK\_RRを信頼できるこ
+とがわかった。
+同様にしてDS\_RRが信頼できるか否かを検証していけば、最後には
+ルートゾーン(`.`)に至り、
+[IANAのRoot Zone Trust Anchors](https://www.iana.org/dnssec/files)
+にたどり着く。
+これで信頼の鎖が完成することになる。
+
+## dnssec_validate.py実行結果
+
+ここまで引用してきたdnssec_validate.pyの実行結果を下に示しておく。
+
+``` shell
+$ ./dnssec_validate.py 
+### A_RR の検証 ###
+dns.dnssec.validate()による検証に成功.
+ハッシュ値(1): 87116a741e706921046eb34133178e418bcc44dbc3e609b7fa1fec3884c56c1e
+ハッシュ値(2): 87116a741e706921046eb34133178e418bcc44dbc3e609b7fa1fec3884c56c1e
+(1)と(2)のハッシュ値が一致したので検証成功。
+### AAAA_RR の検証 ###
+dns.dnssec.validate()による検証に成功.
+### DNSKEY_ZSK_1_RR の検証 ###
+# DNSKEY_ZSK_1_RR/RRSIG_DNSKEY_0_RR/DNSKEY_*_RR
+dns.dnssec.validate()による検証に失敗。no RRSIGs validated
+# DNSKEY_ZSK_1_RR/RRSIG_DNSKEY_1_RR/DNSKEY_*_RR
+dns.dnssec.validate()による検証に失敗。no RRSIGs validated
+### DNSKEY_ZSK_1_RR の手動検証 ###
+ハッシュ値(1): 8fde7160977e4a9ce37bc17a367eb059ea77d28dbbfc9c62e0e08e83ae1db0b8
+ハッシュ値(2): 87116a741e706921046eb34133178e418bcc44dbc3e609b7fa1fec3884c56c1e
+(1)と(2)のハッシュ値が一致しなかったので検証失敗。
+### DNSKEY_KSK_RR の検証 ###
+DSとKSKのハッシュ値が一致したので検証成功。
+```
+
+
+## 最後に
+
+ZSKの署名検証ができなかったことは残念であるが、DNSSECの信頼の鎖を
+下から順に追ってみたことは大いに勉強になった。
+
+今となってはDNSサーバやリゾルバの実装が進んでいて、使う分にはそれほど
+大変ではなくなっているとは思うが、それにしてもRRが長いし処理も複雑かつ
+バイナリ列を処理する関係でコマンドラインではやりにくいなど、やっぱり
+DNSSECは難しいものだなという感想を持った。
+
+最後になりましたが、IIJさんのエンジニアブログの記事には本当に感謝して
+います。彼らの仕事がなければ、僕は多分途中で諦めていたことでしょう。
+ありがとうございました。
