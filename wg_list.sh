@@ -8,33 +8,23 @@
 
 awk '
 
-function time2second (str) {
-	seconds = 0
+function timestr2second (str) {
 
-	p = match(str, /^ *[0-9]+ seconds? ago$/)
-	if (p > 0) {
+	if (match(str, /^ *[0-9]+ seconds? ago$/) > 0) {
 		split(str, a)
-		seconds +=  a[1]
-	}
-
-	p = match(str, /^ *[0-9]+ minutes?, [0-9]+ seconds? ago$/)
-	if (p > 0) {
+		seconds =  a[1]
+	} else if (match(str, /^ *[0-9]+ minutes?, [0-9]+ seconds? ago$/) > 0) {
 		split(str, a)
-		seconds +=  a[1] * 60 + a[3]
-	}
-
-	p = match(str, /^ *[0-9]+ hours?, [0-9]+ minutes?, [0-9]+ seconds? ago$/)
-	if (p > 0) {
+		seconds =  a[1] * 60 + a[3]
+	} else if (match(str, /^ *[0-9]+ hours?, [0-9]+ minutes?, [0-9]+ seconds? ago$/) > 0) {
 		split(str, a)
-		seconds +=  a[1] * 3600 + a[3] * 60 + a[5]
-	}
-
-	p = match(str, /^ *[0-9]+ days?, [0-9]+ hours?, [0-9]+ minutes?, [0-9]+ seconds? ago$/)
-	if (p > 0) {
+		seconds =  a[1] * 3600 + a[3] * 60 + a[5]
+	} else if (match(str, /^ *[0-9]+ days?, [0-9]+ hours?, [0-9]+ minutes?, [0-9]+ seconds? ago$/) > 0) {
 		split(str, a)
-		seconds +=  a[1] * 86400 + a[3] * 3600 + a[5] * 60 + a[7]
+		seconds =  a[1] * 86400 + a[3] * 3600 + a[5] * 60 + a[7]
+	} else {
+		seconds = -1
 	}
-
 	return seconds
 }
 
@@ -62,8 +52,8 @@ BEGIN {
 		LATEST_HS = LATEST_HS " " $i
 	}
 	
-	seconds = time2second(LATEST_HS)
-	print WG_IF, WG_PORT, END_POINT, ALLOWED_IPS, seconds, (seconds<300 ? "True" : "False")
+	seconds = timestr2second(LATEST_HS)
+	print WG_IF, WG_PORT, END_POINT, ALLOWED_IPS, seconds, ((seconds<300 && seconds>=0) ? "True" : "False")
 }
 
 ' $*
