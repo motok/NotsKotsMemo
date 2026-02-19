@@ -2,6 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
+- 2026-02-21 [サーバが自機を守るipfwルールの例](./ipfw.rules.md)
 - 2025-12-16 [Wireguardの状態表示スクリプトをquick&dirty hackした](./wg_list.sh)
 - 2025-03-26 [今更ながらunboundでDNSSECを検証できるようにする](./unbound-DNSSEC/)
 - 2025-03-10 [HDD GELI化](./UFS_on_GELI/)
