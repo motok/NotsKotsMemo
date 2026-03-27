@@ -131,6 +131,12 @@
     (←後で作成する)にリンクする。このテンプレートには NVR510 に対する
     監視項目(の雛形)が設定してある。
 
+  <img src="./03_action-action.png" width=65%>アクション/アクションタブ<img/>
+  <img src="./04_action-execution.png" width=30%>アクション/実行内容タブ<img/>
+
+
+
+
 
 
 
