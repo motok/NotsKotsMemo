@@ -24,35 +24,33 @@
 - [Zabbix 7.0 LTS](https://www.zabbix.com/download?zabbix=7.0&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent_2&db=pgsql&ws=nginx)
   - 7.0 LTS / Ubuntu / 24.04 (Noble) / Server, Frontend, Agent2 / PostgreSQL / Nginx
   - パッケージをダウンロードして dpkg -i でインストール。
-- [RTX1300](https://network.yamaha.com/products/routers/rtx1300/index)
-  - これをZabbixからSNMPで監視(データ収集)しようとしている。
-  - [RTX1300 SNMP MIBリファレンス](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_rtx1300.html)
-  - ご家庭で使う10Gbps対応のルータとしては、これか
-    [IX-R2530](https://jpn.nec.com/univerge/ix-nrv/info/r2530.html)
-    かか。どっちにしてもパパのお小遣いではちょっとムリかも。
 - [NVR510](https://network.yamaha.com/products/routers/nvr510/index)
-  - これもZabbixからSNMPで監視する対象として。
+  - これをZabbixからSNMPで監視したい。
   - [NVR510 SNMP MIBリファレンス](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html)
 - [NetSNMP](https://www.net-snmp.org)と各種MIB定義ファイル
   - snmp-mibs-downloaderパッケージも併せてaptでインストール。
-  - RTX1300のMIB定義ファイルももらってきて、これは手動でインストール。
+  - NVR510用のMIB定義ファイルももらってきて、これは手動でインストール。
     - [YAMAHA private MIB](https://www.rtpro.yamaha.co.jp/RT/docs/mib/)
       の
       [Archive file of all private MIB files.](https://www.rtpro.yamaha.co.jp/RT/docs/mib/yamaha-private-mib.tar.gz)
       を入れたので、YAMAHAのネットワーク機器なら大体大丈夫のはず。
-- snmptranslateやsnmpwalkなどを用いてRTX1300やNVR510と通信できるように
+- snmptranslateやsnmpwalkなどを用いてNVR510と通信できるように
   両側で設定しておく。
 
 ## ホストディスカバリ
 
 - Zabbix から SNMP で RFC1213-MIB::sysDescr.0 を取ってきて、それが
-  NVR510 か RTX1300 のものだったら監視対象に追加する、という論理。
+  NVR510 のものだったら監視対象に追加する、という論理。
   - ICMP echoに応答があれば追加とかもできるけど、それだと他のノードも
     追加してしまうので、一応機種まで見ることにした。
-  - 今回は SNMPv2 でコミュニティ(RO)を設定してあるので、例えばRTX1300
-    であっても別のコミュニティのノードは検出しない。
-- コマンドラインからはこんな感じ。
+  - 今回は SNMPv2 でコミュニティ(RO)を設定してあるので、例え NVR510 で
+    あっても別のコミュニティのノードは検出しない。
+
+- コマンドラインからはこんな感じで応答が返ってくる。
   ``` shell
+  $ cat .snmp/snmp.conf 
+  defVersion 2c
+  defCommunity superDuperSecret
   $ snmpget 10.227.0.254 .1.3.6.1.2.1.1.1.0
   RFC1213-MIB::sysDescr.0 = STRING: "NVR510 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)"
   ```
@@ -64,7 +62,8 @@
 
 
 
-## 
+
+
 
 
 
