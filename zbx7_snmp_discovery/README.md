@@ -57,8 +57,8 @@
 
 - まず、Zabbix から SNMP でスキャンしてホストを探すために、
   「Zabbix/データ収集/ディスカバリ」でディスカバリルールを追加する。
-  - <img src="./01_host_discovery_rule.png" width=45% />
-    <img src="./02_snmpv2_config.png" width=45% />
+  - <img src="./01_host_discovery_rule.png" width=70% />
+    <img src="./02_snmpv2_config.png" width=30% />
 
 
 
