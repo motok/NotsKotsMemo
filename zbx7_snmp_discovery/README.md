@@ -87,7 +87,7 @@
   - 有効: 有効にしておけばホストディスカバリを開始する。デフォルトでは
     無効の状態だが、検証環境なら有効にしておけば良いのではないか。
 
-  <img src="./01_host_discovery_rule.png" width=65% />
+  <img src="./01_host_discovery_rule.png" width=65%>新規ディスカバリルール<img/>
   <img src="./02_snmpv2_config.png" width=30% />
 
 
