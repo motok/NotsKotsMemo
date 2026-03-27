@@ -14,16 +14,16 @@
   - Celeron N5105 / 16GB メモリ / 128GB SSD / 2.5Gbps LAN * 4
   - 2.5Gbps のルータにしようと思ったら Intel I226-V で、通信ブツ切れ
     でどうにもならないやつだった。Ubuntuだとちょっとマシみたい。
-- [Ubuntu 24.04 LTS Server](https://jp.ubuntu.com/download)
-  - 24.04.4 LTS (Noble Numbat)
-  - apt upgrade済み
-- [PostgreSQL 16.13](https://www.postgresql.org/about/news/postgresql-183-179-1613-1517-and-1422-released-3246/)
-  - apt でパッケージをインストール
-- [TimescaleDB 2.25.2](https://www.tigerdata.com/docs/self-hosted/latest/install/installation-linux#install-timescale_db-on-linux)
-  - TimescaleDBのリポジトリを追加して、そこからパッケージをインストール。
-- [Zabbix 7.0 LTS](https://www.zabbix.com/download?zabbix=7.0&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent_2&db=pgsql&ws=nginx)
-  - 7.0 LTS / Ubuntu / 24.04 (Noble) / Server, Frontend, Agent2 / PostgreSQL / Nginx
-  - パッケージをダウンロードして dpkg -i でインストール。
+    - [Ubuntu 24.04 LTS Server](https://jp.ubuntu.com/download)
+    - 24.04.4 LTS (Noble Numbat)
+    - apt upgrade済み
+    - [PostgreSQL 16.13](https://www.postgresql.org/about/news/postgresql-183-179-1613-1517-and-1422-released-3246/)
+    - apt でパッケージをインストール
+    - [TimescaleDB 2.25.2](https://www.tigerdata.com/docs/self-hosted/latest/install/installation-linux#install-timescale_db-on-linux)
+    - TimescaleDBのリポジトリを追加して、そこからパッケージをインストール。
+    - [Zabbix 7.0 LTS](https://www.zabbix.com/download?zabbix=7.0&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent_2&db=pgsql&ws=nginx)
+    - 7.0 LTS / Ubuntu / 24.04 (Noble) / Server, Frontend, Agent2 / PostgreSQL / Nginx
+    - パッケージをダウンロードして dpkg -i でインストール。
 - [NVR510](https://network.yamaha.com/products/routers/nvr510/index)
   - これをZabbixからSNMPで監視したい。
   - [NVR510 SNMP MIBリファレンス](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html)
@@ -100,9 +100,9 @@
   対象としてホストを登録する。
 - そのためには、「Zabbix/通知/アクション/ディスカバリアクション」で
   アクションを作成する。
-  アクションは、アクションと実行内容の２個のタブに分かれている(ややこ
-  しい)。
-- まずアクションタブ。
+  アクションは、「アクション」と「実行内容」の２個のタブに分かれている
+  (ややこしい)。
+- まず「アクション」タブ。
   - 名前: 適宜、名前を付ける。
   - 計算のタイプ: この後の「実行条件」をANDで結ぶのか、ORで結ぶのか、
     同一条件部分だけORで結んで異なる条件同士はANDで結ぶのか。
@@ -118,10 +118,18 @@
   - 実行条件 D: 「アップタイム/ダウンタイム」が 600 秒以上であるという
     条件。ある程度の時間に渡って安定して存在/不在のときに登録/解除をや
     るということ。
-- これで、`A && ( B || C ) && D` という論理構成になる。
-
-
-
+  - 有効: 有効にしておく。
+  - これで、`A and ( B or C ) and D` という論理式で真になれば、そのノー
+    ドに対して後述の「実行内容」タブの内容を実行することになる。
+- 続いて「実行内容」タブ
+  - 「アクション」タブに設定した条件をクリアしたターゲットに対して、実
+    行したいことを設定する。
+  - まず「ホストを追加」で、監視対象として登録し、
+  - 「ホストグループに追加」で「特定ルータホストグループ」(←あらかじ
+    め作成済み)に追加し、
+  - 「テンプレートをリンク」で、「特定ルータ監視用テンプレート by SNMP」
+    (←後で作成する)にリンクする。このテンプレートには NVR510 に対する
+    監視項目(の雛形)が設定してある。
 
 
 
