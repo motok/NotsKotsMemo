@@ -91,8 +91,8 @@
   - 表示名: 今回はIPアドレスにしたが、デフォルトのホスト名で良さそう。
   - 有効: 有効にしておけばホストディスカバリを開始する。
 
-  <img src="./01_host_discovery_rule.png" width=65%>ディスカバリルール図<img/>
-  <img src="./02_snmpv2_config.png" width=30%>ディスカバリチェック図<img/>
+  <img src="./01_host_discovery_rule.png" width=65%>ディスカバリルール<img/>
+  <img src="./02_snmpv2_config.png" width=30%>ディスカバリチェック<img/>
 
 ### スキャンへの応答を調べて、条件に合えば登録作業を行う
 
