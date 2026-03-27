@@ -12,7 +12,7 @@
   - ここに Ubuntu を入れて Zabbix サーバにする。
   - いわゆるミニPCで、ファンレス。
   - Celeron N5105 / 16GB メモリ / 128GB SSD / 2.5Gbps LAN * 4
-  - 2.5Gbps のルータにしようかと思ったら Intel I226-V で、通信ブツ切れ
+  - 2.5Gbps のルータにしようと思ったら Intel I226-V で、通信ブツ切れ
     でどうにもならないやつだった。Ubuntuだとちょっとマシみたい。
 - [Ubuntu 24.04 LTS Server](https://jp.ubuntu.com/download)
   - 24.04.4 LTS (Noble Numbat)
@@ -48,18 +48,21 @@
 
 - コマンドラインからはこんな感じで応答が返ってくる。
   ``` shell
-  $ cat .snmp/snmp.conf 
+  $ cat ~/.snmp/snmp.conf
   defVersion 2c
   defCommunity superDuperSecret
   $ snmpget 10.227.0.254 .1.3.6.1.2.1.1.1.0
   RFC1213-MIB::sysDescr.0 = STRING: "NVR510 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)"
   ```
 
-- まず、
+- まず、Zabbix から SNMP でスキャンしてホストを探すために、
+  「Zabbix/データ収集/ディスカバリ」でディスカバリルールを追加する。
+  - ![01_host_discovery_rule.png](./01_host_discovery_rule.png)
 
-Zabbixでは、「データ収集/ディスカバリ」でディスカバリルールを追加す
-  ることになる。
-  - 
+
+
+
+
 
 
 
