@@ -9,6 +9,7 @@
 
 - [倍控社の迷你工控机](https://bkhdpc.com/jisuanji/)の古いやつで、
   G30B-N5105だと思われる筐体。
+  - ここに Ubuntu を入れて Zabbix サーバにする。
   - いわゆるミニPCで、ファンレス。
   - Celeron N5105 / 16GB メモリ / 128GB SSD / 2.5Gbps LAN * 4
   - 2.5Gbps のルータにしようかと思ったら Intel I226-V で、通信ブツ切れ
@@ -39,10 +40,25 @@
       の
       [Archive file of all private MIB files.](https://www.rtpro.yamaha.co.jp/RT/docs/mib/yamaha-private-mib.tar.gz)
       を入れたので、YAMAHAのネットワーク機器なら大体大丈夫のはず。
-  - snmptranslateやsnmpwalkなどを用いてRTX1300と通信できるように両側で
-    設定しておく。
+- snmptranslateやsnmpwalkなどを用いてRTX1300やNVR510と通信できるように
+  両側で設定しておく。
 
 ## ホストディスカバリ
+
+- Zabbix から SNMP で RFC1213-MIB::sysDescr.0 を取ってきて、それが
+  NVR510 か RTX1300 のものだったら監視対象に追加する、という論理。
+  - ICMP echoに応答があれば追加とかもできるけど、それだと他のノードも
+    追加してしまうので、一応機種まで見ることにした。
+  - 今回は SNMPv2 でコミュニティ(RO)を設定してあるので、例えばRTX1300
+    であっても別のコミュニティのノードは検出しない。
+- コマンドラインからはこんな感じ。
+  ``` shell
+  $ snmpget 10.227.0.254 .1.3.6.1.2.1.1.1.0
+RFC1213-MIB::sysDescr.0 = STRING: "NVR510 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)"
+  ```
+
+
+
 
 
 
