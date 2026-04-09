@@ -14,14 +14,14 @@
   - Celeron N5105 / 16GB メモリ / 128GB SSD / 2.5Gbps LAN * 4
   - 2.5Gbps のルータにしようと思ったら Intel I226-V で、通信ブツ切れ
     でどうにもならないやつだった。Ubuntuだとちょっとマシみたい。
-    - [Ubuntu 24.04 LTS Server](https://jp.ubuntu.com/download)
+  - [Ubuntu 24.04 LTS Server](https://jp.ubuntu.com/download)
     - 24.04.4 LTS (Noble Numbat)
     - apt upgrade済み
-    - [PostgreSQL 16.13](https://www.postgresql.org/about/news/postgresql-183-179-1613-1517-and-1422-released-3246/)
+  - [PostgreSQL 16.13](https://www.postgresql.org/about/news/postgresql-183-179-1613-1517-and-1422-released-3246/)
     - apt でパッケージをインストール
-    - [TimescaleDB 2.25.2](https://www.tigerdata.com/docs/self-hosted/latest/install/installation-linux#install-timescale_db-on-linux)
+  - [TimescaleDB 2.25.2](https://www.tigerdata.com/docs/self-hosted/latest/install/installation-linux#install-timescale_db-on-linux)
     - TimescaleDBのリポジトリを追加して、そこからパッケージをインストール。
-    - [Zabbix 7.0 LTS](https://www.zabbix.com/download?zabbix=7.0&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent_2&db=pgsql&ws=nginx)
+  - [Zabbix 7.0 LTS](https://www.zabbix.com/download?zabbix=7.0&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent_2&db=pgsql&ws=nginx)
     - 7.0 LTS / Ubuntu / 24.04 (Noble) / Server, Frontend, Agent2 / PostgreSQL / Nginx
     - パッケージをダウンロードして dpkg -i でインストール。
 - [NVR510](https://network.yamaha.com/products/routers/nvr510/index)
