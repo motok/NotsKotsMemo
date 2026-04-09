@@ -38,8 +38,47 @@
   両側で設定しておく。
   - NVR510側は、SNMPv2でReadOnlyのコミュニティを設定。
   - Zabbixサーバ側は
-    - プライベートMIBを/usr/share/snmp/の下に置いて/etc/snmp/snmp.confで設定。
+    - プライベートMIBを/usr/share/snmp/の下に置いて
+      ``` shell
+      $ ls /usr/share/snmp
+      mib2c-data/                    mib2c.iterate.conf
+      mib2c.access_functions.conf    mib2c.mfd.conf
+      mib2c.array-user.conf          mib2c.notify.conf
+      mib2c.check_values_local.conf  mib2c.old-api.conf
+      mib2c.check_values.conf        mib2c.perl.conf
+      mib2c.column_defines.conf      mib2c.raw-table.conf
+      mib2c.column_enums.conf        mib2c.scalar.conf
+      mib2c.column_storage.conf      mib2c.table_data.conf
+      mib2c.conf                     mibs/
+      mib2c.container.conf           SensorDat.xml
+      mib2c.create-dataset.conf      snmp_perl_trapd.pl
+      mib2c.genhtml.conf             snmpconf-data/
+      mib2c.int_watch.conf           yamaha-private-mib/
+      mib2c.iterate_access.conf
+      $ ls /usr/share/snmp/yamaha-private-mib/
+      yamaha-product.mib.txt            yamaha-sw-firmware.mib.txt
+      yamaha-rt-firmware.mib.txt        yamaha-sw-hardware.mib.txt
+      yamaha-rt-hardware.mib.txt        yamaha-sw-l2ms.mib.txt
+      yamaha-rt-interfaces.mib.txt      yamaha-sw-loop-detect.mib.txt
+      yamaha-rt-ip.mib.txt              yamaha-sw-power-ethernet.mib.txt
+      yamaha-rt-switch.mib.txt          yamaha-sw-ptp.mib.txt
+      yamaha-rt.mib.txt                 yamaha-sw-rmon.mib.txt
+      yamaha-smi.mib.txt                yamaha-sw-termmon.mib.txt
+      yamaha-sw-bridge.mib.txt          yamaha-sw-vrrp.mib.txt
+      yamaha-sw-errdisable.mib.txt      yamaha-sw.mib.txt
+      ```
+    - /etc/snmp/snmp.confで設定。
+      ``` shell
+      $ cat /etc/snmp/snmp.conf
+      MIBDIRS /usr/share/snmp:/usr/share/snmp/mib2c-data:/usr/share/snmp/mibs:/usr/share/snmp/snmpconf-data:/usr/share/snmp/yamaha-private-mib
+      MIBS all
+      ```
     - ~/.snmp/snmp.conf にSNMPv2でこのコミュニティだよと設定。
+      ``` shell
+      $ cat ~/.snmp/snmp.conf 
+      defVersion 2c
+      defCommunity superdupersecret
+      ```
 - 後述のホストディスカバリやアイテムディスカバリは、僕が勝手に呼んでいる名称。
   ややこしいので別の用語で呼んだという以上の意味はない。
 
