@@ -24,8 +24,11 @@
   - [Zabbix 7.0 LTS](https://www.zabbix.com/download?zabbix=7.0&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent_2&db=pgsql&ws=nginx)
     - 7.0 LTS / Ubuntu / 24.04 (Noble) / Server, Frontend, Agent2 / PostgreSQL / Nginx
     - パッケージをダウンロードして dpkg -i でインストール。
-- [RTX1300](https://network.yamaha.com/products/routers/rtx1300/index)
+- [NVR510](https://network.yamaha.com/products/routers/nvr510/index)
   - これを監視したい、Zabbixから、SNMPで。
+  - [NVR510 SNMP MIBリファレンス](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html)
+- [RTX1300](https://network.yamaha.com/products/routers/rtx1300/index)
+  - これも監視したい、Zabbixから、SNMPで。
   - [RTX1300 SNMP MIBリファレンス](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_rtx1300.html)
 - [NetSNMP](https://www.net-snmp.org)と各種MIB定義ファイル
   - snmp-mibs-downloaderパッケージも併せてaptでインストール。
