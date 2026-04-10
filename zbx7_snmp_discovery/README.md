@@ -117,22 +117,16 @@ SNMPによるデータ収集は、次のような順で行われる。
   - 今回は SNMPv2 でコミュニティ(RO)を設定してあるので、例え NVR510/RTX1300 で
     あっても別のコミュニティのノードは検出しない。
 
-xxxxxxxxxx
-
 - コマンドラインではこんな感じで応答が返ってくる。
   ``` shell
-  $ cat ~/.snmp/snmp.conf
-  defVersion 2c
-  defCommunity superDuperSecret
-
   $ snmptranslate -Of .1.3.6.1.2.1.1.1.0
   .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
-
+  
   $ snmptranslate .1.3.6.1.2.1.1.1.0
   RFC1213-MIB::sysDescr.0
-
-  $ snmpget 10.227.0.254 RFC1213-MIB::sysDescr.0
-  RFC1213-MIB::sysDescr.0 = STRING: "RTX1300 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)"
+  
+  $ snmpwalk 10.227.0.254 .1.3.6.1.2.1.1.1.0
+  RFC1213-MIB::sysDescr.0 = STRING: "NVR510 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)"
   ```
 
 ### SNMP でホストディスカバリをさせる
