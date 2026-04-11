@@ -226,6 +226,9 @@ SNMPによるデータ収集は、次のような順で行われる。
 テンプレートは、「Zabbix/データ収集/テンプレート」で「テンプレートの作成」をクリックして作成する。
 とりあえず、「YAMAHA NVR510 by SNMP」というテンプレートを作成したのが次の図である。
 
+  <img src="./10_create-template.png" width=60%>YAMAHA NVR510 by SNMP テンプレート作成<img/>
+
+
 
 
 
