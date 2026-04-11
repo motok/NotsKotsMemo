@@ -291,7 +291,7 @@ RFC1213-MIB::sysName.0 = STRING: "myNVR510"
 | 有効 | チェック状態。 |
 
 
-
+XXXXX 「保存前処理」タブ
 
 
 
