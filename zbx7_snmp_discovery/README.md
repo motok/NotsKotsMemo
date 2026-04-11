@@ -249,7 +249,7 @@ SNMPによるデータ収集は、次のような順で行われる。
 作成した「YAMAHA NVR510 by SNMP」テンプレートにアイテムやその他の要素を追加すれば、監視などができる。
 上述の
 [NVR510 SNMP MIBリファレンスの標準MIB/systemグループ](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html#system_group)
-を見ると、sysName (1.3.6.1.2.1.1.5) があるので、これを監視するアイテムを作成してみよう。
+を見ると、RFC1213-MIB::sysName (1.3.6.1.2.1.1.5) があるので、これを監視するアイテムを作成してみよう。
 
 まず、sysName をコマンドラインから取得すると次のようになった。
 
@@ -264,8 +264,16 @@ $ snmpwalk 10.227.0.254 1.3.6.1.2.1.1.5
 RFC1213-MIB::sysName.0 = STRING: "myNVR510"
 ```
 
+これをテンプレートに入れるには、先ほどのテンプレート一覧画面で「Yamaha NVR510 by SNMP」テンプレートの
+行にある「アイテム」をクリックした先で「アイテムの作成」ボタンを押してアイテムを作成する。
 
+  <img src="./12_item-list.png" width=60%>「アイテム」をクリックした先の画面<img/>
 
+  <img src="./13_item-creation.png" width=60%>そこで「アイテムの作成」ボタンを押した画面<img/>
+
+まずは「アイテム」タブはこんな感じ。
+
+  <img src="./14_item-creation-item.png" width=60%>そこで「アイテムの作成」ボタンを押した画面<img/>
 
 
 
