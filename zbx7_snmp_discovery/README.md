@@ -246,6 +246,25 @@ SNMPによるデータ収集は、次のような順で行われる。
 
 ### アイテム作成
 
+作成した「YAMAHA NVR510 by SNMP」テンプレートにアイテムやその他の要素を追加すれば、監視などができる。
+上述の
+[NVR510 SNMP MIBリファレンスの標準MIB/systemグループ](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html#system_group)
+を見ると、sysName (1.3.6.1.2.1.1.5) があるので、これを監視するアイテムを作成してみよう。
+
+まず、sysName をコマンドラインから取得すると次のようになった。
+
+``` shell
+$ snmptranslate 1.3.6.1.2.1.1.5
+RFC1213-MIB::sysName
+
+$ snmptranslate -Of 1.3.6.1.2.1.1.5
+.iso.org.dod.internet.mgmt.mib-2.system.sysName
+
+$ snmpwalk 10.227.0.254 1.3.6.1.2.1.1.5
+RFC1213-MIB::sysName.0 = STRING: "myNVR510"
+```
+
+
 
 
 
