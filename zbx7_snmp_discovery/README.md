@@ -330,7 +330,10 @@ Zabbix/データ収集/テンプレート で YAMAHA NVR510 by SNMP テンプレ
 「ディスカばりルール」のページになるので、右上「ディスカバリルールの作成」ボタンを押して作成する。
 
   <img src="./18_YAMAHA-NVR510-by-SNMP.png" width=60%>YAMAHA NVR510 by SNMPテンプレートで「ディスカバリ」をクリックすると、<img/>
+
   <img src="./19_discovery-rules.png" width=60%>ディスカバリルール画面になるので右上「ディスカバリルールの作成」ボタンをクリックして<img/>
+
   <img src="./20_discovery-rule-creation.png" width=60%>ディスカバリルールを作成する。<img/>
-  
+
+
 
