@@ -331,7 +331,37 @@ Zabbix/データ収集/テンプレート で YAMAHA NVR510 by SNMP テンプレ
 
   <img src="./18_YAMAHA-NVR510-by-SNMP.png" width=60%>YAMAHA NVR510 by SNMPテンプレートで「ディスカバリ」をクリックすると、<img/>
 
-  <img src="./19_discovery-rules.png" width=60%>ディスカバリルール画面になるので右上「ディスカバリルールの作成」ボタンをクリックして<img/>
+  <img src="./19_discovery-rules.png" width=60%>ディスカバリルール画面になるので右上「ディスカバリルールの作成」ボタンをクリックしてディスカバリルールを作成する。<img/>
+
+[NVR510のMIBのinterfaceグループ](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html#interface_group)
+を見ると、RFC1213-MIB::ifDescr があって「インタフェース名」文字列を取得できることがわかる。
+コマンドラインからやると次のようになる。
+
+``` shell
+$ snmptranslate -Of 1.3.6.1.2.1.2.2.1.2
+.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifDescr
+
+$ snmptranslate 1.3.6.1.2.1.2.2.1.2
+RFC1213-MIB::ifDescr
+
+$ snmpwalk 10.227.0.254 1.3.6.1.2.1.2.2.1.2
+RFC1213-MIB::ifDescr.1 = STRING: "LAN1"
+RFC1213-MIB::ifDescr.2 = STRING: "LAN2"
+RFC1213-MIB::ifDescr.3 = STRING: "ONU1"
+RFC1213-MIB::ifDescr.4 = STRING: "WAN1"
+RFC1213-MIB::ifDescr.53 = STRING: "NULL"
+RFC1213-MIB::ifDescr.54 = STRING: "LOOPBACK1"
+RFC1213-MIB::ifDescr.55 = STRING: "LOOPBACK2"
+RFC1213-MIB::ifDescr.56 = STRING: "LOOPBACK3"
+RFC1213-MIB::ifDescr.57 = STRING: "LOOPBACK4"
+RFC1213-MIB::ifDescr.58 = STRING: "LOOPBACK5"
+RFC1213-MIB::ifDescr.59 = STRING: "LOOPBACK6"
+RFC1213-MIB::ifDescr.60 = STRING: "LOOPBACK7"
+RFC1213-MIB::ifDescr.61 = STRING: "LOOPBACK8"
+RFC1213-MIB::ifDescr.62 = STRING: "LOOPBACK9"
+```
+
+
 
   <img src="./20_discovery-rule-creation.png" width=60%>ディスカバリルールを作成する。<img/>
 
