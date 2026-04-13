@@ -560,7 +560,47 @@ RFC1213-MIB::ifType.62 = INTEGER: softwareLoopback(24)
 
   <img src="./43_protoitem-label-mapping.png" width=60%>RFC1213-MIB::ifTypeの値のマッピング(アイテムのプロトタイプ側)<img/>
 
+### RFC1213-MIB::ifInOctets
 
+当該インタフェースが受信したオクテット数を保持する OID である。
+
+``` shell
+$ snmptranslate 1.3.6.1.2.1.2.2.1.10
+RFC1213-MIB::ifInOctets
+
+$ snmptranslate -Of 1.3.6.1.2.1.2.2.1.10
+.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifInOctets
+
+$ snmpwalk 10.227.0.254 1.3.6.1.2.1.2.2.1.10
+RFC1213-MIB::ifInOctets.1 = Counter32: 3520838655
+RFC1213-MIB::ifInOctets.2 = Counter32: 3714538612
+RFC1213-MIB::ifInOctets.3 = Counter32: 0
+RFC1213-MIB::ifInOctets.4 = Counter32: 0
+RFC1213-MIB::ifInOctets.53 = Counter32: 0
+RFC1213-MIB::ifInOctets.54 = Counter32: 0
+RFC1213-MIB::ifInOctets.55 = Counter32: 0
+RFC1213-MIB::ifInOctets.56 = Counter32: 0
+RFC1213-MIB::ifInOctets.57 = Counter32: 0
+RFC1213-MIB::ifInOctets.58 = Counter32: 0
+RFC1213-MIB::ifInOctets.59 = Counter32: 0
+RFC1213-MIB::ifInOctets.60 = Counter32: 0
+RFC1213-MIB::ifInOctets.61 = Counter32: 0
+RFC1213-MIB::ifInOctets.62 = Counter32: 0
+```
+
+このバイト数自体には普通はあまり興味がなくて、何 Mbps で受信してたの？というところに興味があるわけなので、
+受信バイト数から受信速度(bps)に変換したいのである。
+
+そのために、
+
+- RFC1213-MIB::ifInOctets を素直に監視対象にしておいて (ということはこっちは観測時点までに受信したバイト数)
+- それを換算して bps の次元に持ってくる。
+
+ということをやる。
+
+素直に観測する方は前述のやり方のままなので、下図のように作成済みだとしよう。
+
+  <img src="./44_protoitem-ifInOctets" width=60%>RFC1213-MIB::ifInOctetsの「アイテムのプロトタイプ」<img/>
 
 
 
