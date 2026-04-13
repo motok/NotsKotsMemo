@@ -316,6 +316,9 @@ Zabbix/監視データ/ホスト で NVR510 (setup.netvolante.jp)の行を見る
 
 「最新データ」をクリックした先は、Zabbix/監視データ/最新データ の画面で NVR510 のアイテム (RFC1213-MIB::sysName) が myNVR510 となっているのがわかる。
 
+
+  <img src="./17_newest-data.png" width=60%>RFC1213-MIB::sysNameとして"myNVR510"を観測した図<img/>
+
 ホスト当たり１個しかないデータについては、こうやってアイテムを作っておけば、発見したホストに対して自動的に監視が始まるはずである。
 
 ### ディスカバリ(LLD)
