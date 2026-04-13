@@ -514,7 +514,7 @@ $ snmpwalk -Of 10.227.0.254 1.3.6.1.2.1.1.3
 .iso.org.dod.internet.mgmt.mib-2.system.sysUpTime.sysUpTimeInstance = Timeticks: (536080101) 62 days, 1:06:41.01
 ```
 
-これには注意するべき点があって、まず、
+これの監視項目を作る際には注意するべき点があって、まず、
 「単位」として "uptime" を指定することで、Zabbix 的に「 N 日, hh:mm:ss」のような時間表示にしてくれる。
 
   <img src="./40_sysUpTime-unit.png" width=60%>RFC1213-MIB::sysUpTimeの単位<img/>
@@ -525,8 +525,40 @@ $ snmpwalk -Of 10.227.0.254 1.3.6.1.2.1.1.3
 
   <img src="./41_sysUpTime-multiplier.png" width=60%>RFC1213-MIB::sysUpTimeの乗算<img/>
 
-###
+### RFC1213-MIB::ifType
 
+これは LAN1 などのインタフェースの種別を整数の値で返してくる OID である。
+
+``` shell
+$ snmptranslate 1.3.6.1.2.1.2.2.1.3
+RFC1213-MIB::ifType
+
+$ snmptranslate -Of 1.3.6.1.2.1.2.2.1.3
+.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifType
+
+$ snmpwalk 10.227.0.254 RFC1213-MIB::ifType
+RFC1213-MIB::ifType.1 = INTEGER: ethernet-csmacd(6)
+RFC1213-MIB::ifType.2 = INTEGER: ethernet-csmacd(6)
+RFC1213-MIB::ifType.3 = INTEGER: ethernet-csmacd(6)
+RFC1213-MIB::ifType.4 = INTEGER: other(1)
+RFC1213-MIB::ifType.53 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.54 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.55 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.56 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.57 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.58 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.59 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.60 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.61 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifType.62 = INTEGER: softwareLoopback(24)
+```
+
+こう言う場合には、テンプレートの「値のマッピング」タブに対応関係を書いておいて、
+「アイテムのプロトタイプ」の「値のマッピング」のところでその対応関係を参照してやれば良い。
+
+  <img src="./42_template-label-mapping.png" width=60%>RFC1213-MIB::ifTypeの値のマッピング(テンプレート側)<img/>
+
+  <img src="./43_protoitem-label-mapping.png" width=60%>RFC1213-MIB::ifTypeの値のマッピング(アイテムのプロトタイプ側)<img/>
 
 
 
