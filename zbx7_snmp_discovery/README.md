@@ -593,7 +593,7 @@ RFC1213-MIB::ifInOctets.62 = Counter32: 0
 
 そのために、
 
-- RFC1213-MIB::ifInOctets を素直に監視対象にしておいて (ということはこっちは観測時点までに受信したバイト数)
+- RFC1213-MIB::ifInOctets を素直に監視対象にしておいて
 - それを換算して bps の次元に持ってくる。
 
 ということをやる。
@@ -602,5 +602,16 @@ RFC1213-MIB::ifInOctets.62 = Counter32: 0
 
   <img src="./44_protoitem-ifInOctets.png" width=60%>RFC1213-MIB::ifInOctetsの「アイテムのプロトタイプ」<img/>
 
+この監視項目のデータを bps に換算するには、
 
+- 別の「アイテムのプロトタイプ」を作って
+- 受信バイト数の「アイテムのプロトタイプ」のデータを参照し
+  - 「タイプ」を「依存アイテム」にして
+  - 「マスターアイテム」として受信バイト数の「アイテムのプロトタイプ」を指定するということ。
+- 換算その他の操作を追加する。
+  - 「単位」として "bps" を指定する。これで必要なら Zabbix が自動的に kbps や Mbps に換算してくれる。
+  - 「保存前処理」タブで「１秒あたりの差分」を取って「８倍」する。これでバイト数からbpsの次元に変換できる。
 
+  <img src="./45_protoitem-ifInOctets-bps-protoitem.png" width=60%>RFC1213-MIB::ifInOctetsから作った転送速度の「アイテムのプロトタイプ」タブ<img/>
+
+  <img src="./46_protoitem-ifInOctets-bps-processing.png" width=60%>RFC1213-MIB::ifInOctetsから作った転送速度の「保存前処理」タブ<img/>
