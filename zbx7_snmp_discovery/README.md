@@ -618,3 +618,4 @@ RFC1213-MIB::ifInOctets.62 = Counter32: 0
 
 「アイテムのプロトタイプ」のリストではこんなふうに見える。(緑色文字で元の「アイテムのプロトタイプ」名が表示されているところに注目)
 
+  <img src="./47_protoitem-ifInOctets-bps-list.png" width=60%>RFC1213-MIB::ifInOctetsから作った転送速度の「保存前処理」タブ<img/>
