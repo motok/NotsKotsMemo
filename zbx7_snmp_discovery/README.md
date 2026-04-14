@@ -600,7 +600,7 @@ RFC1213-MIB::ifInOctets.62 = Counter32: 0
 
 素直に観測する方は前述のやり方のままなので、下図のように作成済みだとしよう。
 
-  <img src="./44_protoitem-ifInOctets" width=60%>RFC1213-MIB::ifInOctetsの「アイテムのプロトタイプ」<img/>
+  <img src="./44_protoitem-ifInOctets.png" width=60%>RFC1213-MIB::ifInOctetsの「アイテムのプロトタイプ」<img/>
 
 
 
