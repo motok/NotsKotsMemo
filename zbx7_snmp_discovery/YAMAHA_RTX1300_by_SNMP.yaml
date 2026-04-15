@@ -1,3 +1,7 @@
+# Copyright 2026 moto kawasaki <moto@kawasaki3.org>
+# licensed under "SPDX-License-Identifier: BSD-2-Clause".
+# https://www.freebsd.org/internal/software-license/
+
 zabbix_export:
   version: '7.0'
   template_groups:
