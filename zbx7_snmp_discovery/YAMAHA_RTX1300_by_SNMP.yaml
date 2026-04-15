@@ -1,0 +1,823 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+    - uuid: 36bff6c29af64692839d077febfc7079
+      name: 'Templates/Network devices'
+  templates:
+    - uuid: c44d038f06884b788386c9af1fa2717e
+      template: 'YAMAHA RTX1300 by SNMP'
+      name: 'YAMAHA RTX1300 by SNMP'
+      groups:
+        - name: Templates
+        - name: 'Templates/Network devices'
+      items:
+        - uuid: 0258abe1d8cb4fd48dc7512e5f2fb33c
+          name: 'RFC1213-MIB::sysContact'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.mgmt.mib-2.system.sysContact.0
+          key: RFC1213-MIB.sysContact
+          delay: 5m
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: e250896bdc64454e8e3b0cb0758b8022
+          name: 'RFC1213-MIB::sysDescr'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
+          key: RFC1213-MIB.sysDescr
+          delay: 5m
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: aaf80963930147e3ad34a8f55c4bde07
+          name: 'RFC1213-MIB::sysLocation'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.mgmt.mib-2.system.sysLocation.0
+          key: RFC1213-MIB.sysLocation
+          delay: 5m
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: 1fd342ff8ecb4c9b8e547f0d41eae084
+          name: 'RFC1213-MIB::sysName'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.mgmt.mib-2.system.sysName.0
+          key: RFC1213-MIB.sysName
+          delay: 5m
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: f9176eda6296450a82d9e63f9f21e2b2
+          name: 'RFC1213-MIB::sysObjectID'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.mgmt.mib-2.system.sysObjectID.0
+          key: RFC1213-MIB.sysObjectID
+          delay: 5m
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: e9c34f61fb62499098b6b0fab041b655
+          name: 'RFC1213-MIB::sysUpTime'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.mgmt.mib-2.system.sysUpTime.0
+          key: RFC1213-MIB.sysUpTime
+          delay: 5m
+          trends: '0'
+          units: uptime
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: c7c9b518e2474e858dd643ce757e224d
+          name: 'YAMAHA-RT-FIRMWARE::yrfRevision'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.private.enterprises.yamaha.yamahaRT.yamahaRTFirmware.yrfRevision.0
+          key: YAMAHA-RT-FIRMWARE.yrfRevision
+          delay: 5m
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: e45df9a244b5475a90045a262115d407
+          name: 'YAMAHA-RT-HARDWARE::yrhCpuUtil1min'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.private.enterprises.yamaha.yamahaRT.yamahaRTHardware.yrhCpuUtil1min.0
+          key: YAMAHA-RT-HARDWARE.yrhCpuUtil1min
+          trends: '0'
+          units: '%'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: 13ec5ac152064e40804af981151bd1b8
+          name: 'YAMAHA-RT-HARDWARE::yrhCpuUtil5min'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.private.enterprises.yamaha.yamahaRT.yamahaRTHardware.yrhCpuUtil5min.0
+          key: YAMAHA-RT-HARDWARE.yrhCpuUtil5min
+          delay: 5m
+          trends: '0'
+          units: '%'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: 4dcebb24a17d42f4bea9e346dd7157af
+          name: 'YAMAHA-RT-HARDWARE::yrhMemoryUtil'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.private.enterprises.yamaha.yamahaRT.yamahaRTHardware.yrhMemoryUtil.0
+          key: YAMAHA-RT-HARDWARE.yrhMemoryUtil
+          delay: 5m
+          trends: '0'
+          units: '%'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+        - uuid: c1367f010989447e8183559107bc2a33
+          name: 'YAMAHA-RT-HARDWARE::yrhSystemAlarm'
+          type: SNMP_AGENT
+          snmp_oid: .iso.org.dod.internet.private.enterprises.yamaha.yamahaRT.yamahaRTHardware.yrhSystemAlarm.0
+          key: YAMAHA-RT-HARDWARE.yrhSystemAlarm
+          delay: 5m
+          valuemap:
+            name: OnOff
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+      discovery_rules:
+        - uuid: c15b223fc1c44c7dbb25227520c3b1e6
+          name: 'RTX1300 interfacesディスカバリ'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifDescr]'
+          key: net.if.discovery
+          delay: 5m
+          filter:
+            conditions:
+              - macro: '{#IFDESCR}'
+                value: ^LAN1$
+                formulaid: A
+              - macro: '{#IFDESCR}'
+                value: ^LAN2$
+                formulaid: B
+              - macro: '{#IFDESCR}'
+                value: ^LAN3$
+                formulaid: C
+          item_prototypes:
+            - uuid: f93b6d9fba584c6eacdebb788a7ab2c4
+              name: 'IF-MIB::ifHCInBroadcastPkts.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCInBroadcastPkts.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCInBroadcastPkts.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 2d72f12fca7d47fcb29734ab4b082c24
+              name: 'IF-MIB::ifHCInMulticastPkts.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCInMulticastPkts.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCInMulticastPkts.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: abc8a2f6e9b44ccf874fcc65754f01da
+              name: 'IF-MIB::ifHCInOctets.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCInOctets.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCInOctets.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              units: B
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 46c0ad95fd7c49afb5bc92c45e06d01c
+              name: 'IF-MIB::ifHCInUcastPkts.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCInUcastPkts.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCInUcastPkts.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: be8fb42bae164c5eac1426ca448ecbb1
+              name: 'IF-MIB::ifHCOutBroadcastPkts.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCOutBroadcastPkts.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCOutBroadcastPkts.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: d2307c1880594026b63b5b24358bb44d
+              name: 'IF-MIB::ifHCOutMulticastPkts.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCOutMulticastPkts.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCOutMulticastPkts.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: c876fc46571b48cf96ceb767677a9140
+              name: 'IF-MIB::ifHCOutOctets.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCOutOctets.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCOutOctets.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              units: B
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 6f676623922449dda147ac1565fb2e0a
+              name: 'IF-MIB::ifHCOutUcastPkts.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.ifMIB.ifMIBObjects.ifXTable.ifXEntry.ifHCOutUcastPkts.{#SNMPINDEX}'
+              key: 'IF-MIB.ifHCOutUcastPkts.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: b75360df04294f409e03bd61f4a01e5e
+              name: 'IN bps: {#SNMPINDEX}: {#IFDESCR}'
+              type: DEPENDENT
+              key: 'IN.bps.[{#SNMPINDEX}]'
+              delay: '0'
+              value_type: FLOAT
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+              master_item:
+                key: 'IF-MIB.ifHCInOctets.[{#SNMPINDEX}]'
+            - uuid: e02f664ada5d446f8270131a914abf18
+              name: 'IN pps: {#SNMPINDEX}: {#IFDESCR}'
+              type: CALCULATED
+              key: 'IN.pps.[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              units: pps
+              params: 'last(//IF-MIB.ifHCInBroadcastPkts.[{#SNMPINDEX}]) + last(//IF-MIB.ifHCInMulticastPkts.[{#SNMPINDEX}]) + last(//IF-MIB.ifHCInUcastPkts.[{#SNMPINDEX}])'
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: e6cf5ddde6b54ba594ab3284aef12046
+              name: 'OUT bps: {#SNMPINDEX}: {#IFDESCR}'
+              type: DEPENDENT
+              key: 'OUT.bps.[{#SNMPINDEX}]'
+              delay: '0'
+              value_type: FLOAT
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+              master_item:
+                key: 'IF-MIB.ifHCOutOctets.[{#SNMPINDEX}]'
+            - uuid: 6a8c7da229b148f38de92a183b38e8c4
+              name: 'OUT pps: {#SNMPINDEX}: {#IFDESCR}'
+              type: CALCULATED
+              key: 'OUT.pps.[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              units: pps
+              params: 'last(//IF-MIB.ifHCOutBroadcastPkts.[{#SNMPINDEX}]) + last(//IF-MIB.ifHCOutMulticastPkts.[{#SNMPINDEX}]) + last(//IF-MIB.ifHCOutUcastPkts.[{#SNMPINDEX}])'
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 1316a52840f64f5bafe46aeeb07378d2
+              name: 'RFC1213-MIB::ifDescr.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifDescr.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifDescr.[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: CHAR
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: d833503167d243e2b87da3c46eba9da5
+              name: 'RFC1213-MIB:: ifInDiscards.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifInDiscards.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifInDiscards.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 5d8e0289e00646c7868e4466c04b1744
+              name: 'RFC1213-MIB:: ifInErrors.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifInErrors.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifInErrors.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 1e34b55a08c4476abf2976ba8a33efc9
+              name: 'RFC1213-MIB:: ifInUnknownProtos.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifInUnknownProtos.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifInUnknownProtos.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 61a56ef300b2462dab716881305a0a88
+              name: 'RFC1213-MIB::ifMtu.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifMtu.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifMtu.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              units: B
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: d8a9817afd94486ebf3a0afb06e48500
+              name: 'RFC1213-MIB::ifOperStatus.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifOperStatus.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifOperStatus.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              valuemap:
+                name: ifOperStatus
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: cc00ffd1e2f24397a5d40b12b1e97299
+              name: 'RFC1213-MIB:: ifOutDiscards.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifOutDiscards.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifOutDiscards.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 4b92c5abcb4f476b85a6e02509c86b70
+              name: 'RFC1213-MIB:: ifOutErrors.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifOutErrors.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifOutErrors.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+            - uuid: 30689c7765d342b380e93e30581c2618
+              name: 'RFC1213-MIB::ifPhysAddress.{#SNMPINDEX} ({#IFDESCR})'
+              type: SNMP_AGENT
+              snmp_oid: '.iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifPhysAddress.{#SNMPINDEX}'
+              key: 'RFC1213-MIB.ifPhysAddress.[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: CHAR
+              trends: '0'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - '3600'
+          lld_macro_paths:
+            - lld_macro: '{#IFDESCR}'
+              path: $.IFDESCR
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - IFDESCR
+                - .iso.org.dod.internet.mgmt.mib-2.interfaces.ifTable.ifEntry.ifDescr
+                - '0'
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - '3600'
+      dashboards:
+        - uuid: c60fe5916b2947859cc9239f1249f5a3
+          name: 'RTX1300 ダッシュボード'
+          pages:
+            - widgets:
+                - type: item
+                  width: '36'
+                  fields:
+                    - type: ITEM
+                      name: itemid.0
+                      value:
+                        host: 'YAMAHA RTX1300 by SNMP'
+                        key: RFC1213-MIB.sysName
+                    - type: INTEGER
+                      name: show.0
+                      value: '2'
+                - type: svggraph
+                  name: 'CPU 使用率'
+                  'y': '2'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'YAMAHA-RT-HARDWARE::yrhCpuUtil1min'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'YAMAHA-RT-HARDWARE::yrhCpuUtil5min'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: CEEMI
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: svggraph
+                  name: 'LAN1 (bps)'
+                  'y': '7'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'IN bps: 1: LAN1'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'OUT bps: 1: LAN1'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: OUBCE
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: svggraph
+                  name: 'LAN3 (bps)'
+                  'y': '12'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'IN bps: 3: LAN3'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'OUT bps: 3: LAN3'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: XLEWA
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: svggraph
+                  name: 'LAN1 (pps)'
+                  'y': '17'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'IN pps: 1: LAN1'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'OUT pps: 1: LAN1'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: NJNLD
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: svggraph
+                  name: 'LAN3 (pps)'
+                  'y': '22'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'IN pps: 3: LAN3'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'OUT pps: 3: LAN3'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: EQSOU
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: clock
+                  x: '36'
+                  width: '36'
+                  fields:
+                    - type: INTEGER
+                      name: clock_type
+                      value: '1'
+                    - type: INTEGER
+                      name: show.0
+                      value: '1'
+                    - type: INTEGER
+                      name: show.1
+                      value: '2'
+                    - type: INTEGER
+                      name: show.2
+                      value: '3'
+                - type: svggraph
+                  name: メモリ使用率
+                  x: '36'
+                  'y': '2'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'YAMAHA-RT-HARDWARE::yrhMemoryUtil'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: BCDBF
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: svggraph
+                  name: 'LAN2 (bps)'
+                  x: '36'
+                  'y': '7'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'IN bps: 2: LAN2'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'OUT bps: 2: LAN2'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: ROEVL
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+                - type: svggraph
+                  name: 'LAN2 (pps)'
+                  x: '36'
+                  'y': '17'
+                  width: '36'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: ds.0.color
+                      value: FF465C
+                    - type: INTEGER
+                      name: ds.0.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.0.items.0
+                      value: 'IN pps: 2: LAN2'
+                    - type: INTEGER
+                      name: ds.0.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.0.width
+                      value: '2'
+                    - type: STRING
+                      name: ds.1.color
+                      value: 4FC3F7
+                    - type: INTEGER
+                      name: ds.1.fill
+                      value: '0'
+                    - type: STRING
+                      name: ds.1.items.0
+                      value: 'OUT pps: 2: LAN2'
+                    - type: INTEGER
+                      name: ds.1.transparency
+                      value: '1'
+                    - type: INTEGER
+                      name: ds.1.width
+                      value: '2'
+                    - type: STRING
+                      name: reference
+                      value: EHXSY
+                    - type: INTEGER
+                      name: righty
+                      value: '0'
+      valuemaps:
+        - uuid: dab352d00ba9465c84d660e9b04e194f
+          name: ifOperStatus
+          mappings:
+            - value: '1'
+              newvalue: up
+            - value: '2'
+              newvalue: down
+            - value: '4'
+              newvalue: unknown
+            - value: '5'
+              newvalue: dormant
+            - value: '6'
+              newvalue: notPresent
+            - value: '7'
+              newvalue: lowerLayerDown
+            - value: '3'
+              newvalue: testing
+        - uuid: 63fdf571250a40b4b7fd13852d490324
+          name: OnOff
+          mappings:
+            - value: '1'
+              newvalue: 'on'
+            - value: '2'
+              newvalue: 'off'

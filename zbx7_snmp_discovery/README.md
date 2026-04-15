@@ -10,6 +10,8 @@ at your own risk でご利用願います。
 あと、バグやご要望あればお知らせください。(必ず対応すると言うわけには行かないと思いますが)
 
 - [YAMAHA_NVR510_by_SNMP.yaml](./YAMAHA_NVR510_by_SNMP.yaml)
+- [YAMAHA_RTX1300_by_SNMP.yaml](./YAMAHA_RTX1300_by_SNMP.yaml)
+  - うーん、ppsの計算がなんだか変。原因がわからん。
 
 ## 環境
 
