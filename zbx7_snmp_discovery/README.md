@@ -394,7 +394,7 @@ Zabbix/データ収集/テンプレート で YAMAHA NVR510 by SNMP テンプレ
 次に「保存前処理」タブでは、SNMP walk の結果として得たデータを前処理する。
 
 - JSON の形に変換
-- マクロ IFDESCR に RFC1213-MIB::ifDescr の値を格納
+  - マクロ IFDESCR に RFC1213-MIB::ifDescr の値を格納
 - １時間以内に変化がなければ破棄
 
 上で見たように、SNMP walk の結果としては `RFC1213-MIB::ifDescr.1 = STRING: "LAN1"` のような行が複数返されるわけだが、
