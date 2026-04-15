@@ -622,6 +622,26 @@ RFC1213-MIB::ifInOctets.62 = Counter32: 0
 
 元データのバイト数は要らないよと言う場合は、元データの方の「アイテムのプロトタイプ」で変換の処理を入れてしまえば、それだけで換算ができるので、それでもよい。
 
+### インタフェース毎の pps
+
+みんな大好きパケットパーセコンドも作っておくとすると、こんな感じかしらね。
+
+基本的な考え方は、
+[NVR510 SNMP MIB リファレンスの標準MIB/interfaceグループ](https://www.rtpro.yamaha.co.jp/RT/docs/snmp/snmp_mib_nvr510.html#interface_group)
+に
+
+- RFC1213-MIB::ifInUcastPkts (1.3.6.1.2.1.2.2.1.11)
+- RFC1213-MIB::ifInNUcastPkts (1.3.6.1.2.1.2.2.1.12)
+- RFC1213-MIB::ifOutUcastPkts (1.3.6.1.2.1.2.2.1.17)
+- RFC1213-MIB::ifOutNUcastPkts (1.3.6.1.2.1.2.2.1.18)
+
+があるので、IN/OUT のそれぞれについて UcastPkts と NUcastPkts を足し合わせると
+そのインタフェースが処理したパケット数になるものと考える。
+(DiscardやErrorsも含めるかどうかは諸説あるかもです)
+
+この「足し合わせてパケット数をパケット毎秒に換算する」ことを実現するには、「アイテムのプロトタイプ」のタイプ「計算」を使う。
+
+  <img src="./48_protoitem-in-pps.png" width=60%>アイテムのプロトタイプを足し合わせて...<img/>
 
 
 
