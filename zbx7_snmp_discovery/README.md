@@ -6,7 +6,8 @@
 それなりにハマったので、覚書を残しておきたい。
 
 以下で縷々述べているテンプレート定義は次のファイルにあります。
-[YAMAHA_NVR510_by_SNMP.yaml](./YAMAHA_NVR510_by_SNMP.yaml)
+
+- [YAMAHA_NVR510_by_SNMP.yaml](./YAMAHA_NVR510_by_SNMP.yaml)
 
 ## 環境
 
