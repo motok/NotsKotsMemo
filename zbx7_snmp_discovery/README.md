@@ -5,6 +5,9 @@
 ひょんなことから、Zabbix7 を建てて SNMP によるデータ収集をすることになった。
 それなりにハマったので、覚書を残しておきたい。
 
+以下で縷々述べているテンプレート定義は次のファイルにあります。
+[YAMAHA_NVR510_by_SNMP.yaml](./YAMAHA_NVR510_by_SNMP.yaml)
+
 ## 環境
 
 - [倍控社の迷你工控机](https://bkhdpc.com/jisuanji/)の古いやつで、
