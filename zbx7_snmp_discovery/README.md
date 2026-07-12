@@ -778,13 +778,83 @@ Did not find 'dot1agCfmMdIndex' in module #-1 (/usr/share/snmp/mibs/ietf/TRILL-O
 
 ``` shell
 # cd /usr/share/snmp/mibs/iana
-# # curl -O https://www.iana.org/assignments/ianastoragemediatype-mib/ianastoragemediatype-mib
+# curl -O https://www.iana.org/assignments/ianastoragemediatype-mib/ianastoragemediatype-mib
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  2389    0  2389    0     0  28684      0 --:--:-- --:--:-- --:--:-- 28783
 ```
 
+これでこのMIBは見つかるようになるので、他の不足 MIB も同様にインストールしていく。
+不足のMIBを全部インストールすると、`snmptranslate` が成功する。
+が、まだ警告が残っている。
 
+``` shell
+$ snmptranslate -Tl .1.3.6.1.2.1.1.1
+Bad operator (INTEGER): At line 73 in /usr/share/snmp/mibs/ietf/SNMPv2-PDU
+SNMPv2-MIB::sysDescr
+```
+
+この "Bad operator (INTEGER) ..." の警告は、MIB定義の矛盾であるらしい。
+次の URL
+
+[SNMP MIBs on Ubuntu - error in MIBs (serverfault)](https://serverfault.com/questions/936119/snmp-mibs-on-ubuntu-error-in-mibs)
+
+の "Which version of Ubuntu are you using?" で始まるメッセージには、大略次のようなことが書いてある。
+
+  - snmp-mib-downloader を使ってMIBファイル群をダウンロード・インストールすると、最後には "Bad operator (INTEGER) ..." の警告が残る。
+  - これは SNMPv2-PDU の max-bidings を定義する行の問題である。
+  - SNMPv2-PDU を修正する `diff` パッチを置いておく。
+  - あるいは、SNMPv2-PDU ファイルを単に削除しても構わない、なぜなら、このファイルに入っているのは SNMPv2 プロトコル上のデータ単位の定義なので、大抵の場合は個別の SNMP ツールの側にビルトインされているものだから。
+
+ということで、一応ここのパッチを現時点の SNMPv2-PDU に適用することで、上記警告が出ないようにした。
+パッチは次の通り。
+
+``` diff
+# diff -u SNMPv2-PDU.orig SNMPv2-PDU
+--- SNMPv2-PDU.orig	2026-07-12 13:01:40.615493414 +0900
++++ SNMPv2-PDU	2026-07-12 13:17:32.071261453 +0900
+@@ -70,7 +70,7 @@
+ 
+ Report-PDU ::= [8] IMPLICIT PDU
+ 
+-max-bindings INTEGER ::= 2147483647
++-- max-bindings INTEGER ::= 2147483647
+ 
+ PDU ::= SEQUENCE {
+         request-id INTEGER (-214783648..214783647),
+@@ -97,7 +97,8 @@
+                 inconsistentName(18)
+             },
+         error-index                 -- sometimes ignored
+-            INTEGER (0..max-bindings),
++            -- INTEGER (0..max-bindings),
++            INTEGER (0..2147483647),
+         variable-bindings           -- values are sometimes ignored
+             VarBindList
+     }
+@@ -105,8 +106,10 @@
+ BulkPDU ::=                         -- must be identical in
+     SEQUENCE {                      -- structure to PDU
+         request-id      INTEGER (-214783648..214783647),
+-        non-repeaters   INTEGER (0..max-bindings),
+-        max-repetitions INTEGER (0..max-bindings),
++        -- non-repeaters   INTEGER (0..max-bindings),
++        non-repeaters   INTEGER (0..2147483647),
++        -- max-repetitions INTEGER (0..max-bindings),
++        max-repetitions INTEGER (0..2147483647),
+         variable-bindings           -- values are ignored
+             VarBindList
+     }
+@@ -128,6 +131,7 @@
+ 
+ -- variable-binding list
+ 
+-VarBindList ::= SEQUENCE (SIZE (0..max-bindings)) OF VarBind
++-- VarBindList ::= SEQUENCE (SIZE (0..max-bindings)) OF VarBind
++-- VarBindList ::= SEQUENCE (SIZE (0..2147483647)) OF VarBind
+ 
+ END
+```
 
 
 
