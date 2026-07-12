@@ -761,6 +761,30 @@ RFC1381-MIB: 1007 lines.
     :
 ```
 
+これでMIBファイルが揃えば問題はないが、大抵の場合は揃わず、`snmptranslate` 等のコマンドでMIBファイルが見つからないというエラーが出る。
+
+``` shell
+$ snmptranslate -Tl .1.3.6.1.2.1.1.1
+MIB search path: /usr/share/snmp:/usr/share/snmp/mib2c-data:/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/snmp/snmpconf-data:/usr/share/snmp/yamaha-private-mib
+Cannot find module (IANA-STORAGE-MEDIA-TYPE-MIB): At line 19 in /usr/share/snmp/mibs/ietf/VM-MIB
+Did not find 'IANAStorageMediaType' in module #-1 (/usr/share/snmp/mibs/ietf/VM-MIB)
+Cannot find module (IEEE8021-CFM-MIB): At line 30 in /usr/share/snmp/mibs/ietf/TRILL-OAM-MIB
+Cannot find module (LLDP-MIB): At line 35 in /usr/share/snmp/mibs/ietf/TRILL-OAM-MIB
+Did not find 'dot1agCfmMdIndex' in module #-1 (/usr/share/snmp/mibs/ietf/TRILL-OAM-MIB)
+    :
+```
+
+上の例では、IANA-STORAGE-MEDIA-TYPE-MIB が不足なので、探してインストールする。
+
+``` shell
+# cd /usr/share/snmp/mibs/iana
+# # curl -O https://www.iana.org/assignments/ianastoragemediatype-mib/ianastoragemediatype-mib
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2389    0  2389    0     0  28684      0 --:--:-- --:--:-- --:--:-- 28783
+```
+
+
 
 
 
