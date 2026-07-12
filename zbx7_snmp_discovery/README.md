@@ -856,5 +856,17 @@ SNMPv2-MIB::sysDescr
  END
 ```
 
+これでエラーも警告もなく `snmptranslate` が動くようになった。
+そして、実機に対する `snmpwalk` なども動作するようになった。
 
+``` shell
+$ snmptranslate .1.3.6.1.2.1.1.1
+SNMPv2-MIB::sysDescr
+
+$ snmpwalk -v 2c -c ${SNMP_COMMUNITY} 10.227.0.254 .1.3.6.1.2.1.1.1
+SNMPv2-MIB::sysDescr.0 = STRING: NVR510 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)
+
+$ snmpget -v 2c -c ${SNMP_COMMUNITY} 10.227.0.254 .1.3.6.1.2.1.1.1.0
+SNMPv2-MIB::sysDescr.0 = STRING: NVR510 Rev.15.01.26 (Fri Aug 23 10:36:30 2024)
+```
 
