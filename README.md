@@ -2,6 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
+- 2026-07-15 [Zabbix ネットワークマップにインタラクティブシェルを](./zbx7_nwmap_shell)
 - 2026-07-05 [easy-bhyveメモ](./easy-bhyve.md)
 - 2026-03-27 [Zabbix7でSNMPディスカバリ](./zbx7_snmp_discovery/)
 - 2026-02-21 [サーバが自機を守るipfwルールの例](./ipfw.rules.md)
