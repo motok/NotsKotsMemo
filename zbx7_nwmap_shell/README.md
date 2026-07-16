@@ -98,7 +98,7 @@
     - 「入力値のバリデーションルール」に正規表現を書いておくと、ユーザが入力したコマンドがその正規表現に
       合致することを矯正できるので、あのコマンドは許すがこのコマンドは許さないみたいなことができる。
 
-  <img src="./04_creating_scripts.png" width=60%>telnetスクリプトの作成<img/>
+  <img src="./04_creating_script.png" width=60%>telnetスクリプトの作成<img/>
 
 
 
