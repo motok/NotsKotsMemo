@@ -44,6 +44,35 @@
 
   <img src="./01_nwmap_example.png" width=60%>作成したマップの例<img/>
 
+## グローバルスクリプト無効化解除
+
+- この版の Zabbix では、「グローバルスクリプト」はデフォルトでは無効状態になっている。
+  - 設定ファイル /etc/zabbix/zabbix_server.conf で EnableGlobalScripts=0
+    ```
+    ### Option: EnableGlobalScripts
+    #    Enable global scripts on Zabbix server.
+    #       0 - disable
+    #       1 - enable
+    #
+    # Mandatory: no
+    # Default:
+    # EnableGlobalScripts=1
+    EnableGlobalScripts=0
+    ```
+- 有効にするには、
+  - zabbix_server.conf を書き換えても良いし、
+  - /etc/zabbix/zabbix_server.d/ にファイルを追加して設定を修正しても良い。
+    ```
+    # cat /etc/zabbix/zabbix_server.d/scripts.conf 
+    EnableGlobalScripts=1
+    ```
+  - どちらの場合でも、zabbix プロセスの再起動 `systemctl restart zabbix` が必要。
+  - これで、さっきのネットワークマップ上のノードアイコンをクリックすると、
+    ポップアップメニューに「リンク」や「スクリプト」が出現する。
+    - もともと Ping, Traceroute や Telnet, Ssh が入っている。
+    - 下図は実験のためにいじった後なのでちょっといろいろ変わってしまっているが。
+
+  <img src="./02_nwmap_popup_menu.png" width=60%>ポップアップメニューの例<img/>
 
 ## URL タイプのスクリプト
 ## SSH/Telnet タイプのスクリプト
