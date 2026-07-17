@@ -121,9 +121,9 @@
 - `{HOST.CONN}` は「マクロ」で、この場合は監視対象ノードの FQDN もしくは IPアドレスなどに置換される。
   - Telnet タイプのスクリプトで出てきた `{MANUALINPUT}` もマクロのひとつ。
   - Zabbix ユーザマニュアルで言うと、
-    - [スクリプトの説明](https://www.zabbix.com/documentation/7.0/jp/manual/web_interface/frontend_sections/alerts/scripts) の
-    - 「範囲 (Scope)」のところに説明があるが、
-    - [サポートしているマクロ](https://www.zabbix.com/documentation/7.0/jp/manual/appendix/macros/supported_by_location)
+    - [スクリプトの説明](https://www.zabbix.com/documentation/7.0/jp/manual/web_interface/frontend_sections/alerts/scripts)
+      の「範囲 (Scope)」のところに説明があるが、
+      [サポートしているマクロ](https://www.zabbix.com/documentation/7.0/jp/manual/appendix/macros/supported_by_location)
       のようなマクロが使えるということである。
     - ただ、このコンテキストではこのマクロが使える、みたいな制約があるようなので、
       いつでもどこでもどれでも使えるわけではなさそうである。
@@ -131,3 +131,28 @@
   <img src="./07_script_url.png" width=60%>URLタイプのスクリプト定義<img/>
 
 ## ttyd と組み合わせてインタラクティブシェルを実現
+
+- ここまで見てきたように Zabbix に組み込まれた Telnet/Ssh タイプのスクリプトは、ログイン後にいくつかのコマンドを実行して
+  その結果を表示するものであった。
+  - 上でも見たように、そもそもブラウザ上にターミナル(TERM=xtermみたいなやつ)がないので無理だろう。
+- そうではなくて、インタラクティブシェルを使えるようにするスクリプトが欲しいとすれば、
+  別途、ターミナルを用意する必要がある。
+- それには以下のようなものが必要になるが、本稿では `ttyd` を使ってやってみる。
+  - [Apache Guacamole](https://guacamole.apache.org)
+  - [guacamole-lite](https://github.com/vadimpronin/guacamole-lite)
+  - [ttyd](https://github.com/tsl0922/ttyd)
+- アイデアとしては、こんな感じ。
+  - Zabbix のマップ上のノードアイコンからスクリプトを起動できる。
+  - そのスクリプトは URL タイプで、URL パラメータに当該ノードの IP アドレスを持たせる。
+  - URL の先には ttyd が待ち受けていて、パラメータで与えられた IP アドレスに対して telnet/ssh を実行する。
+  - 同時に、ttyd はターミナルをブラウザ上に実現できるので、インタラクティブシェルを動かすことができる。
+
+### ttyd を準備する
+
+-
+
+
+### Zabbix のスクリプトを準備する
+
+
+
