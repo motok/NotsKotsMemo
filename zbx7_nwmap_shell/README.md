@@ -132,15 +132,18 @@
 
 ## ttyd と組み合わせてインタラクティブシェルを実現
 
-- ここまで見てきたように Zabbix に組み込まれた Telnet/Ssh タイプのスクリプトは、ログイン後にいくつかのコマンドを実行して
-  その結果を表示するものであった。
+- ここまで見てきたように Zabbix に組み込まれた Telnet/Ssh タイプのスクリプトは、
+  ログイン後にいくつかのコマンドを実行してその結果を表示するものであった。
   - 上でも見たように、そもそもブラウザ上にターミナル(TERM=xtermみたいなやつ)がないので無理だろう。
-- そうではなくて、インタラクティブシェルを使えるようにするスクリプトが欲しいとすれば、
+- インタラクティブシェルを使えるようにするスクリプトが欲しいとすれば、
   別途、ターミナルを用意する必要がある。
-- それには以下のようなものが必要になるが、本稿では `ttyd` を使ってやってみる。
-  - [Apache Guacamole](https://guacamole.apache.org)
-  - [guacamole-lite](https://github.com/vadimpronin/guacamole-lite)
-  - [ttyd](https://github.com/tsl0922/ttyd)
+- それにはブラウザからHTTPでアクセスすると、ブラウザ上にターミナルを表示しつつ、
+  裏側で telnet/ssh を実行してそのターミナルに接続してくれるようなソフトウェアが必要になる。
+  - そのようなソフトウェアには、次のようなものがある。
+    - [Apache Guacamole](https://guacamole.apache.org)
+    - [guacamole-lite](https://github.com/vadimpronin/guacamole-lite)
+    - [ttyd](https://github.com/tsl0922/ttyd)
+  - 本稿では、`ttyd` を使ってインタラクティブシェルを実現する。
 - アイデアとしては、こんな感じ。
   - Zabbix のマップ上のノードアイコンからスクリプトを起動できる。
   - そのスクリプトは URL タイプで、URL パラメータに当該ノードの IP アドレスを持たせる。
