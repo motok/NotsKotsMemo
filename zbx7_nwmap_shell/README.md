@@ -219,4 +219,4 @@
 
   <img src="./09_url_script_to_telnet.png" width=60%>telnetするためのURLスクリプト<img/>
 
-  <img src="./08_telnet_on_browser.png" width=60%>ブラウザ上のtelnet<img/>
+  <img src="./10_telnet_on_browser.png" width=60%>ブラウザ上のtelnet<img/>
