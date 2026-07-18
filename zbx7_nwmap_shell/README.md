@@ -212,11 +212,11 @@
 
   <img src="./08_ttyd_sequence.png" width=60%>ttydの動き<img/>
 
-
-
-
-
 ### Zabbix のスクリプトを準備する
 
+- これで、`ttyd` 側の準備はできたので、Zabbix 側からアクセスすれば良い。
+  そのためには、URL タイプのスクリプトを使って ``ttyd` の待ち受けポートにアクセスすれば良い。
 
+  <img src="./09_url_script_to_telnet.png" width=60%>telnetするためのURLスクリプト<img/>
 
+  <img src="./08_telnet_on_browser.png" width=60%>ブラウザ上のtelnet<img/>
