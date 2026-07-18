@@ -139,20 +139,51 @@
   別途、ターミナルを用意する必要がある。
 - それにはブラウザからHTTPでアクセスすると、ブラウザ上にターミナルを表示しつつ、
   裏側で telnet/ssh を実行してそのターミナルに接続してくれるようなソフトウェアが必要になる。
-  - そのようなソフトウェアには、次のようなものがある。
+  - そのようなソフトウェアには、次のようなものがある(他にもある)。
     - [Apache Guacamole](https://guacamole.apache.org)
+      : フロントエンド(WebUI)に Tomcat を要求するのでかなり大掛かり。バックエンドは `guacd` デーモン。
     - [guacamole-lite](https://github.com/vadimpronin/guacamole-lite)
+      : バックエンドに `guacd` を使って、フロントエンドをもう少し軽くしたもののよう。
     - [ttyd](https://github.com/tsl0922/ttyd)
+      : いわば `guacd` の置き換え。 `guacd` だとフロントエンドとの間が Guacamole プロトコルなのに対し、
+      `ttyd` は HTTP プロトコルを受け付ける。フロントエンドに WebUI までは不要なら使いやすい。
   - 本稿では、`ttyd` を使ってインタラクティブシェルを実現する。
 - アイデアとしては、こんな感じ。
   - Zabbix のマップ上のノードアイコンからスクリプトを起動できる。
-  - そのスクリプトは URL タイプで、URL パラメータに当該ノードの IP アドレスを持たせる。
+  - そのスクリプトは URL タイプで、URL のパラメータに当該ノードの IP アドレスを持たせる。
   - URL の先には ttyd が待ち受けていて、パラメータで与えられた IP アドレスに対して telnet/ssh を実行する。
   - 同時に、ttyd はターミナルをブラウザ上に実現できるので、インタラクティブシェルを動かすことができる。
 
 ### ttyd を準備する
 
--
+- インストールは `apt install ttyd` で。
+- Ubuntu 24.04 LTS Server の場合のコマンドや関係ファイルは次の通り。
+  - `systemctl status ttyd` (status のところは enable/disable/start/stop/restart 等も)
+  - `systemd` が `ttyd` を扱う設定は `/usr/lib/systemd/system/ttyd.service` だが、
+    これを編集することはないんじゃないかな。
+  - `ttyd` の設定ファイルは `/etc/default/ttyd` らしい。
+    ここには `ttyd` に与えるオプションや引数を書くことができる。
+    - `ttyd` のオプション・引数については、 `man ttyd` や `ttyd -h` を見てほしい。
+      必要なところだけは後で触れる。
+    ``` shell
+    # /etc/default/ttyd
+
+    # TTYD_OPTIONS="-i lo -p 7681 -O login"
+    # TTYD_OPTIONS="-i enp0s2 -p 7681 -O -W -a /home/moto/ttyd.d/ttyd-wrapper.sh"
+    TTYD_OPTIONS="-u 65534 -g 65534 -i enp0s2 -p 7681 -O -W -a /home/moto/ttyd.d/ttyd-wrapper.sh"
+    ```
+  - `/etc/default/ttyd` で `ttyd` に与えた引数 `ttyd-wrapper.sh` はただのシェルスクリプトで、次の通り。
+    ``` shell
+    #!/bin/bash
+    TARGET_IP=$1
+
+    if [ -z "$TARGET_IP" ]; then
+        echo "Error: No IP address provided."
+        exit 1
+    fi
+
+    exec telnet "$TARGET_IP"
+    # exec ssh "$TARGET_IP"
 
 
 ### Zabbix のスクリプトを準備する
