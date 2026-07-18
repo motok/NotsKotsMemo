@@ -210,6 +210,7 @@
     今回のスクリプトでは、URL のパラメータとして渡された第１引数を接続先の IP アドレスだと理解して、
     そこへの `telnet` を実行する。
 
+  <img src="./08_ttyd_sequence.png" width=60%>ttydの動き<img/>
 
 
 
