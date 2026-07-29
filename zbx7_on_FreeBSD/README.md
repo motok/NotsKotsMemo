@@ -14,13 +14,35 @@ Ubuntu をはじめとする Linux 上に Zabbix をインストールするな�
 - Zabbix 7.0 LTS (7.0.28)
 - PostgreSQL 18.4
 
-## パッケージからのインストール
+## インストール
+
+- Ports の zabbix7-server パッケージは、MySQL/MariaDB 用にコンパイルされているので、
+  PostgreSQL で使いたい場合には /usr/ports/net-mgmt/zabbix7-server でコンパイルする
+  必要がある。
+
+  - /usr/ports に Ports コレクションを展開するためには、git clone する。
+    ``` shell
+    # git clone https://git.FreeBSD.org/ports.git /usr/ports
+    # git -C /usr/ports pull
+    ```
+  - 詳しくは、
+    [4.5.1 Ports Collection のインストール](https://docs.freebsd.org/ja/books/handbook/ports/#ports-using-installation-methods)
+    を参照のこと。
+  - zabbixをコンパイルするには、
+    ``` shell
+    # cd /usr/ports/net-mgmt/zabbix7-server
+    # make config
+    # make
+    # make install
+    ```
+  - `make config` のところで、MYSQLDVの選択を外し、PGSQLを選択する。
+    これで PostgreSQL 対応になる。
+     - <img src="./01_make_config.png" width=60%>make config画面<img/>
 
 - Zabbix は DBMS (MySQL/PostgreSQL) や Web サーバ (apache/nginx) を必要とするので、
   併せてパッケージ (Ports) からインストールしておく。
-  ```
+  ``` shell
   # pkg update
-  # pkg install zabbix7-server
   # pkg install postgresql18-server
   # pkg install nginx
   ```
