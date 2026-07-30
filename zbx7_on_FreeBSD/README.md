@@ -14,40 +14,30 @@ Ubuntu をはじめとする Linux 上に Zabbix をインストールするな�
 - Zabbix 7.0 LTS (7.0.28)
 - PostgreSQL 18.4
 
-## インストール
+## データベースの準備
 
-- Ports の zabbix7-server パッケージは、MySQL/MariaDB 用にコンパイルされているので、
-  PostgreSQL で使いたい場合には /usr/ports/net-mgmt/zabbix7-server でコンパイルする
-  必要がある。
+どうやら Zabbix での DBMS の第一候補は MySQL/MariaDB であるようだが、
+ここでは PostgreSQL で行く。
+別に MariaDB でもいいんだけれど、自分が慣れているのが PostgreSQL だというだけのこと。
 
-  - /usr/ports に Ports コレクションを展開するためには、git clone する。
-    ``` shell
-    # git clone https://git.FreeBSD.org/ports.git /usr/ports
-    # git -C /usr/ports pull
-    ```
-  - 詳しくは、
-    [4.5.1 Ports Collection のインストール](https://docs.freebsd.org/ja/books/handbook/ports/#ports-using-installation-methods)
-    を参照のこと。
-  - zabbixをコンパイルするには、
-    ``` shell
-    # cd /usr/ports/net-mgmt/zabbix7-server
-    # make config
-    # make
-    # make install
-    ```
-  - `make config` のところで、MYSQLDVの選択を外し、PGSQLを選択する。
-    これで PostgreSQL 対応になる。
-     - <img src="./01_make_config.png" width=60%>make config画面<img/>
+### PostgreSQL インストール
 
-- Zabbix は DBMS (MySQL/PostgreSQL) や Web サーバ (apache/nginx) を必要とするので、
-  併せてパッケージ (Ports) からインストールしておく。
-  ``` shell
-  # pkg update
-  # pkg install postgresql18-server
-  # pkg install nginx
-  ```
+まず、FreeBSD/Ports で現在デフォルトのバージョンを調べる。
+Ports 内のパッケージがそのパッケージに依存する時の「デフォルト」バージョンなので、
+デフォルトバージョンのものをインストールしておくほうが楽だというだけ。
 
-## PostgreSQL の初期設定
+調べ方は、
+[Ports/ DEFAULT_VERSIONS](https://wiki.freebsd.org/Ports/DEFAULT_VERSIONS)
+にある通りで、
+[Mk/bsd.default-versions.mk](https://cgit.freebsd.org/ports/tree/Mk/bsd.default-versions.mk)
+から PGSQL を探せばよい。
+今現在は PostgreSQL 18 であったので、pkg でインストールしておく。
+
+``` shell
+# pkg install postgresql18-server
+```
+
+### PostgreSQL の初期設定
 
 - [FreeBSD wiki: PostgreSQL](https://wiki.freebsd.org/PostgreSQL/Setup)
   を参考にして、まず PostgreSQL の初期設定を行う。
@@ -83,7 +73,7 @@ Ubuntu をはじめとする Linux 上に Zabbix をインストールするな�
 
 - PostgreSQL へのログイン時の認証設定を変更
   - デフォルトでは、localhost からの接続は trust されていて認証無しで DB ログイン可能。
-  - どこからアクセスしても、パスワード認証するように変更する。
+  - どこからアクセスしても、パスワード認証を要求するように変更する。
   - `vi /var/db/postgres/data18/pg_hba.conf`
     ```
     # diff -u pg_hba.conf.orig pg_hba.conf
@@ -124,6 +114,41 @@ Ubuntu をはじめとする Linux 上に Zabbix をインストールするな�
     - 環境変数 PGUSER に設定しておけばその DB ユーザ名を使ってくれる。
     - `psql -U postgres` のようにコマンドラインオプションで指定することもできる。
 
+- これで、PostgreSQL のインストールは一旦完了。
+
+## Zabbix サーバの準備
+
+### Zabbix サーバのインストール
+
+- Ports の zabbix7-server パッケージは、MySQL/MariaDB 用にコンパイルされているので、
+  PostgreSQL で使いたい場合には /usr/ports/net-mgmt/zabbix7-server でコンパイルする
+  必要がある。
+
+  - /usr/ports に Ports コレクションを展開するためには、git clone する。
+    ``` shell
+    # git clone https://git.FreeBSD.org/ports.git /usr/ports
+    # git -C /usr/ports pull
+    ```
+  - 詳しくは、
+    [4.5.1 Ports Collection のインストール](https://docs.freebsd.org/ja/books/handbook/ports/#ports-using-installation-methods)
+    を参照のこと。
+  - zabbixをコンパイルするには、
+    ``` shell
+    # cd /usr/ports/net-mgmt/zabbix7-server
+    # make config
+    # make
+    # make install
+    ```
+  - `make config` のところで、MYSQLDVの選択を外し、PGSQLを選択する。
+    これで PostgreSQL 対応になる。
+     - <img src="./01_make_config.png" width=60%>make config画面<img/>
+
+### Zabbix サーバの初期設定
+
+
+
+## 編集中
+
 ## Zabbix のために PostgreSQL を設定する
 
 ### Zabbix 用データベース・DB ユーザを作成する
@@ -158,6 +183,25 @@ Ubuntu をはじめとする Linux 上に Zabbix をインストールするな�
     $ psql -U zabbix -f images.sql
     $ psql -U zabbix -f data.sql
     ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Zabbix は DBMS (MySQL/PostgreSQL) や Web サーバ (apache/nginx) を必要とするので、
+  併せてパッケージ (Ports) からインストールしておく。
+  ``` shell
+  # pkg update
+  # pkg install nginx
+  ```
 
 
 
