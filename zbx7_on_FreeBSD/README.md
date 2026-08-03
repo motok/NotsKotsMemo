@@ -31,6 +31,20 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 にある通りで、
 [Mk/bsd.default-versions.mk](https://cgit.freebsd.org/ports/tree/Mk/bsd.default-versions.mk)
 から PGSQL を探せばよい。
+あるいは、`/usr/ports/UPDATING` で PHP を探すと、デフォルト」バージョンが変更された
+履歴を見ることができるので、これで判別してもよい。
+``` shell
+# grep PHP UPDATING 
+  The default version of PHP has been switched from 8.3 to 8.4.
+  The default version of PHP has been switched from 8.1 to 8.2.
+  PHP version you're using) to properly upgrade.
+  The default version of PHP has been switched from 8.0 to 8.1.
+  WebSVN 2.8.0 includes full PHP 8.x support which requires a change from PEAR
+  marked as incompatible with PHP 8.x for the time being. See pkg-message for
+  USE_PHP=openssl. In case for php74 as the default php74-openssl will
+  The default version of PHP has been switched from 7.4 to 8.0.
+```
+
 今現在は PostgreSQL 18 であったので、pkg でインストールしておく。
 
 ``` shell
@@ -190,6 +204,13 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 - 正しく起動できたかどうかを、ログファイルで確認すること。
   - ログファイルは `/var/log/zabbix/zabbix_server.log`
   - 数分間待ってもエラー/警告が出ないこと。
+
+## Zabbix Front-end の準備
+
+### zabbix7-frontend-php84 をインストール
+
+
+
 
 
 
