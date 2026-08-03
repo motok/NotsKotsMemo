@@ -145,6 +145,56 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
 ### Zabbix サーバの初期設定
 
+- 設定ファイルは `/usr/local/etc/zabbix7/zabbix_server.conf` 。
+- この設定ファイルの末尾にある `Include` 文を有効にして、
+  `/usr/local/etc/zabbix7/zabbix_server.conf.d/*.conf` に合致する
+  ファイルを読み込むようにする。(まぁ、この辺のやり方はお好みですが)
+  ``` shell
+  # cd /usr/local/etc/zabbix7
+  # diff -u zabbix_server.conf.sample zabbix_server.conf
+  --- zabbix_server.conf.sample	2026-08-03 16:55:30.602510000 +0900
+  +++ zabbix_server.conf	2026-08-03 16:56:46.490440000 +0900
+  @@ -1124,4 +1124,4 @@
+
+   # Include=/usr/local/etc/zabbix7/zabbix_server.general.conf
+   # Include=/usr/local/etc/zabbix7/zabbix_server.conf.d/
+  -# Include=/usr/local/etc/zabbix7/zabbix_server.conf.d/*.conf
+  +Include=/usr/local/etc/zabbix7/zabbix_server.conf.d/*.conf
+  ```
+- `/usr/local/etc/zabbix7/zabbix_server.conf.d/` の下に設定ファイルを追加。
+  ``` shell
+  # ls -l ./zabbix_server.conf.d
+  total 16
+  -r--------  1 root wheel  98 Aug  3 16:58 dbpasswd.conf
+  -rw-r--r--  1 root wheel 112 Aug  3 17:00 local.conf
+
+  # cat ./zabbix_server.conf.d/dbpasswd.conf 
+  DBPassword=superdupersecret
+
+  # cat ./zabbix_server.conf.d/local.conf
+  LogFileSize=10
+  DBHost=
+  DBSocket=/tmp/.s.PGSQL.5432
+  ```
+- `dbpasswd.conf` には、DBユーザ zabbix のパスワード(だけ)を書く。
+  一般ユーザその他に読まれても困るので、パーミッションを狭めてある点に注意。
+- `local.conf` には、その他の設定を書く。
+  ここではログローテーションの際のトリガーになるファイルサイズ(`LogFileSize`)と
+  PostgreSQLサーバに接続に行く設定(UNIXドメインのソケット)を書いた。
+- ここまでできたら、`/etc/rc.conf` で `zabbix_server` を起動する設定を入れて、
+  起動する。
+  ``` shell
+  # sysrc zabbix_server_enable="YES"
+  # service zabbix_server start
+  ```
+- 正しく起動できたかどうかを、ログファイルで確認すること。
+  - ログファイルは `/var/log/zabbix/zabbix_server.log`
+  - 数分間待ってもエラー/警告が出ないこと。
+
+
+
+
+
 
 
 ## 編集中
