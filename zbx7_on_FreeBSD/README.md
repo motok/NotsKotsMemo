@@ -34,15 +34,12 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 あるいは、`/usr/ports/UPDATING` で PHP を探すと、デフォルト」バージョンが変更された
 履歴を見ることができるので、これで判別してもよい。
 ``` shell
-# grep PHP UPDATING 
-  The default version of PHP has been switched from 8.3 to 8.4.
-  The default version of PHP has been switched from 8.1 to 8.2.
-  PHP version you're using) to properly upgrade.
-  The default version of PHP has been switched from 8.0 to 8.1.
-  WebSVN 2.8.0 includes full PHP 8.x support which requires a change from PEAR
-  marked as incompatible with PHP 8.x for the time being. See pkg-message for
-  USE_PHP=openssl. In case for php74 as the default php74-openssl will
-  The default version of PHP has been switched from 7.4 to 8.0.
+# grep "The default version of PostgreSQL" UPDATING
+  The default version of PostgreSQL has been switched from 17 to 18.
+  The default version of PostgreSQL has been switched from 16 to 17.
+  The default version of PostgreSQL has been switched from 15 to 16.
+  The default version of PostgreSQL has been switched from 13 to 15.
+  The default version of PostgreSQL has been switched from 12 to 13.
 ```
 
 今現在は PostgreSQL 18 であったので、pkg でインストールしておく。
