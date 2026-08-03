@@ -149,7 +149,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 - この設定ファイルの末尾にある `Include` 文を有効にして、
   `/usr/local/etc/zabbix7/zabbix_server.conf.d/*.conf` に合致する
   ファイルを読み込むようにする。(まぁ、この辺のやり方はお好みですが)
-  ``` shell
+  ``` diff
   # cd /usr/local/etc/zabbix7
   # diff -u zabbix_server.conf.sample zabbix_server.conf
   --- zabbix_server.conf.sample	2026-08-03 16:55:30.602510000 +0900
@@ -190,9 +190,6 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 - 正しく起動できたかどうかを、ログファイルで確認すること。
   - ログファイルは `/var/log/zabbix/zabbix_server.log`
   - 数分間待ってもエラー/警告が出ないこと。
-
-
-
 
 
 
