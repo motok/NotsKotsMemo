@@ -31,7 +31,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 にある通りで、
 [Mk/bsd.default-versions.mk](https://cgit.freebsd.org/ports/tree/Mk/bsd.default-versions.mk)
 から PGSQL を探せばよい。
-あるいは、`/usr/ports/UPDATING` で PHP を探すと、デフォルト」バージョンが変更された
+あるいは、`/usr/ports/UPDATING` で PHP を探すと、デフォルトバージョンが変更された
 履歴を見ることができるので、これで判別してもよい。
 ``` shell
 # grep "The default version of PostgreSQL" UPDATING
@@ -206,10 +206,40 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
 ### zabbix7-frontend-php84 をインストール
 
+- 例によって、PHP のデフォルトバージョンを探すと、今現在は PHP 8.4 が
+  デフォルトバージョンであることがわかった。
+- ということは、インストールすべきは `zabbix7-frontend-php84` である。
+  ``` shell
+  # pkg search zabbix7-frontend
+  zabbix7-frontend-php82-7.0.28  Enterprise-class open source distributed monitoring (frontend-php82)
+  zabbix7-frontend-php83-7.0.28  Enterprise-class open source distributed monitoring (frontend-php83)
+  zabbix7-frontend-php84-7.0.28  Enterprise-class open source distributed monitoring (frontend-php84)
+  zabbix7-frontend-php85-7.0.28  Enterprise-class open source distributed monitoring (frontend-php85)
+  zabbix7-frontend-php86-7.0.28  Enterprise-class open source distributed monitoring (frontend-php86)
+  ```
 
-
-
-
+- インストールすると、`/usr/local/www/zabbix7` にコンテンツが置かれる。
+  ``` shell
+  # pkg install zabbix7-frontend-php84
+  # ls
+  api_jsonrpc.php              graphs.php                   jsrpc.php
+  api_scim.php                 history.php                  local/
+  app/                         host_discovery.php           locale/
+  assets/                      host_prototypes.php          map.php
+  audio/                       hostinventories.php          modules/
+  browserwarning.php           hostinventoriesoverview.php  report2.php
+  chart.php                    httpconf.php                 report4.php
+  chart2.php                   httpdetails.php              robots.txt
+  chart3.php                   image.php                    setup.php
+  chart4.php                   imgstore.php                 sysmap.php
+  chart6.php                   include/                     sysmaps.php
+  chart7.php                   index.php                    tr_events.php
+  composer.json                index_http.php               vendor/
+  composer.lock                index_mfa.php                widgets/
+  conf/                        index_sso.php                zabbix.php
+  data/                        js/
+  favicon.ico                  jsLoader.php
+  ```
 
 
 ## 編集中
