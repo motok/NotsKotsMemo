@@ -75,7 +75,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   - デフォルトでは、localhost からの接続は trust されていて認証無しで DB ログイン可能。
   - どこからアクセスしても、パスワード認証を要求するように変更する。
   - `vi /var/db/postgres/data18/pg_hba.conf`
-    ```
+    ``` diff
     # diff -u pg_hba.conf.orig pg_hba.conf
     --- pg_hba.conf.orig	2026-07-23 16:15:09.734234000 +0900
     +++ pg_hba.conf	2026-07-22 16:53:39.538404000 +0900
