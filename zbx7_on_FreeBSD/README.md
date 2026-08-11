@@ -301,6 +301,31 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   -rw-r--r--  1 root wheel 22394 Aug  8 10:20 www.conf.default
   ```
 
+- php-fpm の起動
+  - /etc/rc.conf に `php_fpm_enable="YES"` を追記して、daemon を起動する。
+  ``` shell
+  # sysrc php_fpm_enable="YES"
+
+  # service php_fpm status
+  php_fpm is not running.
+
+  # service php_fpm start
+  Performing sanity check on php-fpm configuration:
+  [11-Aug-2026 10:16:56] NOTICE: configuration file /usr/local/etc/php-fpm.conf test is successful
+  Starting php_fpm.
+
+  # service php_fpm status
+  php_fpm is running as pid 98766.
+
+  # sockstat -46 -p9000
+  USER COMMAND      PID FD PROTO LOCAL ADDRESS         FOREIGN ADDRESS
+  www  php-fpm    99993  5 tcp4  127.0.0.1:9000        *:*
+  www  php-fpm    99392  5 tcp4  127.0.0.1:9000        *:*
+  root php-fpm    98766  7 tcp4  127.0.0.1:9000        *:*
+  ```
+
+
+
 
 ## 編集中
 
