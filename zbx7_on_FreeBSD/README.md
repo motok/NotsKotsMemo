@@ -450,10 +450,33 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   # chmod 640 zabbix.conf.php
   ```
 
-## Zabbix agent
+- Zabbix WebUI 初期設定の php ファイルは /usr/local/www/zabbix7/setup.php だが、
+  もう使うことはないので、削除するなり `$documentroot` 外へ逃がすなり nginx.conf で
+  アクセス制御するなりして、無効化しておいたほうが良いかもしれない。
+  - nginx.confでアクセス制御する例。`\.php` を zabbix デーモンへ送るより *前に*
+    setup.php を禁止している点に注意。
+  ``` diff
+  --- nginx.conf	2026-08-11 16:54:16.336801000 +0900
+  +++ nginx.conf.nosetup	2026-08-11 16:54:00.563905000 +0900
+  @@ -140,6 +140,10 @@
+	       try_files $uri $uri/ /index.php?$args;
+	   }
+
+  +        location ~ /setup.php$ {
+  +            deny all;
+  +        }
+  +
+	   location ~ \.php$ {
+	       fastcgi_pass    127.0.0.1:9000;
+	       fastcgi_index   index.php;
+  ```
+
+
+## Zabbix agent のインストール
 
 - これで Zabbix WebUI からの初期設定が終わったので、初回ログインを行う。
   - 初期パスワードは Admin / zabbix 。
+- すると、
 
 
 
