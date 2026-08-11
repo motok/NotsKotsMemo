@@ -220,7 +220,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
 - インストールすると、`/usr/local/www/zabbix7` にコンテンツが置かれる。
   ``` shell
-  # pkg install zabbix7-frontend-php84
+  # pkg install zabbix7-frontend-php84 php84-curl php84-pgsql php84-pdo_pgsql
   # cd /usr/local/www/zabbix7
   # ls
   api_jsonrpc.php              graphs.php                   jsrpc.php
@@ -241,6 +241,9 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   data/                        js/
   favicon.ico                  jsLoader.php
   ```
+  - Zabbix WebUI の「前提条件のチェック」で警告が出るので php84-curl もインストールしてある。
+  - Zabbix WebUI の「データベース接続設定」で MySQL だけでなく PostgreSQL も選択できるように、
+    php84-pgsql と php84-pdo_pgsql もインストールしてある。
 
 ### PHP-fpm の設定
 
@@ -259,11 +262,29 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
   # cp -i php.ini-production php.ini
   ```
-  - php.ini でデフォルトのタイムゾーンを設定する。
-    ついでにPOSTの最大サイズも変更しておくが、しなくても大丈夫な気がする。
+  - php.ini でデフォルトのタイムゾーン等を設定する。
+    これは Zabbix WebUI 動作後の初期設定でチェックされる諸点である。
   ``` diff
   --- php.ini-production	2026-08-08 10:20:32.000000000 +0900
-  +++ php.ini	2026-08-11 10:03:36.258617000 +0900
+  +++ php.ini	2026-08-11 14:16:17.279542000 +0900
+  @@ -406,7 +406,7 @@
+   ; Maximum execution time of each script, in seconds
+   ; https://php.net/max-execution-time
+   ; Note: This directive is hardcoded to 0 for the CLI SAPI
+  -max_execution_time = 30
+  +max_execution_time = 300
+
+   ; Maximum amount of time each script may spend parsing request data. It's a good
+   ; idea to limit this time on productions servers in order to eliminate unexpectedly
+  @@ -416,7 +416,7 @@
+   ; Development Value: 60 (60 seconds)
+   ; Production Value: 60 (60 seconds)
+   ; https://php.net/max-input-time
+  -max_input_time = 60
+  +max_input_time = 300
+
+   ; Maximum input variable nesting level
+   ; https://php.net/max-input-nesting-level
   @@ -696,7 +696,7 @@
    ; Its value may be 0 to disable the limit. It is ignored if POST data reading
    ; is disabled through enable_post_data_reading.
@@ -365,8 +386,19 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
     }
    ```
 - これでブラウザから https://zabbix/ へアクセスすると、Zabbix WebUI の画面が出る(はず)。
+  画面に従って、Zabbix WebUI の初期設定を進める。
 
-<img src="./02_zabbix_webui_initial.png" width=60%>Zabbix WebUI 初期画面<img/>
+  <img src="./02_zabbix_webui_initial.png" width=60%>Zabbix WebUI 初期画面<img/>
+
+  - 最後に、初期設定内容を /usr/local/www/zabbix7/conf/zabbix.conf.php に書き込もうとするが、
+    権限が不足して書けない (WebUI のプロセスは nginx なので www ユーザ)。
+    そこで、一旦ダウンロードして手動で zabbix.conf.php ファイルを作る。
+  - zabbix.conf.php は root:www で 0644 が適切。
+    - Zabbix WebUI のプロセスのユーザである www ユーザから読めれば十分、書けるとまずい。
+    - データベース接続のクレデンシャルズを平文で含むので、その他ユーザからは読めないことが必要。
+
+
+
 
 
 
