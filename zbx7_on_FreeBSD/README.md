@@ -324,7 +324,46 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   root php-fpm    98766  7 tcp4  127.0.0.1:9000        *:*
   ```
 
+### nginx.conf の設定
 
+- Zabbix 用の server を追加して、それを php-fpm の待受ポートに繋ぐ設定。
+  追加した nginx.conf 的 server は次の通り。
+  ```
+  server {
+        listen 443 ssl;
+        server_name zabbix.kawasaki3.org;
+
+        root /usr/local/www/zabbix7;
+        index index.php index.html index.htm;
+
+        access_log /var/log/nginx/zabbix_access.log;
+        error_log  /var/log/nginx/zabbix_error.log;
+
+        ssl_certificate      /etc/ssl/ost/ost.crt;
+        ssl_certificate_key  /etc/ssl/ost/ost.key;
+
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+
+        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers  on;
+
+        location / {
+            try_files $uri $uri/ /index.php?$args;
+        }
+
+        location ~ \.php$ { 
+            fastcgi_pass    127.0.0.1:9000;
+            fastcgi_index   index.php;
+            fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include         fastcgi_params;
+        }
+
+        location ~ /\.ht {
+            deny all;
+        }
+    }
+   ```
 
 
 ## 編集中
