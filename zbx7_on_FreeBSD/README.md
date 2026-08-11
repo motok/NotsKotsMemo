@@ -331,7 +331,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   ```
   server {
         listen 443 ssl;
-        server_name zabbix.kawasaki3.org;
+        server_name zabbix;
 
         root /usr/local/www/zabbix7;
         index index.php index.html index.htm;
@@ -364,6 +364,12 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
         }
     }
    ```
+- これでブラウザから https://zabbix/ へアクセスすると、Zabbix WebUI の画面が出る(はず)。
+
+<img src="./02_zabbix_webui_initial.png" width=60%>Zabbix WebUI 初期画面<img/>
+
+
+
 
 
 ## 編集中
