@@ -221,6 +221,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 - インストールすると、`/usr/local/www/zabbix7` にコンテンツが置かれる。
   ``` shell
   # pkg install zabbix7-frontend-php84
+  # cd /usr/local/www/zabbix7
   # ls
   api_jsonrpc.php              graphs.php                   jsrpc.php
   api_scim.php                 history.php                  local/
@@ -241,6 +242,47 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   favicon.ico                  jsLoader.php
   ```
 
+### PHP-fpm の設定
+
+- `zabbix7-frontend-php84` をインストールすると、必要な PHP や php-fpm もインストールされるので、
+  まずは、PHPとしての設定をしておく。
+  - 設定ファイル群は /usr/local/etc の下。
+
+- php.ini の調整
+  - php.ini-production をコピーして php.ini とする。
+  ``` shell
+  # cd /usr/local/etc
+
+  # ls -l php.ini*
+  -rw-r--r--  1 root wheel 68914 Aug  8 10:20 php.ini-development
+  -rw-r--r--  1 root wheel 69048 Aug  8 10:20 php.ini-production
+
+  # cp -i php.ini-production php.ini
+  ```
+  - php.ini で最大POSTサイズとタイムゾーンを設定する。
+  ``` shell
+  # diff -u php.ini-production php.ini
+  --- php.ini-production	2026-08-08 10:20:32.000000000 +0900
+  +++ php.ini	2026-08-11 10:03:36.258617000 +0900
+  @@ -696,7 +696,7 @@
+   ; Its value may be 0 to disable the limit. It is ignored if POST data reading
+   ; is disabled through enable_post_data_reading.
+   ; https://php.net/post-max-size
+  -post_max_size = 8M
+  +post_max_size = 16M
+
+   ; Automatically add files before PHP document.
+   ; https://php.net/auto-prepend-file
+  @@ -963,7 +963,7 @@
+   [Date]
+   ; Defines the default timezone used by the date functions
+   ; https://php.net/date.timezone
+  -;date.timezone =
+  +date.timezone = Asia/Tokyo
+
+   ; https://php.net/date.default-latitude
+   ;date.default_latitude = 31.7667
+  ```
 
 ## 編集中
 
@@ -282,7 +324,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
 
 
-
+xxx
 
 
 
