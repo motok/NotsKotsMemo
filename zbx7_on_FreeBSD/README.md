@@ -385,34 +385,74 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
         }
     }
    ```
+
+## Zabbix WebUI 初期設定
+
 - これでブラウザから https://zabbix/ へアクセスすると、Zabbix WebUI の画面が出る(はず)。
   画面に従って、Zabbix WebUI の初期設定を進める。
 
+- まずは、「デフォルトの言語」を「日本語(ja_JP)」に変更。
+
   <img src="./02_zabbix_webui_initial.png" width=60%>Zabbix WebUI 初期画面<img/>
 
-  - 最後に、初期設定内容を /usr/local/www/zabbix7/conf/zabbix.conf.php に書き込もうとするが、
-    権限が不足して書けない。
-    - WebUI のプロセスは nginx なので www ユーザ。
-    - 初期設定内容を書き込むためには、このユーザから zabbix.conf.php に対して書き込めて
-      パーミッション変更ができなければならない。
-    - また、書き込み後の起動時に設定を読めなければならないので、www ユーザから読める必要もある。
-    - さらに、データベース接続のクレデンシャルズを平文で含むので、その他の一般ユーザから読めては
-      困る。
-    - そこで、一時的に権限を変更して (再)作成した後、必要な権限状態に変更する。
-    ``` shell
-    # pwd
-    /usr/local/www/zabbix7/conf
-    # ls -ld
-    drwxr-xr-x  3 root wheel 512 Aug 11 14:37 ./
+- 「前提条件のチェック」で、すべて OK になるまで調整する。
 
-    # chmod 777 .
+  <img src="./03_zabbix_webui_prerequisites" width=60%>Zabbix WebUI 前提条件のチェック<img/>
 
-    (ここで Zabbix WebUI から書き込ませる)
+- 「データベース接続設定」で「パスワード」を入力。
 
-    # chmod 755 .
-    # chown root:www zabbix.conf.php
-    # chmod 640 zabbix.conf.php
-    ```
+  <img src="./04_zabbix_webui_database" width=60%>Zabbix WebUI データベース接続設定<img/>
+
+- 「設定」で「Zabbix サーバ名」を入力。
+
+  <img src="./05_zabbix_webui_configuration.png" width=60%>Zabbix WebUI 設定<img/>
+
+- 「設定パラメータの確認」で投入したパラメータが正しいことを確認する。
+
+  <img src="./06_zabbix_webui_check.png" width=60%>Zabbix WebUI 設定パラメータの確認<img/>
+
+- 「インストール」で、初期設定内容を /usr/local/www/zabbix7/config/zabbix.conf.php に
+  書き込もうとするが、権限の関係で失敗する。
+
+  <img src="./07_zabbix_webui_failed_install.png" width=60%>Zabbix WebUI インストール(失敗)<img/>
+
+  - WebUI のプロセスは nginx なので www ユーザ。
+  - 初期設定内容を書き込むためには、このユーザから zabbix.conf.php に対して書き込めて
+    パーミッション変更ができなければならない。
+  - また、書き込み後の起動時に設定を読めなければならないので、www ユーザから読める必要もある。
+  - さらに、データベース接続のクレデンシャルズを平文で含むので、その他の一般ユーザから読めては
+    困る。
+  - そこで、一時的に権限を変更して (再)作成した後、必要な権限状態に変更する。
+  ``` shell
+  # cd /usr/local/www/zabbix7/conf
+  # ls -ld
+  drwxr-xr-x  3 root wheel 512 Aug 11 14:37 ./
+
+  # chmod 777 .
+  ```
+
+  - ここで Zabbix WebUI から書き込ませると今度は成功する。
+
+  <img src="./08_zabbix_webui_successful_install.png" width=60%>Zabbix WebUI インストール(成功)<img/>
+
+  - zabbix.conf.php が作成されていることを確認。(<== のところ)
+    Zabbix WebUI からは変更できないように権限を修正しておく。
+  ``` shell
+  # ls -l
+  total 40
+  -rw-r--r--  1 root wheel  163 Jul  6 22:34 .htaccess
+  drwxr-xr-x  2 root wheel  512 Aug  3 17:41 certs/
+  -rw-r--r--  1 root wheel  946 Jul  6 22:34 maintenance.inc.php
+  -rw-------  1 www  wheel 1758 Aug 11 15:33 zabbix.conf.php         <==
+  -rw-r--r--  1 root wheel 1722 Jul  7 01:15 zabbix.conf.php.example
+  # chmod 755 .
+  # chown root:www zabbix.conf.php
+  # chmod 640 zabbix.conf.php
+  ```
+
+
+
+
 
 - これで Zabbix WebUI からの初期設定が終わったので、初回ログインを行う。
   - 初期パスワードは Admin / zabbix 。
