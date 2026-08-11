@@ -450,15 +450,10 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   # chmod 640 zabbix.conf.php
   ```
 
-
-
-
+## Zabbix agent
 
 - これで Zabbix WebUI からの初期設定が終わったので、初回ログインを行う。
   - 初期パスワードは Admin / zabbix 。
-
-## Zabbix agent
-
 
 
 
