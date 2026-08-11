@@ -259,7 +259,8 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
   # cp -i php.ini-production php.ini
   ```
-  - php.ini で最大POSTサイズとタイムゾーンを設定する。
+  - php.ini でデフォルトのタイムゾーンを設定する。
+    ついでにPOSTの最大サイズも変更しておくが、しなくても大丈夫な気がする。
   ``` diff
   --- php.ini-production	2026-08-08 10:20:32.000000000 +0900
   +++ php.ini	2026-08-11 10:03:36.258617000 +0900
@@ -282,6 +283,24 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
    ; https://php.net/date.default-latitude
    ;date.default_latitude = 31.7667
   ```
+
+- php-fpm.conf の調整は、この時点ではやることがない。
+  - 下の設定ファイルを眺めておくと良いかもしれない。
+    このうちの、php-fpm.conf と www.conf が設定ファイルとして使われるもので、
+    bind()先は www.conf の方に `listen = 127.0.0.1:9000` と定義されている。
+  ``` shell
+  # pwd
+  /usr/local/etc
+  root@ost:etc# ls -l php-fpm*
+  -rw-r--r--  1 root wheel 5305 Aug  8 10:20 php-fpm.conf
+  -rw-r--r--  1 root wheel 5305 Aug  8 10:20 php-fpm.conf.default
+
+  php-fpm.d:
+  total 96
+  -rw-r--r--  1 root wheel 22394 Aug  8 10:20 www.conf
+  -rw-r--r--  1 root wheel 22394 Aug  8 10:20 www.conf.default
+  ```
+
 
 ## 編集中
 
