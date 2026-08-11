@@ -260,8 +260,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   # cp -i php.ini-production php.ini
   ```
   - php.ini で最大POSTサイズとタイムゾーンを設定する。
-  ``` shell
-  # diff -u php.ini-production php.ini
+  ``` diff
   --- php.ini-production	2026-08-08 10:20:32.000000000 +0900
   +++ php.ini	2026-08-11 10:03:36.258617000 +0900
   @@ -696,7 +696,7 @@
