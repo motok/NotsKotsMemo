@@ -391,11 +391,28 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   <img src="./02_zabbix_webui_initial.png" width=60%>Zabbix WebUI 初期画面<img/>
 
   - 最後に、初期設定内容を /usr/local/www/zabbix7/conf/zabbix.conf.php に書き込もうとするが、
-    権限が不足して書けない (WebUI のプロセスは nginx なので www ユーザ)。
-    そこで、一旦ダウンロードして手動で zabbix.conf.php ファイルを作る。
-  - zabbix.conf.php は root:www で 0644 が適切。
-    - Zabbix WebUI のプロセスのユーザである www ユーザから読めれば十分、書けるとまずい。
-    - データベース接続のクレデンシャルズを平文で含むので、その他ユーザからは読めないことが必要。
+    権限が不足して書けない。
+    - WebUI のプロセスは nginx なので www ユーザ。
+    - 初期設定内容を書き込むためには、このユーザから zabbix.conf.php に対して書き込めて
+      パーミッション変更ができなければならない。
+    - また、書き込み後の起動時に設定を読めなければならないので、www ユーザから読める必要もある。
+    - さらに、データベース接続のクレデンシャルズを平文で含むので、その他の一般ユーザから読めては
+      困る。
+    - そこで、一時的に権限を変更して (再)作成した後、必要な権限状態に変更する。
+    ``` shell
+    # pwd
+    /usr/local/www/zabbix7/conf
+    # ls -ld
+    drwxr-xr-x  3 root wheel 512 Aug 11 14:37 ./
+
+    # chmod 777 .
+
+    (ここで Zabbix WebUI から書き込ませる)
+
+    # chmod 755 .
+    # chown root:www zabbix.conf.php
+    # chmod 640 zabbix.conf.php
+    ```
 
 
 
