@@ -397,11 +397,11 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
 - 「前提条件のチェック」で、すべて OK になるまで調整する。
 
-  <img src="./03_zabbix_webui_prerequisites" width=60%>Zabbix WebUI 前提条件のチェック<img/>
+  <img src="./03_zabbix_webui_prerequisites.png" width=60%>Zabbix WebUI 前提条件のチェック<img/>
 
 - 「データベース接続設定」で「パスワード」を入力。
 
-  <img src="./04_zabbix_webui_database" width=60%>Zabbix WebUI データベース接続設定<img/>
+  <img src="./04_zabbix_webui_database.png" width=60%>Zabbix WebUI データベース接続設定<img/>
 
 - 「設定」で「Zabbix サーバ名」を入力。
 
