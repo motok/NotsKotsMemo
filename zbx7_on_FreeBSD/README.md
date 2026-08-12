@@ -479,9 +479,16 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 - すると、Zabbix WebUI が見えるが、Zabbix が動作しているノードの状態が見えていない、と言って
   怒られる。曰く、「Zabbixサーバーが動作していません (画面のリフレッシュを行ってステータスを
   再確認して下さい)」。
+  (下図の最下部)
 
   <img src="./09_zabbix_webui_no_server.png" width=60%>Zabbixサーバが動作していません<img/>
 
+- そういうわけで、Zabbix Agent をインストールして動作させる。
+
+- まず、 `zabbix7Ports からインストールする。
+  ``` shell
+  # pkg install zabbix7-agent
+  ```
 
 
 
