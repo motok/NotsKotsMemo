@@ -502,7 +502,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
      32045:20260722:083503.589 database is down: reconnecting in 10 seconds
     ```
   - これはどこかで見たぞ、ということで、
-    [zabbix-サーバのインストール](zabbix-サーバのインストール)
+    [zabbix-サーバのインストール](#zabbix-サーバのインストール)
     を思い出すと、
     - 今回は PostgreSQL を使いたかったので、
     - Ports/pkg のバイナリインストールの zabbix7-server ではダメで、
