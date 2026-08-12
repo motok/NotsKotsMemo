@@ -472,16 +472,50 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   ```
 
 
-## Zabbix agent のインストール
+## Zabbix サーバの更新ミス
 
 - これで Zabbix WebUI からの初期設定が終わったので、初回ログインを行う。
   - 初期パスワードは Admin / zabbix 。
-- すると、Zabbix WebUI が見えるが、Zabbix が動作しているノードの状態が見えていない、と言って
-  怒られる。曰く、「Zabbixサーバーが動作していません (画面のリフレッシュを行ってステータスを
-  再確認して下さい)」。
+- すると、「Zabbixサーバーが動作していません (画面のリフレッシュを行ってステータスを
+  再確認して下さい)」というエラー表示が出た。
   (下図の最下部)
 
   <img src="./09_zabbix_webui_no_server.png" width=60%>Zabbixサーバが動作していません<img/>
+
+- これは、Zabbix WebUI 側から Zabbix サーバ (`127.0.0.1:10051`) に接続できなかった時の
+  メッセージであるとのこと。
+  - 参考：[Zabbixサーバーが動作していませんという表示が出る](https://www.zabbix.jp/node/5640)
+  - 参考：[「Zabbixサーバーが動作していません」と、なった時の対処法](https://zenn.dev/tttkccc/articles/zabbix-article)
+  - 典型的には、
+    - /usr/local/www/zabbix7/conf/zabbix.conf.php の `$ZBX_SERVER` や
+      `$ZBX_SERVER_PORT` のあたりの問題で、特に `$ZBX_SERVER = 'localhost'` である場合に
+      localhost が ::1 に解決されちゃうけれど、サーバ側が待ち受けているのは 127.0.0.1 みたいな
+      齟齬があるとこの現象が起きるらしい。
+    - /usr/local/etc/zabbix7/zabbix_server.conf の `DBPassword` が設定されていない等で、
+      Zabbix サーバからデータベースへの接続ができていない (ので Zabbix サーバが立ち上がれず、
+      その結果として localhost:10051 で待ち受けていない) と、この現象が起きる場合もあるらしい。
+  - Zabbix サーバのログを見ると、MySQL に接続を試行するも接続できない状態であることがわかった。
+    ```
+    # tail -3 zabbix_server.log
+     32045:20260722:083453.587 database is down: reconnecting in 10 seconds
+     32045:20260722:083503.589 [Z3001] connection to database 'zabbix' failed: [2002] Can't connect to local MySQL server through socket '/tmp/mysql.sock' (2)
+     32045:20260722:083503.589 database is down: reconnecting in 10 seconds
+    ```
+  - これはどこかで見たぞ、ということで、
+    [zabbix-サーバのインストール](zabbix-サーバのインストール)
+    を思い出すと、
+    - 今回は PostgreSQL を使いたかったので、
+    - Ports/pkg のバイナリインストールの zabbix7-server ではダメで、
+    - Ports のツリーを clone してコンパイルオプションを変更したうえでコンパイルしたのだった。
+    - そして、この現象が出る直前に、手癖で `pkg upgrade` していたのだった。
+    - その時に、zabbix7-server パッケージのバージョンが上がっていて、それをバイナリインストール
+      していたのであった。
+    - というわけで、再コンパイルして再インストールして解決した。
+
+## Zabbix agent のインストール
+
+- 気を取り直して、Zabbix WebUI への初回ログインを行う。
+
 
 - そういうわけで、Zabbix Agent をインストールして動作させる。
 
