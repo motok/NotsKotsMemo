@@ -519,12 +519,14 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
 - これは、Zabbix サーバのプロセスが動作しているノードそのものだが、
   まだ監視(観測)できていないことがわかる。
-  - 上でエラーを表示していた WebUI 画面で、"Current problems" に Zabbix server について
+  - 下の WebUI 画面で、"Current problems" に Zabbix server について
     "Linux: Zabbix agent is not available (for 3m)" 等の障害が報告されていることで
     判断。
   - また、細かいところでは、「ホスト稼働状況」が利用不可１・合計１になっていることや
     "Top hosts by CPU utilization" の "Zabbix server" の行に何も表示されていない
     ことなどで監視(観測)ができていないと判断した。
+
+  <img src="./10_zabbix_webui_not_perfect.png" width=60%>Zabbixサーバが動作中だがZabbix Serverを監視できていない<img/>
 
 - そういうわけで、Zabbix Agent をインストールして動作させる。
 
@@ -535,7 +537,7 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   ```
 - これで、しばらく待てば、 "Zabbix server" ホストが監視状態になる。
 
-  <img src="./10_zabbix_webui_working.png" width=60%>Zabbixサーバが正常動作中<img/>
+  <img src="./11_zabbix_webui_is_perfect.png" width=60%>Zabbixサーバが正常動作中<img/>
 
 - Zabbix agent の設定ファイルは /usr/local/etc/zabbix7/zabbix_agentd.conf である。
   - デフォルトのままで動作するが、いくつか覚書を。
