@@ -537,3 +537,17 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
 
   <img src="./10_zabbix_webui_working.png" width=60%>Zabbixサーバが正常動作中<img/>
 
+- Zabbix agent の設定ファイルは /usr/local/etc/zabbix7/zabbix_agentd.conf である。
+  - デフォルトのままで動作するが、いくつか覚書を。
+  - `LogFile=/var/log/zabbix/zabbix_agentd.log` でログ出力先を指定している。
+  - デフォルトの `LogFileSize=1` だとログファイルが 1 MB になるところでローテションがかかるが、
+    もう少し多く保存したいので 10 MB に変更。
+  - `Server=127.0.0.1` なので、Zabbix agentd は 127.0.0.1 の Zabbix server へ
+    接続することになる。今回はこれでいいけれど、非 Zabbix サーバにエージェントだけを
+    入れて動かす場合は、ここに Zabbix サーバの IP アドレスを指定することになる。
+  - `Hostname=Zabbix server` で自分 (エージェント) の名前を付けていて、Zabbix サーバ側では
+    これを識別子にしてデータを整理するらしい。今回はこれでよいが、別のサーバにエージェントだけを
+    インストールして動かす場合には、これを適切な名前にするべき、かつ、その名前でサーバ側に
+    監視対象ホストを作っておくべき。
+
+.
