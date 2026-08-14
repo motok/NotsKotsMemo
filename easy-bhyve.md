@@ -12,7 +12,7 @@ $ cat /usr/local/etc/rc.d/easy_bhyve
 #!/bin/sh
 
 # PROVIDE: easy_bhyve
-# REQUIRE: NETWORKING SERVERS
+# REQUIRE: LOGIN sshd jail
 # KEYWORD: bhyve easy_bhyve shutdown
 
 # variables in /etc/rc.conf
@@ -150,3 +150,13 @@ $ diff -u easy-bhyve.orig easy-bhyve
  	[ -d /dev/vmm ] && ls -l /dev/vmm/*
 
 ```
+
+- (2026-08-14) rc スクリプトの `# REQUIRE:` 行を修正。
+  - このスクリプトから Ubuntu VM を起動した時に grub で刺さる現象が起きた。
+  - 元の `# REQUIRE: NETWORKING SERVERS` では、easy_bhyve を実行した後に
+    sshd を実行する順になっていた。 (`rcorder /etc/rc.d/* /usr/local/etc/rc.d/*`
+    で確認)
+  - それ故、easy_bhyve で grub が刺さると、sshd が起動されず、外部からログイン
+    できなくなって、大いに困った。
+  - そこで、`# REQUIRE: LOGIN sshd jail` に修正することで、rc スクリプト実行順を
+    修正 (sshd実行後にeasy_bhyveを実行) した。
