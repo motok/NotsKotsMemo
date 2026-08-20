@@ -2,6 +2,7 @@
 
 個人的なメモなので、錯誤あるものとしてご覧ください。
 
+- 2026-08-20 [Ubuntu Server 26.04 LTS インストールメモ](./ubuntu_server_2604lts_install_memo.md)
 - 2026-08-13 [Zabbix 7 LTS on FreeBSD](./zbx7_on_FreeBSD)
 - 2026-07-15 [Zabbix ネットワークマップにインタラクティブシェルを](./zbx7_nwmap_shell)
 - 2026-07-05 [easy-bhyveメモ](./easy-bhyve.md)
