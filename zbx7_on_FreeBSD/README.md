@@ -345,6 +345,37 @@ Ports 内のパッケージがそのパッケージに依存する時の「デ�
   root php-fpm    98766  7 tcp4  127.0.0.1:9000        *:*
   ```
 
+### 日本語フォントの準備
+
+- Zabbix では各種グラフを描くことができるが、日本語環境を指定して使う場合には WebUI から見ることができるグラフの中にも日本語が入る。
+- Zabbix のデフォルトのフォントは `/usr/local/www/zabbix7/assets/fonts/` の `DejaVuSans.ttf` なので、グラフの中の日本語はトーフになる。
+- グラフ内でも正しく日本語を表示するためには、日本語フォントをインストールして、それを Zabbix の設定で指定する必要がある。
+- まず、日本語フォントのインストール。好きなものを使えばよいが、ここでは無難に IPA の UI Gothic を Ports から。
+  ``` shell
+  # pkg install ja-font-ipa-uigothic
+  ```
+  - これで、`/usr/local/share/fonts/ipa-uigothic/` にフォントファイルが置かれる。
+- 次に、IPA UI Gothic フォントを使うべく、Zabbix の設定を変更する。
+  ``` diff
+  --- defines.inc.php.orig	2026-07-07 01:15:29.000000000 +0900
+  +++ defines.inc.php	2026-08-25 09:47:32.301267000 +0900
+  @@ -82,8 +82,10 @@
+   define('ELASTICSEARCH_RESPONSE_AGGREGATION',	1);
+   define('ELASTICSEARCH_RESPONSE_DOCUMENTS',		2);
+
+  -define('ZBX_FONTPATH',				realpath('assets/fonts')); // where to search for font (GD > 2.0.18)
+  -define('ZBX_GRAPH_FONT_NAME',		'DejaVuSans'); // font file name
+  +// define('ZBX_FONTPATH',				realpath('assets/fonts')); // where to search for font (GD > 2.0.18)
+  +// define('ZBX_GRAPH_FONT_NAME',		'DejaVuSans'); // font file name
+  +define('ZBX_FONTPATH',			'/usr/local/share/fonts/ipa-uigothic'); // ja-font-ipa, a Japanese font.
+  +define('ZBX_GRAPH_FONT_NAME',		'ipagui'); 				// ja-font-ipa, a Japanese font.
+   define('ZBX_GRAPH_LEGEND_HEIGHT',	120); // when graph height is less then this value, some legend will not show up
+
+   define('GRAPH_YAXIS_SIDE_DEFAULT', 0); // 0 - LEFT SIDE, 1 - RIGHT SIDE
+  ```
+  - 修正すべきファイルは、`/usr/local/www/zabbix7/include/` の `defines.inc.php` である。
+- これで、グラフ内でも日本語がトーフにならずに正しく表示されるはず。
+
 ### nginx.conf の設定
 
 - Zabbix 用の server を追加して、それを php-fpm の待受ポートに繋ぐ設定。
