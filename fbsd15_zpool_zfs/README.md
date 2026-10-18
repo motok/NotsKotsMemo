@@ -34,25 +34,24 @@
 - 現状のパーティションテーブルを一旦破壊する。
   - 必要なデータが残っている場合は別の場所へバックアップしておくこと。
     でないと、データが失われる。
-  - 手順は同じなので、ada1 の例だけを示す。以下も同じ。
-    ``` shell
-    # Gpart show ada1
-    =>       40  468862048  ada1  GPT  (224G)
-	     40  468862048     1  freebsd-zfs  (224G)
+  ``` shell
+  # Gpart show ada1
+  =>       40  468862048  ada1  GPT  (224G)
+	   40  468862048     1  freebsd-zfs  (224G)
 
-    [root@dreadnought moto]# gpart delete -i 1 ada1
-    ada1p1 deleted
+  [root@dreadnought moto]# gpart delete -i 1 ada1
+  ada1p1 deleted
 
-    # gpart show ada1
-    =>       40  468862048  ada1  GPT  (224G)
-	     40  468862048        - free -  (224G)
+  # gpart show ada1
+  =>       40  468862048  ada1  GPT  (224G)
+	   40  468862048        - free -  (224G)
 
-    # gpart destroy ada1
-    ada1 destroyed
+  # gpart destroy ada1
+  ada1 destroyed
 
-    # gpart show ada1
-    gpart: No such geom: ada1.
-    ```
+  # gpart show ada1
+  gpart: No such geom: ada1.
+  ```
 
 - 更地にパーティションテーブルを作成する。
   ``` shell
@@ -73,12 +72,32 @@
   =>       40  468862048  ada1  GPT  (224G)
 	   40  468862048     1  freebsd-zfs  (224G)  ```
   ```
-  - 上では、`gpart add` でパーティションサイズを指定しなかったので、可能な
-    最大サイズで作成された。サイズを指定するなら `-s 10G` のように指定することが
-    できる。こうすることで、複数のパーティションを作成することができる。
+- 上では、`gpart add` でパーティションサイズを指定しなかったので、可能な
+  最大サイズで作成された。サイズを指定するなら `-s 10G` のように指定することが
+  できる。こうすることで、複数のパーティションを作成することができる。
+  ``` shell
+  # gpart show ada2
+  gpart: No such geom: ada2.
 
+  # gpart create -s gpt ada2
+  ada2 created
 
-- 既存のパーティションテーブルを破壊する。
+  # gpart add -t freebsd-ufs -s 10G ada2
+  ada2p1 added
 
+  # gpart add -t freebsd-swap -s 20G ada2
+  ada2p2 added
+
+  # gpart add -t freebsd-zfs ada2
+  ada2p3 added
+
+  # gpart show ada2
+  =>       40  976773088  ada2  GPT  (466G)
+	   40   20971520     1  freebsd-ufs  (10G)
+     20971560   41943040     2  freebsd-swap  (20G)
+     62914600  913858528     3  freebsd-zfs  (436G)
+  ```
+
+## zpool で ZFS プールを作成する
 
 
