@@ -100,6 +100,10 @@
   # gpart create -s gpt ada2
   ada2 created
 
+  # gpart show ada2
+  =>       40  976773088  ada2  GPT  (466G)
+	   40  976773088        - free -  (466G)
+
   # gpart add -t freebsd-ufs -a 1m -s 30G ada2
   ada2p1 added
   # gpart add -t freebsd-swap -a 1m -s 16G ada2
@@ -108,10 +112,8 @@
   ada2p3 added
   # gpart add -t freebsd-zfs -a 1m -s 130G ada2
   ada2p4 added
-  # gpart add -t freebsd-zfs -a 1m -s 130G ada2
+  # gpart add -t freebsd-zfs -a 1m ada2
   ada2p5 added
-  # gpart add -t freebsd-zfs -a 1m  ada2
-  ada2p6 added
 
   # gpart show ada2
   =>       40  976773088  ada2  GPT  (466G)
@@ -120,8 +122,7 @@
      62916608   33554432     2  freebsd-swap  (16G)
      96471040  272629760     3  freebsd-zfs  (130G)
     369100800  272629760     4  freebsd-zfs  (130G)
-    641730560  272629760     5  freebsd-zfs  (130G)
-    914360320   62412800     6  freebsd-zfs  (30G)
+    641730560  335042560     5  freebsd-zfs  (160G)
     976773120          8        - free -  (4.0K)
   ```
 
@@ -129,73 +130,42 @@
 
 - 単純に１個のパーティションに ZFS プールを作成する。
   ``` shell
-  # gpart show ada1
-  =>       40  468862048  ada1  GPT  (224G)
-	   40  468862048     1  freebsd-zfs  (224G)
+  # gpart show nda0
+  =>        40  4000797280  nda0  GPT  (1.9T)
+	    40        2008        - free -  (1004K)
+	  2048  4000794624     1  freebsd-zfs  (1.9T)
+    4000796672         648        - free -  (324K)
 
-  # zpool create -o ashift=12 -m none -m none singlepool ada1p1
+  # zpool create -o ashift=12 singletank nda0
 
   # zpool list
   NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
-  singlepool   222G   492K   222G        -         -     0%     0%  1.00x    ONLINE  -
+  singletank  1.86T   396K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
 
-  # zpool get ashift singlepool
+  # zpool list -v
+  NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+  singletank  1.86T   396K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
+    nda0      1.86T   396K  1.86T        -         -     0%  0.00%      -    ONLINE        -
+
+  # zpool get ashift singletank
   NAME        PROPERTY  VALUE   SOURCE
-  singlepool  ashift    12      local
+  singletank  ashift    12      local
   ```
-  - オプション `-o ashift=12` は、このプールがセクターサイズ 4 kiB であるように
-    設定している。昔は 512 kiB セクターが普通だったけど、今どきは 4 kiB かそれ以上
-    らしい。LBA でもセクター番号が溢れるのでセクターサイズを大きくする必要があったはず。
-  - オプション `-m none` を指定しない時は、/singlepool にこのプールをマウントする。
-    指定すると、マウントポイントを「なし」と指定したので、マウントされない。
+  - `zpool create` にオプション `-o ashift=12` を指定すると、
+    このプールがセクターサイズ 4 kiB であるように設定している。
+    昔は 512 kiB セクターが普通だったけど、今どきは 4 kiB かそれ以上らしい。
+    LBA でもセクター番号が溢れるのでセクターサイズを大きくする必要があったはず。
+  - デフォルトでは、ルート直下にプール名で、つまり、/singletank に
+    このプールがマウントされる。
+    これを別の場所にマウントしたい時は `zpool create` に `-m <mountpoint>`
+    オプションを与えればよい。
+    他にも色々と動作が変わるようなので、詳しくは zpool-create(8) の `-m` の
+    項を見てほしい。
     自分しか使わないホストだったらデフォルトのままでも良いような気もするが、複数ユーザが
     使うなら権限管理が必要になって面倒だからマウントさせないというのもアリかな。
-    でも、そうするとデータセット使用時にはマウントしないとダメかも。
+    でも、そうするとデータセット使用時には手動マウントしないとダメかも。
+    面倒なので、以下ではデフォルトの動作を前提にする。
 
+- `zpool create` には、ミラー構成のプールを作る機能もある。
+  nda0 と nda1 を使ってやってみるが、先に nda0 上の singletank を破壊しておかないと
 
-
-1. マウントポイントを指定するオプション（-o mountpoint=...）
-
-ZFSでは、データセット作成時に -o mountpoint=/パス を指定することで、任意の場所にマウントできます。
-今回は「自動マウントはさせない（canmount=noauto）」というご要望ですので、以下のように組み合わせて指定します。
-bash
-# 例：プール「nvme_pool0」の中に、自動マウント無効・マウント先指定でデータセットを作成
-zfs create -o mountpoint=/mnt/secure_nvme0 -o canmount=noauto nvme_pool0/mydata
-コードは注意してご使用ください。
-• 仕組み: このコマンドを実行すると、デフォルトのマウント先として /mnt/secure_nvme0 がデータセットに記録されますが、canmount=noauto が効いているため、この時点ではまだマウントされません（ディレクトリも自動作成されません）。
-• 利用時: 実際に使いたいときに zfs mount nvme_pool0/mydata とだけ実行すれば、自動的に先ほど設定した /mnt/secure_nvme0 にマウントされます。
-
-2. ZFSデータセットで強く推奨されるその他のオプション
-
-データセットを作成する際、同時に設定しておくべき推奨オプションです。これらはすべて zfs create 時に -o オプション=値 の形で複数同時に指定できます。
-
-① atime=off （すべてのSSD/HDDで強く推奨）
-
-ファイルが「読み込まれた日時（アクセス日時）」をディスクに書き込む機能を無効にします。
-• 理由: デフォルト（on）のままだと、ファイルを読み込むだけでもディスクへの書き込み（シーク）が発生します。これを off にすることで、無駄な書き込みを大幅に減らし、SSDの寿命延命とディスク全体のパフォーマンス向上に直結します（大半のアプリケーションで off にしても問題ありません）。
-
-② compression=lz4 （すべてのSSD/HDDで強く推奨）
-
-ZFSの高速な圧縮アルゴリズム（LZ4）を有効にします。
-• 理由: 現代のCPUにとってLZ4の圧縮・展開処理は非常に軽量です。ディスクに書き込むデータ量が減るため、結果としてディスクの読み書き速度が実質的に向上（ブースト）します。また、SSDへの総書き込み量（TBW）を減らす効果もあります。
-
-③ atime=off 以外のHDD向け調整（必要に応じて）
-
-もしHDD（ada2）に、OSのパッケージや小さなファイル（ソースコードなど）ではなく、大きなメディアファイル（動画、音楽、バックアップイメージ等）をメインに保存する場合、以下のオプションも効果的です。
-• recordsize=1M （大容量ファイルを置くデータセットのみ）
-	• ZFSがデータを扱うブロックサイズを、デフォルトの128kBから1MBに拡大します。HDDのヘッドが動く回数が減り、シーケンシャルな読み書きが大幅に高速化します。
-
-💡 推奨オプションを反映した実際の作成コマンド例
-
-これらを踏まえると、データセット作成コマンドは以下のようになります。
-bash
-# NVMe SSD / SATA SSD 用のデータセット作成例
-zfs create -o mountpoint=/mnt/ssd0 -o canmount=noauto -o atime=off -o compression=lz4 nvme_pool0/mydata
-zfs create -o mountpoint=/mnt/ssd1 -o canmount=noauto -o atime=off -o compression=lz4 nvme_pool1/mydata
-zfs create -o mountpoint=/mnt/sata0 -o canmount=noauto -o atime=off -o compression=lz4 sata_ssd0/mydata
-zfs create -o mountpoint=/mnt/sata1 -o canmount=noauto -o atime=off -o compression=lz4 sata_ssd1/mydata
-
-# HDD 用のデータセット作成例（大容量メディア用途を想定して recordsize も追加）
-zfs create -o mountpoint=/mnt/hdd0 -o canmount=noauto -o atime=off -o compression=lz4 -o recordsize=1M hdd_pool0/mydata
-コードは注意してご使用ください。
-今回は各プールの中に「mydata」というデータセットを1つ作る例にしていますが、用途（例：データベース用、バックアップ用など）に応じてさらにデータセットを細かく分ける予定はありますか？ 必要であれば用途別の推奨値（recordsize の微調整など）もご提案できます。
