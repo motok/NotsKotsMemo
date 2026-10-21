@@ -17,40 +17,29 @@
 
 - 現状のパーティションテーブルを表示する。
   ``` shell
-  # gpart show nda0 nda1 ada1 ada2
+  # gpart show nda0 nda1 ada1 ada2 
   =>        40  4000797280  nda0  GPT  (1.9T)
-	    40  4000797280        - free -  (1.9T)
+	    40  4000797280     1  freebsd-ufs  (1.9T)
 
   =>        40  3907029088  nda1  GPT  (1.8T)
-	    40  3907029088        - free -  (1.8T)
+	    40  3907029088     1  freebsd-ufs  (1.8T)
 
-  =>       40  468862048  ada1  GPT  (224G)
-	   40  468862048     1  freebsd-zfs  (224G)
-
-  =>       40  976773088  ada2  GPT  (466G)
-	   40  976773088     1  freebsd-zfs  (466G)
-  ```
-
-- 現状のパーティションテーブルを一旦破壊する。
-  - 必要なデータが残っている場合は別の場所へバックアップしておくこと。
-    でないと、データが失われる。
-  ``` shell
-  # gpart show ada1
-  =>       40  468862048  ada1  GPT  (224G)
-	   40  468862048     1  freebsd-zfs  (224G)
-
-  [root@dreadnought moto]# gpart delete -i 1 ada1
-  ada1p1 deleted
-
-  # gpart show ada1
   =>       40  468862048  ada1  GPT  (224G)
 	   40  468862048        - free -  (224G)
 
-  # gpart destroy ada1
-  ada1 destroyed
+  gpart: No such geom: ada2.
+  ```
+  - nda[01], ada[01] の現状のパーティションテーブルを表示した。
+    nda[01] にはそれぞれ１個づつ freebsd-ufs 型のパーティションが定義されているが、
+    ada1 ではパーティションテーブルは定義してあってもパーティションはなく、
+    ada2 に至っては、パーティションテーブルそのものがない状態である。
+  - これらは以前に使っていた時の残骸なので、一旦全パーティションテーブルを削除して
+    新たに作り直すことにする。
 
-  # gpart show ada1
-  gpart: No such geom: ada1.
+- 現状のパーティションテーブルを一旦破壊する。
+  - 必要なデータが残っている場合は別の場所へバックアップしておくこと。
+    でないとデータが失われる。
+  ``` shell
   ```
 
 - 更地にパーティションテーブルを作成する。
