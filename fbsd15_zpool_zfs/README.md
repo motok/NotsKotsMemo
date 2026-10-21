@@ -39,29 +39,44 @@
 - 現状のパーティションテーブルを一旦破壊する。
   - 必要なデータが残っている場合は別の場所へバックアップしておくこと。
     でないとデータが失われる。
+  - nda0 で、パーティションを削除してからパーティションテーブルも削除するのは
+    こんな感じ。
   ``` shell
+  # gpart show nda0
+  =>        40  4000797280  nda0  GPT  (1.9T)
+	    40  4000797280     1  freebsd-ufs  (1.9T)
+
+  # gpart delete -i 1 nda0
+  nda0p1 deleted
+
+  # gpart show nda0
+  =>        40  4000797280  nda0  GPT  (1.9T)
+	    40  4000797280        - free -  (1.9T)
+
+  # gpart destroy nda0
+  nda0 destroyed
+
+  # gpart show nda0
+  gpart: No such geom: nda0.
   ```
-
-- 更地にパーティションテーブルを作成する。
+- 更地になった nda0 にパーティションテーブルとパーティションを作成するには、
+  こんな感じ。
   ``` shell
-  # gpart show ada1
-  gpart: No such geom: ada1.
+  # gpart create -s gpt nda0
+  nda0 created
 
-  # gpart create -s gpt ada1
-  ada1 created
+  # gpart show nda0
+  =>        40  4000797280  nda0  GPT  (1.9T)
+	    40  4000797280        - free -  (1.9T)
 
-  # gpart show ada1
-  =>       40  468862048  ada1  GPT  (224G)
-	   40  468862048        - free -  (224G)
+  # gpart add -t freebsd-zfs -a 1m nda0
+  nda0p1 added
 
-  # gpart add -t freebsd-zfs -a 1m ada1
-  ada1p1 added
-
-  # gpart show ada1
-  =>       40  468862048  ada1  GPT  (224G)
-  40       2008        - free -  (1004K)
-  2048  468858880     1  freebsd-zfs  (224G)
-  468860928       1160        - free -  (580K)
+  # gpart show nda0
+  =>        40  4000797280  nda0  GPT  (1.9T)
+	    40        2008        - free -  (1004K)
+	  2048  4000794624     1  freebsd-zfs  (1.9T)
+    4000796672         648        - free -  (324K)
   ```
   - `gpart add` に与えたオプション `-a 1m` は、作成するパーティションを
     1 MiB アラインメントに沿うようにするもの。
@@ -73,6 +88,7 @@
     なるべく消去対象ブロックを少なくする作戦であるようだ。
     上の例でもパーティションの前後に free 領域ができていてもったいない気もするが、
     これが今のベストプラクティスであるとのこと。
+    既存パーティションを表示したときにはなかった "- free -" の領域に注目されたい。
 
 - 上では、`gpart add` でパーティションサイズを指定しなかったので、可能な
   最大サイズで作成された。サイズを指定するなら `-s 10G` のように指定することが
