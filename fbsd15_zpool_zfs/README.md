@@ -186,8 +186,9 @@
   ``` shell
   # zpool list -v
   NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
-  singletank  1.86T   384K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
-    nda0      1.86T   384K  1.86T        -         -     0%  0.00%      -    ONLINE        -
+  singletank  1.86T   396K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
+    nda0p1    1.86T   396K  1.86T        -         -     0%  0.00%      -    ONLINE        -
+
   # zpool destroy singletank
 
   # zpool list -v
@@ -196,7 +197,30 @@
 
 ### ストライプ構成の ZFS プールを作成する
 
-- 
+- ２つのパーティションを使って容量が増えた(が冗長性はない)状態を作るとこんな感じ。
+  いわゆる RAID0 やね。
+
+  ``` shell
+  # gpart show nda0 nda1
+  =>        40  4000797280  nda0  GPT  (1.9T) [CORRUPT]
+	    40        2008        - free -  (1004K)
+	  2048  4000794624     1  freebsd-zfs  (1.9T)
+    4000796672         648        - free -  (324K)
+
+  =>        40  3907029088  nda1  GPT  (1.8T)
+	    40        2008        - free -  (1004K)
+	  2048  3907026944     1  freebsd-zfs  (1.8T)
+    3907028992         136        - free -  (68K)
+
+  # zpool create stripetank nda0p1 nda1p1
+
+  # zpool list -v
+  NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+  stripetank  3.67T   124K  3.67T        -         -     0%     0%  1.00x    ONLINE  -
+    nda0p1    1.86T  45.5K  1.86T        -         -     0%  0.00%      -    ONLINE        -
+    nda1p1    1.82T    79K  1.81T        -         -     0%  0.00%      -    ONLINE        -
+  ```
+  - 約1.8TBのパーティションふたつから約3.6TBのstripetankを作っている点に注意。
 
 ### ミラー構成の ZFS プールを作成する
 
