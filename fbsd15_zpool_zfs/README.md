@@ -212,21 +212,25 @@
 	  2048  3907026944     1  freebsd-zfs  (1.8T)
     3907028992         136        - free -  (68K)
 
-  # zpool create stripetank nda0p1 nda1p1
+  # zpool create -o ashift=12 stripetank nda0p1 nda1p1
 
   # zpool list -v
   NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
-  stripetank  3.67T   124K  3.67T        -         -     0%     0%  1.00x    ONLINE  -
-    nda0p1    1.86T  45.5K  1.86T        -         -     0%  0.00%      -    ONLINE        -
-    nda1p1    1.82T    79K  1.81T        -         -     0%  0.00%      -    ONLINE        -
+  stripetank  3.67T   480K  3.67T        -         -     0%     0%  1.00x    ONLINE  -
+    nda0p1    1.86T   176K  1.86T        -         -     0%  0.00%      -    ONLINE        -
+    nda1p1    1.82T   304K  1.81T        -         -     0%  0.00%      -    ONLINE        -
   ```
   - 約1.8TBのパーティションふたつから約3.6TBのstripetankを作っている点に注意。
 
 ### ミラー構成の ZFS プールを作成する
 
+- ２つのパーティションを使ってミラー構成のプールを作る。いわゆる RAID1。
 
-- `zpool create` には、ミラー構成のプールを作る機能もある。
-  nda0 と nda1 を使ってやってみるが、先に nda0 上の singletank を破壊しておかないと
+
+
+
+
+
 
 
 ### RAIDZ 構成の ZFS プールを作成する
