@@ -136,24 +136,30 @@
 
 ### シングル構成の ZFS プールを作成する
 
-- 単純に１個のパーティションに ZFS プールを作成する。
+- 単純に１個のパーティション nda0p1 に ZFS プールを作成する。
+  - `zpool create` に与えるデバイス指定が nda0p1 で１番スライスを指している点に
+    注意。nda0 を指定しても作成できちゃうけど、それだとパーティションテーブルと
+    相互に干渉してまずいはず。
+
   ``` shell
   # gpart show nda0
-  =>        40  4000797280  nda0  GPT  (1.9T)
+  =>        40  4000797280  nda0  GPT  (1.9T) [CORRUPT]
 	    40        2008        - free -  (1004K)
 	  2048  4000794624     1  freebsd-zfs  (1.9T)
     4000796672         648        - free -  (324K)
 
-  # zpool create -o ashift=12 singletank nda0
+  # zpool list
+  no pools available
+
+  # zpool create -o ashift=12 singletank nda0p1
 
   # zpool list
   NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
-  singletank  1.86T   396K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
-
+  singletank  1.86T   480K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
   # zpool list -v
   NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
-  singletank  1.86T   396K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
-    nda0      1.86T   396K  1.86T        -         -     0%  0.00%      -    ONLINE        -
+  singletank  1.86T   480K  1.86T        -         -     0%     0%  1.00x    ONLINE  -
+    nda0p1    1.86T   480K  1.86T        -         -     0%  0.00%      -    ONLINE        -
 
   # zpool get ashift singletank
   NAME        PROPERTY  VALUE   SOURCE
@@ -188,10 +194,19 @@
   no pools available
   ```
 
+### ストライプ構成の ZFS プールを作成する
+
 - 
 
+### ミラー構成の ZFS プールを作成する
 
 
 - `zpool create` には、ミラー構成のプールを作る機能もある。
   nda0 と nda1 を使ってやってみるが、先に nda0 上の singletank を破壊しておかないと
+
+
+### RAIDZ 構成の ZFS プールを作成する
+
+
+
 
