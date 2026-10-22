@@ -225,8 +225,41 @@
 ### ミラー構成の ZFS プールを作成する
 
 - ２つのパーティションを使ってミラー構成のプールを作る。いわゆる RAID1。
+  - ada2p3 と ada2p4 で作成する。両者のサイズが同じである点に注意。
+  - サイズ違いのパーティションからミラー構成の ZFS プールを作ろうとすると、
+    サイズが違うよと言って作ってくれない。`-f` オプション追加で作成できるが、
+    多分、同サイズになるようにパーティションを切り直す方が後々楽だろう。
+  - プールの名前を mirrortank や mirtank 等とすると、そのプール名はリザーブされている
+    といってプールを作ってくれない。mirror キーワードと衝突するのだということだが
+    そこはもうちょっとなんとかならなかったのか。
 
+  ``` shell
+  # gpart show ada2
+  =>       40  976773088  ada2  GPT  (466G)
+	   40       2008        - free -  (1004K)
+	 2048   62914560     1  freebsd-ufs  (30G)
+     62916608   33554432     2  freebsd-swap  (16G)
+     96471040  272629760     3  freebsd-zfs  (130G)
+    369100800  272629760     4  freebsd-zfs  (130G)
+    641730560  335042560     5  freebsd-zfs  (160G)
+    976773120          8        - free -  (4.0K)
 
+  # zpool list -v
+  no pools available
+
+  # zpool create -o ashift=12 mirrortank mirror ada2p3 ada2p4
+  cannot create 'mirrortank': name is reserved
+  pool name may have been omitted
+
+  # zpool create -o ashift=12 mtank mirror ada2p3 ada2p4
+
+  # zpool list -v
+  NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+  mtank        129G   516K   129G        -         -     0%     0%  1.00x    ONLINE  -
+    mirror-0   129G   516K   129G        -         -     0%  0.00%      -    ONLINE        -
+      ada2p3   130G      -      -        -         -      -      -      -    ONLINE        -
+      ada2p4   130G      -      -        -         -      -      -      -    ONLINE        -
+  ```
 
 
 
