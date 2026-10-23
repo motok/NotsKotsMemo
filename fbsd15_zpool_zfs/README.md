@@ -13,6 +13,10 @@
   | ada1 | TOSHIBA THNSN9240GESG | 240 GB | SATA 3.0 | 6 Gbps |
   | ada2 | Hitachi HDT725050VLA360 | 500 GB | SATA 300 | 3 Gbps 7200 github markrpm |
 
+## /etc/rc.conf で zfs_enable="YES"
+
+- ZFS を使うので、/etc/rc.conf に zfs_enable="YES" を設定しておくこと。
+
 ## gpart でパーティションテーブルを扱う
 
 ### パーティションテーブルを表示する
@@ -276,6 +280,7 @@
   構成されていて、ほぼ３パーティション分の容量を持っているかに見えるが、
   実際に利用できる容量としては `df -h` で見るようにほぼ２パーティション分
   である。
+- 他にもスペアディスクを作るとか色々あるみたい。
 
   ``` shell
   # gpart show ada2
@@ -307,4 +312,67 @@
   raidtank      250G    128K    250G     0%    /raidtank
   ```
 
+## zfs でデータセットを作成する。
+
+- これで、ZFS プール上にデータセットを作成することができるようになった。
+  - 例えば VM 用のディスクイメージとしてのデータセットなど。
+- データセットを作成する際に指定しておくべきオプション
+  - `-o atime=off` を指定することで、アクセスタイムを更新させない。
+    - もともとはアクセスタイムを記録するのがデフォルトだったが、毎回のディスクアクセスで
+      遅くなるのを嫌って、また、SSD の書き換え回数節約のために更新させない設定が
+      ある方が良い、というのが今どきのベストプラクティスらしい。
+    - メールスプールのようにアクセスタイムを積極的に利用しているボリュームについては
+      更新させないとダメだけど、そういうケースはかなり少ないらしい。
+  - `-o compression=lz4` を指定することで、ディスク容量を節約する。
+    - 最近の PC だと十分な能力があるので圧縮させても気になるほどには遅くならないらしい。
+  - `-o mountpoint=/mount/point` を指定することでマウントポイントを変更する。
+    - デフォルトだと、ルート(/)直下にプール名が来て、その下にデータセット作成時のパスを
+      付け足した場所にマウントされる。raidtank プールに hoge データセットを作れば
+      /raidtank/hoge、foo/bar データセットを作れば /raidtank/foo/bar みたいな。
+  - `-o canmount=noauto` を指定することで、自動的なマウントをさせないこともできる。
+
+  ``` shell
+  # zpool list
+  NAME       SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+  raidtank   388G  1.38M   388G        -         -     0%     0%  1.00x    ONLINE  -
+
+  # zfs list
+  NAME       USED  AVAIL  REFER  MOUNTPOINT
+  raidtank   623K   250G   128K  /raidtank
+
+  # zfs create -o atime=off -o compression=lz4 raidtank/hoge
+
+  # zfs list
+  NAME            USED  AVAIL  REFER  MOUNTPOINT
+  raidtank        799K   250G   128K  /raidtank
+  raidtank/hoge   128K   250G   128K  /raidtank/hoge
+
+  # ls /raidtank
+  hoge/
+  # ls /raidtank/hoge/
+
+  # zfs create -o atime=off -o compression=lz4 raidtank/foo/bar
+  cannot create 'raidtank/foo/bar': parent does not exist
+
+  # zfs create -o atime=off -o compression=lz4 raidtank/hoge/bar
+
+  # zfs list
+  NAME                USED  AVAIL  REFER  MOUNTPOINT
+  raidtank            986K   250G   139K  /raidtank
+  raidtank/hoge       256K   250G   128K  /raidtank/hoge
+  raidtank/hoge/bar   128K   250G   128K  /raidtank/hoge/bar
+
+  # zpool list
+  NAME       SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+  raidtank   388G  1.45M   388G        -         -     0%     0%  1.00x    ONLINE  -
+
+  # ls /raidtank /raidtank/hoge /raidtank/hoge/bar
+  /raidtank:
+  hoge/
+
+  /raidtank/hoge:
+  bar/
+
+  /raidtank/hoge/bar:
+  ```
 
