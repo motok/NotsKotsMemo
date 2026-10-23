@@ -169,6 +169,8 @@
     このプールがセクターサイズ 4 kiB であるように設定している。
     昔は 512 kiB セクターが普通だったけど、今どきは 4 kiB かそれ以上らしい。
     LBA でもセクター番号が溢れるのでセクターサイズを大きくする必要があったはず。
+  - zpool には設定ファイルが無いので `-o ashift=12` 等のオプションを毎度毎度
+    コマンドラインに含めなければならない。そこはもうちょっとなんとか頼みたい所。
   - デフォルトでは、ルート直下にプール名で、つまり、/singletank に
     このプールがマウントされる。
     これを別の場所にマウントしたい時は `zpool create` に `-m <mountpoint>`
@@ -261,13 +263,48 @@
       ada2p4   130G      -      -        -         -      -      -      -    ONLINE        -
   ```
 
-
-
-
-
-
 ### RAIDZ 構成の ZFS プールを作成する
 
+- ada2p[345] を使って RAIDZ 構成の ZFS プールを作成する。
+  - 今回はプール作成の実験ということで同じデバイス (ada2) 上に
+    RAID を構築するが、これでは冗長性は確保できない点に注意。
+    ada2 が壊れると全滅する。
+- 130 GBのパーティション３個で RAIDZ を構成しているので、
+  大雑把に言うとデータ＋データ＋パリティで２パーティション分の
+  容量が取れるはず。
+- `zpool list -v` で見ると、RAIDZ プールは３パーティションから
+  構成されていて、ほぼ３パーティション分の容量を持っているかに見えるが、
+  実際に利用できる容量としては `df -h` で見るようにほぼ２パーティション分
+  である。
 
+  ``` shell
+  # gpart show ada2
+  =>       40  976773088  ada2  GPT  (466G)
+	   40       2008        - free -  (1004K)
+	 2048   62914560     1  freebsd-ufs  (30G)
+     62916608   33554432     2  freebsd-swap  (16G)
+     96471040  272629760     3  freebsd-zfs  (130G)
+    369100800  272629760     4  freebsd-zfs  (130G)
+    641730560  272629760     5  freebsd-zfs  (130G)
+    914360320   62412800     6  freebsd-zfs  (30G)
+    976773120          8        - free -  (4.0K)
+
+  # zpool list
+  no pools available
+
+  # zpool create -o ashift=12 raidtank raidz ada2p3 ada2p4 ada2p5
+
+  # zpool list -v
+  NAME         SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+  raidtank     388G   984K   388G        -         -     0%     0%  1.00x    ONLINE  -
+    raidz1-0   388G   984K   388G        -         -     0%  0.00%      -    ONLINE        -
+      ada2p3   130G      -      -        -         -      -      -      -    ONLINE        -
+      ada2p4   130G      -      -        -         -      -      -      -    ONLINE        -
+      ada2p5   130G      -      -        -         -      -      -      -    ONLINE        -
+
+  # df -h /raidtank
+  Filesystem    Size    Used   Avail Capacity  Mounted on
+  raidtank      250G    128K    250G     0%    /raidtank
+  ```
 
 
