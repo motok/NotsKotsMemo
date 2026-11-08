@@ -376,3 +376,25 @@
   /raidtank/hoge/bar:
   ```
 
+## 付け足し：ufs フォーマットのベストプラクティス
+
+じゃあ、ufs で使うパーティションをフォーマットする時は、どんなオプションを付けておくのがいいのか？
+
+- `gpart` でパーティションを切る所までは上と同じ。1 MB アラインメント。
+- `newfs` でファイルシステムを作るときには、以下のオプションを付けるのが良い。
+  - `-U`: Soft Updates を ON。メタデータ書き込みを最適化してディスク I/O を改善。
+  - `-j`: Soft Updates Journaling を ON。ジャーナリング機能もONにして、不意の停電やクラッシュ時のファイルシステムへのダメージを軽減。
+  - `-L <label>`: パーティションに名前 (ラベル) を付けることで、/etc/fstab でラベルが使える。
+  - `-t`: TRIM を有効に。SSD/NVMe 等のSSD では、経年劣化による速度低下を防ぐ。
+
+``` shell
+# newfs -U -j -L mydrive /dev/da0p1
+```
+
+- マウント時のラベル指定
+  - `/etc/fstab` や `mount` コマンドラインで、デバイス名の代わりにラベルを使うことができる。
+- `noatime`: atime を記録しないことでディスク I/O を改善。また、SSD の寿命を伸ばす。
+
+``` fstab
+/dev/ufs/mydata /mnt/mydata ufs rw,noatime 2 2
+```
