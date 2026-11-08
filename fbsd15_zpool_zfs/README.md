@@ -398,3 +398,21 @@
 ``` fstab
 /dev/ufs/mydata /mnt/mydata ufs rw,noatime 2 2
 ```
+
+## 付け足し：ZFS での TRIM
+
+- ZFS でも TRIM 機能を有効にしておくことは SSD には良いこと。
+- プールのデフォルト値として TRIM 機能を有効にする方法と、データセット毎に ON にする方法があるが、ここでは前者のやり方を採用。
+- 今どうなっているかを知るには、
+  ``` shell
+  # zpool get autotrim mtank
+  NAME   PROPERTY  VALUE     SOURCE
+  mtank  autotrim  off       default
+  ```
+- デフォルトでは TRIM=OFF だったので、ON にする。
+  ``` shell
+  # zpool set autotrim=on mtank
+  # zpool get autotrim mtank
+  NAME   PROPERTY  VALUE     SOURCE
+  mtank  autotrim  on        local
+  ```
